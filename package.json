@@ -1,0 +1,11 @@
+{
+  "name": "your-website-name",
+  "version": "1.0.0",
+  "description": "A simple static website",
+  "scripts": {
+    "deploy": "echo 'Deploying static files...'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
