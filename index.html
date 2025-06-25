@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papercut - Design that cuts through</title>
+    <!-- Favicon: Using s-icon-01.png for standard browsers (32x32) -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+    <!-- Apple Touch Icon: Using m-icon-01.png for iOS devices (512x512) -->
+    <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
+    <!-- Meta Description for Search Engines: Provides a concise summary of the page's content. -->
+    <!-- This description appears under your page title in search results, influencing click-through rates. -->
+    <meta name="description" content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, and captivating digital graphics that truly stand out and cut through the noise. Get professional design services for your business.">
+    <!-- Keywords for Search Engines: While less critical for ranking today, still provides context. -->
+    <!-- Include terms users might search for to find your services. -->
+    <meta name="keywords" content="graphic design, branding, logo design, print design, digital marketing, creative agency, design studio, Papercut, custom design, visual communication, advertising design, NYC designer">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW5F6HJKKY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-GW5F6HJKKY');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family="Open+Sans:wght@400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light gray background */
+        }
+        /* Custom purple colors from the logo */
+        .bg-papercut-purple { background-color: #6B46C1; } /* Main purple */
+        .text-papercut-purple { color: #6B46C1; }
+        .border-papercut-purple { border-color: #6B46C1; }
+        .hover\:bg-papercut-purple-dark:hover { background-color: #553C9A; } /* Darker shade for hover */
+        .bg-papercut-light-purple { background-color: #EDE9FE; } /* Very light purple for cards */
+
+        /* Styles for carousel wrapper (for arrows) */
+        .portfolio-carousel-wrapper {
+            position: relative;
+            max-width: 100%; /* Ensure it respects container width */
+            margin: 0 auto; /* Center the carousel wrapper */
+        }
+
+        /* Styles for horizontal scrolling container */
+        .horizontal-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* Cursor and user-select properties are now set dynamically by JavaScript */
+            user-select: none; /* Prevent text/image selection during interaction */
+            -webkit-user-select: none; /* For Webkit browsers */
+            -moz-user-select: none; /* For Firefox */
+            -ms-user-select: none; /* For Internet Explorer/Edge */
+        }
+
+        /* Change cursor when dragging (applied by JS) */
+        .horizontal-scroll-container.is-dragging {
+            cursor: grabbing;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .horizontal-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Style for individual portfolio items within the scrollable area */
+        .horizontal-scroll-item {
+            flex-shrink: 0; /* Prevents items from shrinking */
+            margin-right: 24px; /* Space between cards */
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease-in-out;
+            padding: 0; /* Ensure no internal padding, image fills entirely */
+            /* Width will be set dynamically by JS */
+        }
+
+        .horizontal-scroll-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* Adjust images in portfolio items */
+        .portfolio-item-img {
+            object-fit: contain; /* Ensures the whole image is visible within its bounds */
+            height: 400px; /* Fixed height for consistency on desktop */
+            width: 100%; /* Image fills its item's width */
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Adjust images in portfolio items for mobile devices */
+        @media (max-width: 768px) { /* Applies to screens smaller than or equal to 768px (md breakpoint) */
+            .portfolio-item-img {
+                height: 200px; /* Smaller height for mobile */
+            }
+        }
+
+        /* Active tab style */
+        .tab-button.active {
+            border-bottom: 3px solid #6B46C1;
+            color: #6B46C1;
+            font-weight: 600;
+        }
+
+        /* Carousel navigation arrows */
+        .scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            padding: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* Hidden by default, controlled by JS */
+            pointer-events: none; /* Disable interaction when hidden */
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-arrow.visible {
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when visible */
+        }
+
+        .scroll-arrow.left {
+            left: -20px; /* Position slightly outside the container for design */
+        }
+
+        .scroll-arrow.right {
+            right: -20px; /* Position slightly outside the container for design */
+        }
+
+        .scroll-arrow svg {
+            fill: #6B46C1;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Responsive adjustments for arrows */
+        @media (max-width: 768px) { /* Adjust breakpoint as needed, Tailwind's 'md' is 768px */
+            .scroll-arrow {
+                display: none !important; /* Hide arrows on small screens */
+            }
+        }
+
+        /* --- Image Modal Styles --- */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .image-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Image within the modal overlay */
+        .image-modal-overlay img {
+            max-width: 90vw; /* Image itself will not exceed 90% of viewport width */
+            max-height: 90vh; /* Image itself will not exceed 90% of viewport height */
+            object-fit: contain; /* Ensures entire image is visible, adds letterboxing if aspect ratio mismatch */
+            display: block;
+            border-radius: 10px; /* Rounded corners for the image itself */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Shadow for the image */
+            /* No padding here, so image fills its bounds without internal white border */
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: calc(5vh + 10px); /* 5% from top of viewport + 10px padding */
+            right: calc(5vw + 10px); /* 5% from right of viewport + 10px padding */
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px; /* Slightly larger button */
+            height: 40px; /* Slightly larger button */
+            font-size: 1.8rem; /* Larger icon */
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #6B46C1; /* papercut-purple */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            z-index: 1001; /* Ensure close button is above the image */
+        }
+
+        .close-modal-btn:hover {
+            background-color: #6B46C1;
+            color: #fff;
+        }
+
+        /* Styles for the fade-in animation on scroll (reverted) */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom styles for navigation elements */
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.25rem; /* Space for the underline */
+            overflow: hidden; /* To hide the underline when not hovered */
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px; /* Thickness of the underline */
+            background-color: #6B46C1; /* Papercut purple underline */
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease-out;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile menu slide animation */
+        .mobile-menu-slide-enter {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .mobile-menu-slide-enter-active {
+            max-height: 500px; /* Sufficient height to cover content */
+            opacity: 1;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .mobile-menu-slide-exit {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .mobile-menu-slide-exit-active {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+
+        /* Default Header Styles (Full width, connected to top) */
+        #main-header {
+            width: 100%; /* Full width */
+            max-width: 100vw; /* Explicitly set for smooth transition */
+            margin: 0 auto; /* No horizontal margin */
+            border-radius: 0; /* Sharp corners */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Original subtle shadow */
+            transition: all 0.4s ease-in-out; /* Smooth transition for all properties, increased duration */
+            border: none; /* No border initially */
+            top: 0; /* Stick to the top */
+            padding-left: 1rem; /* Adjust padding to match original */
+            padding-right: 1rem; /* Adjust padding to match original */
+        }
+
+        /* Scrolled Header Styles (Floating, Rounded, with Border, and Glassiness) */
+        #main-header.header-scrolled {
+            width: calc(100% - 32px); /* Subtract margin from both sides (16px * 2) */
+            max-width: 1200px; /* Limit maximum width on very large screens */
+            margin: 16px auto; /* Add margin from top and auto for horizontal centering */
+            border-radius: 9999px; /* Fully rounded corners */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* More pronounced shadow */
+            border: 2px solid #EDE9FE; /* Consistent light purple border */
+            background-color: rgba(255, 255, 255, 0.90); /* Slightly translucent white, now 0.90 opacity */
+            backdrop-filter: blur(5px); /* Added glassiness effect */
+            -webkit-backdrop-filter: blur(5px); /* For Safari support */
+            top: 16px; /* Space from the top edge when sticky */
+            padding-left: 1.5rem; /* Ensure internal padding for content */
+            padding-right: 1.5rem; /* Ensure internal padding for content */
+        }
+
+        /* Logo scaling transition */
+        #main-header img {
+            transition: transform 0.4s ease-in-out; /* Smooth transition for logo scaling */
+        }
+
+        #main-header.header-scrolled img {
+            transform: scale(0.85); /* Scale down to 85% when header is scrolled */
+        }
+
+
+        /* Adjust mobile menu for floating header */
+        #main-header.header-scrolled #mobile-menu {
+            position: absolute; /* Position relative to header container */
+            top: 100%; /* Below the header */
+            left: 0;
+            right: 0;
+            width: 100%; /* Take full width of the floating header container */
+            border-radius: 0 0 12px 12px; /* Rounded only at bottom */
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.90); /* Slightly transparent background, now 0.90 opacity */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Ensure mobile menu still takes full header width regardless of header state */
+        #mobile-menu {
+            width: 100%; /* Always full width relative to its parent header */
+            left: 0;
+            right: 0;
+        }
+
+        /* Adjustments for the main container within the header to fill available width */
+        #main-header nav .container {
+            width: 100%; /* Allow the nav container to fill the header width */
+            max-width: none; /* Remove max-width constraint for this internal container */
+        }
+        @media (min-width: 640px) { /* sm breakpoint or higher */
+            #main-header nav .container {
+                max-width: 640px; /* Tailwind's default container max-width at sm */
+            }
+        }
+        @media (min-width: 768px) { /* md breakpoint or higher */
+            #main-header nav .container {
+                max-width: 768px; /* Tailwind's default container max-width at md */
+            }
+        }
+        @media (min-width: 1024px) { /* lg breakpoint or higher */
+            #main-header nav .container {
+                max-width: 1024px; /* Tailwind's default container max-width at lg */
+            }
+        }
+        @media (min-width: 1280px) { /* xl breakpoint or higher */
+            #main-header nav .container {
+                max-width: 1280px; /* Tailwind's default container max-width at xl */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header" class="bg-white shadow-md py-4 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <!-- Alt text for logo: Describes the image content for screen readers and SEO -->
+                <img src="logopng.png" alt="Papercut Design Company Logo - Abstract Purple Graphic" class="h-8 md:h-10">
+            </a>
+
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Home</a>
+                <a href="#services" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Services</a>
+                <a href="#portfolio" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Portfolio</a>
+                <!-- New About Us link in desktop navigation -->
+                <a href="#about" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">About Me</a>
+                <a href="#contact" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Contact</a>
+            </div>
+
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                <svg class="w-9 h-9 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-lg mobile-menu-slide-enter">
+            <a href="#home" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Home</a>
+            <a href="#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Services</a>
+            <a href="#portfolio" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Portfolio</a>
+            <!-- New About Us link in mobile navigation -->
+            <a href="#about" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">About Me</a>
+            <a href="#contact" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Contact</a>
+        </div>
+    </header>
+
+    <section id="home" class="relative bg-papercut-purple text-white py-20 md:py-32 overflow-hidden">
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                Design that <span class="text-yellow-300">cuts through</span>
+            </h1>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto mb-10">
+                At Papercut, we craft impactful and memorable designs that truly stand out.
+                From branding to print, we ensure your message resonates.
+            </p>
+            <a href="#contact" class="bg-white text-papercut-purple hover:bg-gray-100 font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Bring Your Vision to Life
+            </a>
+        </div>
+        <div class="absolute inset-0 z-0">
+            <svg class="w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#553C9A" fill-opacity="1" d="M0,160L48,176C96,192,192,224,288,208C384,192,480,128,576,112C672,96,768,128,864,138.7C960,149,1056,139,1152,122.7C1248,107,1344,85,1392,74.7L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <section id="services" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-papercut-purple">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-papercut-light-purple p-8 rounded-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out border border-gray-200">
+                    <div class="text-papercut-purple mb-4">
+                        <!-- Font Awesome icons are decorative, aria-hidden improves accessibility for screen readers -->
+                        <i class="fas fa-lightbulb fa-3x mx-auto" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Brand Identity</h3>
+                    <p class="text-gray-600">
+                        Crafting unique logos, brand guidelines, and visual identities that truly represent your business.
+                    </p>
+                </div>
+                <div class="bg-papercut-light-purple p-8 rounded-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out border border-gray-200">
+                    <div class="text-papercut-purple mb-4">
+                        <i class="fas fa-print fa-3x mx-auto" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Print Design</h3>
+                    <p class="text-gray-600">
+                        From business cards to brochures, we design stunning print materials that leave a lasting impression.
+                    </p>
+                </div>
+                <div class="bg-papercut-light-purple p-8 rounded-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out border border-gray-200">
+                    <div class="text-papercut-purple mb-4">
+                        <i class="fas fa-palette fa-3x mx-auto" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Digital Graphics</h3>
+                    <p class="text-gray-600">
+                        Creating captivating digital visuals for social media and all your online content needs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-papercut-purple">Our Recent Work</h2>
+
+            <!-- Tabs for Ad and Logo categories -->
+            <div class="flex justify-center mb-8 border-b border-gray-200">
+                <button id="ad-tab" class="tab-button active px-6 py-3 text-lg text-gray-700 hover:text-papercut-purple focus:outline-none transition-colors duration-200">
+                    Ads
+                </button>
+                <button id="logo-tab" class="tab-button px-6 py-3 text-lg text-gray-700 hover:text-papercut-purple focus:outline-none transition-colors duration-200">
+                    Logos
+                </button>
+            </div>
+
+            <!-- Portfolio Carousel Wrapper (for arrows) -->
+            <div class="portfolio-carousel-wrapper">
+                <!-- Horizontal scrolling container -->
+                <div id="portfolio-container" class="horizontal-scroll-container flex py-4 overflow-x-auto shadow-inner bg-gray-100 rounded-xl">
+                    <!-- Portfolio items will be dynamically loaded here by JavaScript -->
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button id="arrow-left" class="scroll-arrow left md:flex hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
+                </button>
+                <button id="arrow-right" class="scroll-arrow right md:flex hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section with Background Texture and Animation (Reverted to simpler version) -->
+    <section id="about" class="py-16 md:py-24 bg-papercut-light-purple relative overflow-hidden">
+        <!-- Subtle geometric background pattern using SVG as data URI (Reverted) -->
+        <div class="absolute inset-0 bg-repeat opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h20v20H0z\' fill=\'%23F5F5F5\'/%3E%3Cpath d=\'M0 10L10 0L20 10L10 20L0 10Z\' fill=\'%23E0E0E0\' fill-opacity=\'0.1\'/%3E%3C/svg%3E');"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-papercut-purple">About Papercut Design</h2>
+            <!-- Reverted to original class structure for simple fade-in and fixed alignment -->
+            <!-- Adjusted to be always text-center for both mobile and larger screens -->
+            <div class="max-w-3xl mx-auto text-lg text-gray-700 space-y-6 fade-in-element text-center">
+                <p>
+                    Hi, I'm Yossi Breuer, the founder of Papercut Design. I believe that powerful design shouldn't be out of reach for small businesses. My mission is to bring beautiful, impactful design solutions that truly stand out, all at accessible prices.
+                </p>
+                <p>
+                    With a dedicated focus on transforming your vision into compelling visual realities, I work closely with each client to understand their unique story and objectives. My goal is to deliver creative solutions that not only look exceptional but also drive tangible results for your brand, whether it's through a striking logo, a memorable print campaign, or engaging digital content.
+                </p>
+                <p>
+                    At Papercut Design, I'm committed to excellence in every project, ensuring that thoughtful design makes a lasting impression. Let me help your small business define and amplify its voice without breaking the bank.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-papercut-purple">Get in Touch</h2>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <p class="text-lg text-gray-700 mb-8">
+                    Ready to make your design cut through the noise? Contact us today!
+                </p>
+                <!-- FormSubmit integration starts here -->
+                <form action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" class="space-y-6">
+                    <!-- Hidden input to specify the email subject -->
+                    <input type="hidden" name="_subject" value="New Contact Form Submission from Papercut Website!">
+                    <!-- You can add a hidden input for redirection after submission -->
+                    <!-- <input type="hidden" name="_next" value="https://yourdomain.com/thanks.html"> -->
+                    <!-- You can also disable reCAPTCHA for testing, but it's recommended to keep it for production -->
+                    <!-- <input type="hidden" name="_captcha" value="false"> -->
+
+                    <div>
+                        <label for="form_name" class="sr-only">Your Name</label>
+                        <input type="text" id="form_name" name="name" placeholder="Your Name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-papercut-purple transition duration-200 ease-in-out" required>
+                    </div>
+                    <div>
+                        <label for="form_email" class="sr-only">Your Email</label>
+                        <input type="email" id="form_email" name="email" placeholder="Your Email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-papercut-purple transition duration-200 ease-in-out" required>
+                    </div>
+                    <div>
+                        <label for="form_message" class="sr-only">Your Message</label>
+                        <textarea id="form_message" name="message" rows="5" placeholder="Your Message" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-papercut-purple transition duration-200 ease-in-out" required></textarea>
+                    </div>
+                    <button type="submit" class="bg-papercut-purple text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-papercut-purple-dark transition duration-300 ease-in-out transform hover:scale-105">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-phone fa-lg text-white"></i>
+                    <a href="tel:+18456057080" class="text-white font-medium hover:underline">845.605.7080</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-envelope-open-text fa-lg text-white"></i>
+                    <a href="mailto:yossi.papercut@gmail.com" class="text-white font-medium hover:underline">yossi.papercut@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Modal HTML Structure (simplified) -->
+    <div id="image-modal-overlay" class="image-modal-overlay">
+        <!-- Image is now a direct child of the overlay -->
+        <img id="modal-image" src="" alt="Full size image preview from portfolio">
+        <!-- Close button remains positioned absolutely within the overlay -->
+        <button id="close-modal-btn" class="close-modal-btn">&times;</button>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            if (anchor.getAttribute('href') !== '#') { // Exclude links with just '#'
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    if (this.getAttribute('href') === '#home') {
+                        // For the 'Home' link, scroll to the absolute top
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        // For other links, scroll to their respective sections
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    // Add/remove classes for slide animation
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                        mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                        setTimeout(() => {
+                            mobileMenu.classList.add('hidden');
+                            mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                            mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                        }, 400); // Match CSS transition duration
+                    }
+                });
+            }
+        });
+
+        // Toggle mobile menu visibility
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('mobile-menu-slide-enter');
+                    mobileMenu.classList.add('mobile-menu-slide-enter-active');
+                }, 10); // Small delay to ensure display property is set before transition
+            } else {
+                mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                    mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                }, 400); // Match CSS transition duration
+            }
+        });
+
+
+        // --- JavaScript to dynamically load portfolio images based on tabs ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const portfolioContainer = document.getElementById('portfolio-container');
+            const logoTab = document.getElementById('logo-tab');
+            const adTab = document.getElementById('ad-tab');
+            const maxImages = 20; // Try to load images from 1.jpg to 20.jpg
+
+            // Variables for drag scrolling
+            let isDown = false;
+            let startX;
+            let scrollLeftStart; // Stores scrollLeft when drag starts
+            let targetScrollLeft; // The scroll position we are animating towards
+            let animationFrameId = null; // To store the ID of the requestAnimationFrame
+            let didMove = false; // Flag to check if a drag actually occurred
+
+            // Get arrow button references
+            const arrowLeft = document.getElementById('arrow-left');
+            const arrowRight = document.getElementById('arrow-right');
+
+            // Get modal elements
+            const imageModalOverlay = document.getElementById('image-modal-overlay');
+            const modalImage = document.getElementById('modal-image');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            // Global references for bound event handlers to allow proper removal
+            let handleMouseDown = null;
+            let handleMouseMove = null;
+            let handleMouseUp = null;
+            let handleMouseLeave = null;
+
+            // --- Modal Functions ---
+            function showImageModal(imageUrl, altText) { // Modified to accept altText
+                modalImage.src = imageUrl;
+                modalImage.alt = altText; // Set alt text for the modal image
+                imageModalOverlay.classList.add('show');
+            }
+
+            function hideImageModal() {
+                imageModalOverlay.classList.remove('show');
+                modalImage.src = ''; // Clear image src when hidden
+                modalImage.alt = ''; // Clear alt text
+            }
+
+            // Event listeners for modal
+            closeModalBtn.addEventListener('click', hideImageModal);
+            imageModalOverlay.addEventListener('click', (e) => {
+                // Close modal only if clicking on the overlay itself, not the image
+                if (e.target === imageModalOverlay) {
+                    hideImageModal();
+                }
+            });
+
+            // --- Drag Scrolling Logic with requestAnimationFrame ---
+            const animateScroll = () => {
+                // If isDown is false, animation should stop.
+                // This condition is crucial for controlling the animation loop.
+                if (!isDown) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                    return;
+                }
+
+                // Easing function for smoother movement
+                const ease = 0.15; // Increased ease for more responsiveness/smoothness
+                let currentScrollLeft = portfolioContainer.scrollLeft;
+                const distance = targetScrollLeft - currentScrollLeft;
+
+                // Stop animation if very close to target or if movement is stuck
+                if (Math.abs(distance) < 0.5) { // Smaller threshold for stopping
+                    portfolioContainer.scrollLeft = targetScrollLeft; // Snap to final position
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                    updateArrowVisibility(); // Ensure arrows are updated after snap
+                    return;
+                }
+
+                portfolioContainer.scrollLeft += distance * ease;
+                animationFrameId = requestAnimationFrame(animateScroll);
+                updateArrowVisibility();
+            };
+
+            function applyDragListeners() {
+                // Remove existing listeners to prevent duplicates if called multiple times
+                if (handleMouseDown) {
+                    portfolioContainer.removeEventListener('mousedown', handleMouseDown);
+                    portfolioContainer.removeEventListener('mousemove', handleMouseMove);
+                    portfolioContainer.removeEventListener('mouseup', handleMouseUp);
+                    portfolioContainer.removeEventListener('mouseleave', handleMouseLeave);
+                    // Remove touch listeners too if they were added
+                    portfolioContainer.removeEventListener('touchstart', handleMouseDown);
+                    portfolioContainer.removeEventListener('touchmove', handleMouseMove);
+                    portfolioContainer.removeEventListener('touchend', handleMouseUp);
+                }
+
+                // Check if it's a mobile/tablet device (md breakpoint is 768px)
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    // Mobile/Tablet: Enable dragging
+                    portfolioContainer.style.cursor = 'grab';
+
+                    // Define event handlers for both mouse and touch
+                    handleMouseDown = (e) => {
+                        isDown = true;
+                        portfolioContainer.classList.add('is-dragging');
+                        startX = e.pageX || e.touches[0].pageX; // For touch events
+                        scrollLeftStart = portfolioContainer.scrollLeft;
+                        targetScrollLeft = scrollLeftStart; // Initialize target to current scroll
+                        didMove = false;
+                        cancelAnimationFrame(animationFrameId); // Stop any ongoing animation
+                        animationFrameId = null;
+                    };
+
+                    handleMouseMove = (e) => {
+                        if (!isDown) return;
+                        e.preventDefault(); // Prevent default scroll/text selection
+                        const x = e.pageX || e.touches[0].pageX; // For touch events
+                        const walk = (x - startX) * 1.5; // Scroll speed multiplier
+                        targetScrollLeft = scrollLeftStart - walk; // Set the target for animation
+
+                        if (Math.abs(walk) > 5) { // Threshold for considering it a drag
+                            didMove = true;
+                        }
+
+                        if (!animationFrameId) {
+                            animationFrameId = requestAnimationFrame(animateScroll);
+                        }
+                    };
+
+                    handleMouseUp = (e) => {
+                        isDown = false;
+                        portfolioContainer.classList.remove('is-dragging');
+                        // If a drag occurred, prevent the default click action
+                        if (didMove) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                        cancelAnimationFrame(animationFrameId); // Ensure animation stops on mouseup/touchend
+                        animationFrameId = null;
+                    };
+
+                    handleMouseLeave = () => { // Only for mouse
+                        isDown = false;
+                        portfolioContainer.classList.remove('is-dragging');
+                        cancelAnimationFrame(animationFrameId); // Ensure animation stops on mouseleave
+                        animationFrameId = null;
+                    };
+
+
+                    // Apply mouse listeners
+                    portfolioContainer.addEventListener('mousedown', handleMouseDown);
+                    portfolioContainer.addEventListener('mousemove', handleMouseMove);
+                    portfolioContainer.addEventListener('mouseup', handleMouseUp);
+                    portfolioContainer.addEventListener('mouseleave', handleMouseLeave);
+
+                    // Apply touch listeners
+                    portfolioContainer.addEventListener('touchstart', handleMouseDown);
+                    portfolioContainer.addEventListener('touchmove', handleMouseMove);
+                    portfolioContainer.addEventListener('touchend', handleMouseUp);
+
+                } else {
+                    // Desktop: Disable dragging
+                    portfolioContainer.style.cursor = 'default';
+                    portfolioContainer.classList.remove('is-dragging');
+                    isDown = false; // Ensure dragging state is off
+                    didMove = false;
+                    cancelAnimationFrame(animationFrameId); // Stop any existing animation
+                    animationFrameId = null;
+                }
+            }
+
+
+            // Update arrow visibility based on scroll position
+            function updateArrowVisibility() {
+                // Ensure the container is ready before checking scrollWidth
+                if (!portfolioContainer || portfolioContainer.scrollWidth === 0) {
+                    arrowLeft.classList.remove('visible');
+                    arrowRight.classList.remove('visible');
+                    return;
+                }
+
+                const scrollPos = portfolioContainer.scrollLeft;
+                const maxScrollLeft = portfolioContainer.scrollWidth - portfolioContainer.clientWidth;
+
+                // Use a small tolerance for the edges
+                arrowLeft.classList.toggle('visible', scrollPos > 2);
+                arrowRight.classList.toggle('visible', scrollPos < maxScrollLeft - 2);
+            }
+
+            // Arrow click handlers
+            arrowLeft.addEventListener('click', () => {
+                const firstItem = portfolioContainer.querySelector('.horizontal-scroll-item');
+                if (firstItem) {
+                    const scrollAmount = firstItem.offsetWidth + 24; // Item width + margin-right
+                    portfolioContainer.scrollBy({
+                        left: -scrollAmount,
+                        behavior: 'smooth'
+                    });
+                }
+                // Update visibility after the smooth scroll completes
+                setTimeout(updateArrowVisibility, 600);
+            });
+
+            arrowRight.addEventListener('click', () => {
+                const firstItem = portfolioContainer.querySelector('.horizontal-scroll-item');
+                if (firstItem) {
+                    const scrollAmount = firstItem.offsetWidth + 24; // Item width + margin-right
+                    portfolioContainer.scrollBy({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                }
+                // Update visibility after the smooth scroll completes
+                setTimeout(updateArrowVisibility, 600);
+            });
+
+            // Initial and resize listeners for drag and arrow visibility
+            portfolioContainer.addEventListener('scroll', updateArrowVisibility);
+            window.addEventListener('resize', () => {
+                applyDragListeners(); // Re-evaluate drag listeners on resize
+                updateArrowVisibility(); // Update arrow visibility
+            });
+
+
+            function loadPortfolioItems(folder) {
+                portfolioContainer.innerHTML = '';
+
+                if (folder === 'ad') {
+                    adTab.classList.add('active');
+                    logoTab.classList.remove('active');
+                } else {
+                    logoTab.classList.add('active');
+                    adTab.classList.remove('active');
+                }
+
+                let itemsLoadedCount = 0;
+
+                for (let i = 1; i <= maxImages; i++) {
+                    const imageUrl = `${folder}/${i}.jpg`;
+                    const img = new Image();
+
+                    img.onload = function() {
+                        const portfolioItem = document.createElement('a');
+                        portfolioItem.href = "#"; // Prevent default navigation
+                        portfolioItem.classList.add(
+                            'horizontal-scroll-item', 'block', 'overflow-hidden'
+                        );
+
+                        // Attach a click listener to the portfolio item
+                        portfolioItem.addEventListener('click', function (e) {
+                            // Only show modal if it's a click, not a drag
+                            if (!didMove) {
+                                e.preventDefault(); // Prevent default link behavior
+                                // Pass the alt text from the image to the modal
+                                showImageModal(this.querySelector('img').src, this.querySelector('img').alt);
+                            } else {
+                                e.preventDefault(); // Still prevent default link behavior if drag occurred
+                                e.stopPropagation();
+                            }
+                            didMove = false; // Reset didMove flag
+                        });
+
+                        const imgElement = document.createElement('img');
+                        imgElement.src = imageUrl;
+                        // Descriptive alt text for portfolio images
+                        imgElement.alt = `Papercut Design ${folder} project example ${i}`;
+                        imgElement.classList.add('portfolio-item-img');
+
+                        portfolioItem.appendChild(imgElement);
+
+                        if (imgElement.naturalWidth && imgElement.naturalHeight) {
+                            // The `* 400` part represents the desktop height. We need to adapt it
+                            // to use the actual `imgElement.offsetHeight` after the CSS height is applied.
+                            // However, since naturalHeight/Width is available immediately, we can use it
+                            // to calculate aspect ratio. The actual displayed height is then handled by CSS.
+                            const aspectRatio = imgElement.naturalWidth / imgElement.naturalHeight;
+                            // For mobile, this calculation needs to be based on the desired mobile height (200px)
+                            // or ideally, just let the CSS handle it and remove this width calculation if it causes issues
+                            // with responsive image sizing.
+                            // Given the current setup, if 'height: auto;' isn't used for width calculation,
+                            // we'll primarily rely on the CSS `width: 100%` and `height: 200px / 400px` rules.
+                            // The existing width calculation below will lead to very wide images on mobile if it uses 400px.
+                            // Let's remove the JS width calculation for this item and rely solely on CSS for width: 100% and dynamic height.
+                            // This ensures the image always fills the item's width and adjusts height based on media queries.
+                            // portfolioItem.style.width = `${aspectRatio * imgElement.offsetHeight}px`; // This would be dynamic, but depends on rendered height
+                            // For now, let's keep it simple and just rely on CSS for width/height.
+                            portfolioItem.style.width = 'fit-content'; // Allows the item to size based on the image and flex behavior.
+                        } else {
+                            portfolioItem.style.width = '300px'; // Fallback width for when natural dimensions are not available immediately
+                        }
+
+
+                        portfolioContainer.appendChild(portfolioItem);
+                        itemsLoadedCount++;
+
+                        // After all *expected* images are potentially loaded, update arrow visibility
+                        // Using a small delay to ensure rendering has caught up
+                        // The `Math.min` ensures we don't wait for more images than exist.
+                        if (itemsLoadedCount >= Math.min(maxImages, portfolioContainer.children.length)) {
+                            setTimeout(updateArrowVisibility, 100);
+                        }
+                    };
+
+                    img.onerror = function() {
+                        console.log(`Image not found or failed to load: ${imageUrl}`);
+                        setTimeout(updateArrowVisibility, 100);
+                    };
+
+                    img.src = imageUrl;
+                }
+                setTimeout(updateArrowVisibility, 100); // Initial check
+            }
+
+            // Event Listeners for tabs
+            logoTab.addEventListener('click', () => {
+                loadPortfolioItems('logo');
+                portfolioContainer.scrollLeft = 0;
+            });
+            adTab.addEventListener('click', () => {
+                loadPortfolioItems('ad');
+                portfolioContainer.scrollLeft = 0;
+            });
+
+            // Initial load and listener application
+            loadPortfolioItems('ad');
+            applyDragListeners(); // Apply drag listeners initially based on screen size
+        });
+
+        // JavaScript for the fade-in-on-scroll animation (Reverted)
+        document.addEventListener('DOMContentLoaded', () => {
+            const aboutSectionContent = document.querySelector('#about .fade-in-element');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Stop observing once it's visible to save resources
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            });
+
+            if (aboutSectionContent) {
+                observer.observe(aboutSectionContent);
+            }
+
+            // --- Header Floating and Dynamic Border Logic ---
+            const header = document.getElementById('main-header');
+            const scrollThreshold = 50; // Pixels scrolled down before header floats
+            const dynamicBorderColor = '#EDE9FE'; // The light purple color for the border when floating
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > scrollThreshold) {
+                    header.classList.add('header-scrolled');
+                    header.style.borderColor = dynamicBorderColor; // Apply border color
+                } else {
+                    header.classList.remove('header-scrolled');
+                    header.style.borderColor = 'transparent'; // Remove border
+                }
+            });
+
+            // Initial state check on load
+            if (window.scrollY > scrollThreshold) {
+                header.classList.add('header-scrolled');
+                header.style.borderColor = dynamicBorderColor;
+            } else {
+                header.style.borderColor = 'transparent';
+            }
+        });
+    </script>
+
+</body>
+</html>
