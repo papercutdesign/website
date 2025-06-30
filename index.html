@@ -6,6 +6,8 @@
     <title>Papercut - Design that cuts through</title>
     <!-- Favicon: Using s-icon-01.png for standard browsers (32x32) -->
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+    <!-- Favicon: Added 48x48 for better search engine display -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="48x48">
     <!-- Apple Touch Icon: Using m-icon-01.png for iOS devices (512x512) -->
     <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
     <!-- Meta Description for Search Engines: Provides a concise summary of the page's content. -->
@@ -897,7 +899,6 @@
                             // to use the actual `imgElement.offsetHeight` after the CSS height is applied.
                             // However, since naturalHeight/Width is available immediately, we can use it
                             // to calculate aspect ratio. The actual displayed height is then handled by CSS.
-                            const aspectRatio = imgElement.naturalWidth / imgElement.naturalHeight;
                             // For mobile, this calculation needs to be based on the desired mobile height (200px)
                             // or ideally, just let the CSS handle it and remove this width calculation if it causes issues
                             // with responsive image sizing.
