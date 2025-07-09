@@ -360,14 +360,11 @@
             </p>
 
             <div class="max-w-2xl md:max-w-4xl mx-auto bg-white p-10 md:p-12 rounded-xl form-container-shadow border border-gray-200">
-                <!-- FormSubmit integration for email submission -->
-                <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left">
-                    <!-- Hidden input to specify the email subject -->
-                    <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
-                    <!-- IMPORTANT: Add this hidden input to prevent FormSubmit.co from redirecting -->
-                    <input type="hidden" name="_redirect" value=""> <!-- RE-ENABLED -->
-                    <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
-                    <!-- <input type="hidden" name="_captcha" value="false"> -->
+                <!-- Getform.io integration for email submission -->
+                <!-- IMPORTANT: action attribute now points to your specific Getform.io endpoint -->
+                <form id="branding-application-form" action="https://getform.io/f/bmdmemqa" method="POST" enctype="multipart/form-data" class="text-left">
+                    <!-- Getform.io automatically captures all fields with a 'name' attribute -->
+                    <!-- No need for _subject or _redirect hidden inputs with Getform.io, it handles this via its dashboard -->
 
                     <!-- Question 1: Company Name -->
                     <div class="mb-10 pb-8 border-b border-gray-100">
@@ -761,7 +758,7 @@
             // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             brandingApplicationForm.addEventListener('submit', (event) => {
-                event.preventDefault(); // RE-ENABLED: Prevent default form submission
+                event.preventDefault(); // RE-ENABLED: Prevent default form submission for fetch API
 
                 const formData = new FormData(brandingApplicationForm);
 
@@ -779,50 +776,43 @@
                     console.log(pair[0]+ ': ' + pair[1]);
                 }
 
-                // RE-ENABLED: Form submission using fetch API
+                // RE-ENABLED: Form submission using fetch API for Getform.io
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
                     body: formData,
                     headers: {
-                        'Accept': 'application/json' // FormSubmit.co often uses this for JSON responses
+                        'Accept': 'application/json' // Getform.io also often uses this for JSON responses
                     }
                 })
                 .then(response => {
                     console.log('Form submission raw response:', response); // Log the raw response
 
+                    // Getform.io typically returns a JSON response.
                     // Check if the response is OK (status 200-299)
                     if (response.ok) {
-                        // Attempt to parse as JSON. If it fails, it's likely an HTML redirect.
                         return response.json().then(data => {
                             console.log('Form submission parsed data:', data);
-                            return data; // Return the parsed JSON data
+                            // Getform.io's success response usually has { success: true }
+                            if (data.success) {
+                                showCustomMessage('Application submitted successfully!', true);
+                                brandingApplicationForm.reset(); // Clear form fields
+                                selectedFiles = []; // Clear file list
+                                renderFileList(); // Clear file display
+                            } else {
+                                // Handle cases where Getform.io returns OK status but success: false
+                                showCustomMessage('There was an error submitting your application. Please try again. ' + (data.message || ''), false);
+                            }
                         }).catch(e => {
-                            // If JSON parsing fails, it means FormSubmit.co likely redirected with HTML.
-                            // In this case, we assume success if the status was OK.
-                            // FormSubmit.co redirects on success if _redirect is set, or if it's not JSON.
-                            // We'll treat this as a success and provide a generic success message.
-                            console.warn('Response was OK but not JSON. Assuming success due to FormSubmit.co redirect behavior.', e);
-                            return { success: true, message: 'Form submitted successfully (via redirect).' };
+                            // If JSON parsing fails despite OK status, it might be an unexpected response format
+                            console.error('Response was OK but JSON parsing failed:', e);
+                            showCustomMessage('An unexpected response was received. Please try again.', false);
                         });
                     } else {
-                        // If not OK, read as text to get error message from FormSubmit.co
+                        // If not OK, read as text to get error message from Getform.io
                         return response.text().then(text => {
                             console.error('Form submission error response text:', text);
                             throw new Error(text || `Server error: ${response.status} ${response.statusText}`);
                         });
-                    }
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Handle success, e.g., show a thank you message
-                        // Replaced alert with a custom modal for better UX and compliance
-                        showCustomMessage('Application submitted successfully!', true);
-                        brandingApplicationForm.reset(); // Clear form fields
-                        selectedFiles = []; // Clear file list
-                        renderFileList(); // Clear file display
-                    } else {
-                        // Handle errors reported in the JSON response
-                        showCustomMessage('There was an error submitting your application. Please try again. ' + (data.message || ''), false);
                     }
                 })
                 .catch(error => {
