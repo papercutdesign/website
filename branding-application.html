@@ -364,8 +364,8 @@
                 <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left">
                     <!-- Hidden input to specify the email subject -->
                     <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
-                    <!-- Optional: Redirect to a thank you page after submission -->
-                    <!-- <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> -->
+                    <!-- IMPORTANT: Add this hidden input to prevent FormSubmit.co from redirecting -->
+                    <input type="hidden" name="_redirect" value="">
                     <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
                     <!-- <input type="hidden" name="_captcha" value="false"> -->
 
@@ -794,6 +794,11 @@
                 })
                 .then(response => {
                     console.log('Form submission raw response:', response); // Log the raw response
+                    // Check if the response is OK (status 200-299) before trying to parse as JSON
+                    if (!response.ok) {
+                        // If not OK, read as text to get error message from FormSubmit.co
+                        return response.text().then(text => { throw new Error(text); });
+                    }
                     return response.json();
                 })
                 .then(data => {
@@ -811,7 +816,7 @@
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
-                    alert('An unexpected error occurred. Please try again.');
+                    alert('An unexpected error occurred. Please try again. Error details: ' + error.message);
                 });
             });
         });
