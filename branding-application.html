@@ -359,7 +359,7 @@
                 Please fill out this form to help us understand your vision for your brand. This information will help us craft a comprehensive and impactful branding strategy that truly represents your company.
             </p>
 
-            <div class="max-w-2xl mx-auto bg-white p-10 md:p-12 rounded-xl form-container-shadow border border-gray-200">
+            <div class="max-w-2xl md:max-w-4xl mx-auto bg-white p-10 md:p-12 rounded-xl form-container-shadow border border-gray-200">
                 <!-- FormSubmit integration for email submission -->
                 <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left">
                     <!-- Hidden input to specify the email subject -->
@@ -780,14 +780,10 @@
                     formData.append('Branding Files[]', file, file.name);
                 });
 
-                // Now, submit the formData (e.g., using fetch or XMLHttpRequest)
-                // For FormSubmit.co, you generally just let the default form action handle it
-                // if you're not doing a custom fetch.
-                // However, since we're manipulating FormData, a fetch might be necessary
-                // if FormSubmit.co doesn't automatically pick up dynamically added files.
-                // For simplicity and compatibility with FormSubmit.co, the original `enctype` and `method`
-                // will work if the files are correctly attached to the input.
-                // For robust custom file handling with FormSubmit.co, you might need to use fetch:
+                // Log the FormData contents for debugging
+                for (let pair of formData.entries()) {
+                    console.log(pair[0]+ ': ' + pair[1]);
+                }
 
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
@@ -796,9 +792,12 @@
                         'Accept': 'application/json' // FormSubmit.co often uses this for JSON responses
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Form submission raw response:', response); // Log the raw response
+                    return response.json();
+                })
                 .then(data => {
-                    console.log('Form submission response:', data);
+                    console.log('Form submission parsed data:', data); // Log the parsed data
                     if (data.success) {
                         // Handle success, e.g., show a thank you message
                         alert('Application submitted successfully!');
