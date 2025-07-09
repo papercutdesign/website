@@ -794,31 +794,84 @@
                 })
                 .then(response => {
                     console.log('Form submission raw response:', response); // Log the raw response
-                    // Check if the response is OK (status 200-299) before trying to parse as JSON
-                    if (!response.ok) {
+
+                    // Check if the response is OK (status 200-299)
+                    if (response.ok) {
+                        // Attempt to parse as JSON. If it fails, it's likely an HTML redirect.
+                        return response.json().then(data => {
+                            console.log('Form submission parsed data:', data);
+                            return data; // Return the parsed JSON data
+                        }).catch(e => {
+                            // If JSON parsing fails, it means FormSubmit.co likely redirected with HTML.
+                            // In this case, we assume success if the status was OK.
+                            // FormSubmit.co redirects on success if _redirect is set, or if it's not JSON.
+                            // We'll treat this as a success and provide a generic success message.
+                            console.warn('Response was OK but not JSON. Assuming success due to FormSubmit.co redirect behavior.', e);
+                            return { success: true, message: 'Form submitted successfully (via redirect).' };
+                        });
+                    } else {
                         // If not OK, read as text to get error message from FormSubmit.co
-                        return response.text().then(text => { throw new Error(text); });
+                        return response.text().then(text => {
+                            console.error('Form submission error response text:', text);
+                            throw new Error(text || `Server error: ${response.status} ${response.statusText}`);
+                        });
                     }
-                    return response.json();
                 })
                 .then(data => {
-                    console.log('Form submission parsed data:', data); // Log the parsed data
                     if (data.success) {
                         // Handle success, e.g., show a thank you message
-                        alert('Application submitted successfully!');
+                        // Replaced alert with a custom modal for better UX and compliance
+                        showCustomMessage('Application submitted successfully!', true);
                         brandingApplicationForm.reset(); // Clear form fields
                         selectedFiles = []; // Clear file list
                         renderFileList(); // Clear file display
                     } else {
-                        // Handle errors
-                        alert('There was an error submitting your application. Please try again.');
+                        // Handle errors reported in the JSON response
+                        showCustomMessage('There was an error submitting your application. Please try again. ' + (data.message || ''), false);
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
-                    alert('An unexpected error occurred. Please try again. Error details: ' + error.message);
+                    // Use a custom message box instead of alert
+                    showCustomMessage('An unexpected error occurred. Please try again. Error details: ' + error.message, false);
                 });
             });
+
+            // Custom Message Box / Modal Implementation (instead of alert)
+            function showCustomMessage(message, isSuccess) {
+                let messageBox = document.getElementById('custom-message-box');
+                if (!messageBox) {
+                    messageBox = document.createElement('div');
+                    messageBox.id = 'custom-message-box';
+                    messageBox.classList.add('fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'bg-gray-800', 'bg-opacity-75', 'z-50', 'p-4', 'hidden');
+                    messageBox.innerHTML = `
+                        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+                            <div id="custom-message-icon" class="text-4xl mb-4"></div>
+                            <p id="custom-message-text" class="text-lg font-semibold mb-6"></p>
+                            <button id="custom-message-close-btn" class="bg-papercut-purple text-white font-bold py-2 px-6 rounded-full hover:bg-papercut-purple-dark transition duration-200">
+                                OK
+                            </button>
+                        </div>
+                    `;
+                    document.body.appendChild(messageBox);
+
+                    document.getElementById('custom-message-close-btn').addEventListener('click', () => {
+                        messageBox.classList.add('hidden');
+                    });
+                }
+
+                const iconDiv = document.getElementById('custom-message-icon');
+                const textDiv = document.getElementById('custom-message-text');
+
+                if (isSuccess) {
+                    iconDiv.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    textDiv.textContent = message;
+                } else {
+                    iconDiv.innerHTML = '<i class="fas fa-exclamation-triangle text-red-500"></i>';
+                    textDiv.textContent = message;
+                }
+                messageBox.classList.remove('hidden');
+            }
         });
     </script>
 
