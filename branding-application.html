@@ -365,7 +365,7 @@
                     <!-- Hidden input to specify the email subject -->
                     <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
                     <!-- IMPORTANT: Add this hidden input to prevent FormSubmit.co from redirecting -->
-                    <!-- <input type="hidden" name="_redirect" value=""> --> <!-- TEMPORARILY COMMENTED OUT FOR DIAGNOSIS -->
+                    <input type="hidden" name="_redirect" value=""> <!-- RE-ENABLED -->
                     <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
                     <!-- <input type="hidden" name="_captcha" value="false"> -->
 
@@ -661,13 +661,7 @@
                     }
 
                     const options = Array.from(customOptionsContainer.children);
-                    let nextIndex = options.indexOf(currentFocus);
-
-                    if (e.key === 'ArrowDown') {
-                        nextIndex = (nextIndex + 1) % options.length;
-                    } else if (e.key === 'ArrowUp') {
-                        nextIndex = (nextIndex - 1 + options.length) % options.length;
-                    }
+                    let nextIndex = (options.indexOf(currentFocus) + (e.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
 
                     if (currentFocus) {
                         currentFocus.classList.remove('selected');
@@ -767,8 +761,7 @@
             // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             brandingApplicationForm.addEventListener('submit', (event) => {
-                // TEMPORARILY COMMENTED OUT for direct form submission diagnosis
-                // event.preventDefault(); // Prevent default form submission
+                event.preventDefault(); // RE-ENABLED: Prevent default form submission
 
                 const formData = new FormData(brandingApplicationForm);
 
@@ -786,8 +779,7 @@
                     console.log(pair[0]+ ': ' + pair[1]);
                 }
 
-                // TEMPORARILY COMMENTED OUT for direct form submission diagnosis
-                /*
+                // RE-ENABLED: Form submission using fetch API
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
                     body: formData,
@@ -838,7 +830,6 @@
                     // Use a custom message box instead of alert
                     showCustomMessage('An unexpected error occurred. Please try again. Error details: ' + error.message, false);
                 });
-                */
             });
 
             // Custom Message Box / Modal Implementation (instead of alert)
