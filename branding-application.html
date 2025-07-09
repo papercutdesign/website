@@ -476,9 +476,19 @@
                         <label for="branding_files" class="block text-gray-700 text-lg font-medium mb-4">
                             <i class="fas fa-cloud-upload-alt label-icon"></i>8. Upload any existing logos, branding files, or visual assets (optional):
                         </label>
-                        <input type="file" id="branding_files" name="Branding Files[]" multiple
-                               class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-papercut-light-purple file:text-papercut-purple hover:file:bg-papercut-purple hover:file:text-white"
-                               accept="image/*, .pdf, .zip, .rar, .7zip, .doc, .docx, .ppt, .pptx, .xls, .xlsx">
+                        <div class="relative w-full">
+                            <!-- Hidden native file input -->
+                            <input type="file" id="branding_files" name="Branding Files[]" multiple
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                   accept="image/*, .pdf, .zip, .rar, .7zip, .doc, .docx, .ppt, .pptx, .xls, .xlsx">
+                            <!-- Custom styled label that acts as the file input button -->
+                            <label for="branding_files" class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm flex items-center justify-between cursor-pointer bg-white hover:bg-gray-50">
+                                <span id="file_input_text" class="text-gray-500">No file selected</span>
+                                <span class="inline-flex items-center justify-center py-2 px-4 rounded-full border-0 text-sm font-semibold bg-papercut-light-purple text-papercut-purple hover:bg-papercut-purple hover:text-white transition duration-200">
+                                    Choose Files
+                                </span>
+                            </label>
+                        </div>
                         <p class="text-sm text-gray-500 mt-2">Accepted formats: Images, PDFs, common document types, and compressed archives. Max file size may apply.</p>
                         <div id="file_list_display" class="mt-4">
                             <!-- Selected files will be displayed here -->
@@ -713,14 +723,24 @@
             // --- File Upload Logic ---
             const brandingFilesInput = document.getElementById('branding_files');
             const fileListDisplay = document.getElementById('file_list_display');
+            const fileInputText = document.getElementById('file_input_text'); // New reference
             let selectedFiles = []; // Array to store File objects
 
             // Function to render the list of selected files
             function renderFileList() {
                 fileListDisplay.innerHTML = ''; // Clear current display
                 if (selectedFiles.length === 0) {
+                    fileInputText.textContent = 'No file selected'; // Show default text
+                    fileInputText.classList.remove('text-gray-700'); // Ensure default text color
+                    fileInputText.classList.add('text-gray-500'); // Ensure default text color
                     return; // No files to display
                 }
+
+                // If files are selected, update the custom input text
+                fileInputText.textContent = `${selectedFiles.length} file(s) selected`; // Update text
+                fileInputText.classList.remove('text-gray-500'); // Remove default text color
+                fileInputText.classList.add('text-gray-700'); // Change to a more prominent color
+
 
                 selectedFiles.forEach((file, index) => {
                     const fileItem = document.createElement('div');
