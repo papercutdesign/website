@@ -361,11 +361,11 @@
 
             <div class="max-w-2xl md:max-w-4xl mx-auto bg-white p-10 md:p-12 rounded-xl form-container-shadow border border-gray-200">
                 <!-- FormSubmit integration for email submission -->
-                <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left" target="_blank"> <!-- Added target="_blank" -->
+                <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left">
                     <!-- Hidden input to specify the email subject -->
                     <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
                     <!-- IMPORTANT: Add this hidden input to prevent FormSubmit.co from redirecting -->
-                    <!-- <input type="hidden" name="_redirect" value=""> --> <!-- TEMPORARILY COMMENTED OUT FOR DIAGNOSIS -->
+                    <input type="hidden" name="_redirect" value=""> <!-- RE-ENABLED -->
                     <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
                     <!-- <input type="hidden" name="_captcha" value="false"> -->
 
@@ -761,8 +761,7 @@
             // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             brandingApplicationForm.addEventListener('submit', (event) => {
-                // Temporarily commented out event.preventDefault() to allow direct browser submission for diagnosis.
-                // event.preventDefault();
+                event.preventDefault(); // RE-ENABLED: Prevent default form submission
 
                 const formData = new FormData(brandingApplicationForm);
 
@@ -780,8 +779,7 @@
                     console.log(pair[0]+ ': ' + pair[1]);
                 }
 
-                // Temporarily commented out fetch API call to allow direct browser submission for diagnosis.
-                /*
+                // RE-ENABLED: Form submission using fetch API
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
                     body: formData,
@@ -832,7 +830,6 @@
                     // Use a custom message box instead of alert
                     showCustomMessage('An unexpected error occurred. Please try again. Error details: ' + error.message, false);
                 });
-                */
             });
 
             // Custom Message Box / Modal Implementation (instead of alert)
