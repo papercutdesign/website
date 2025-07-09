@@ -365,7 +365,7 @@
                     <!-- Hidden input to specify the email subject -->
                     <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
                     <!-- IMPORTANT: Add this hidden input to prevent FormSubmit.co from redirecting -->
-                    <input type="hidden" name="_redirect" value="">
+                    <!-- <input type="hidden" name="_redirect" value=""> --> <!-- TEMPORARILY COMMENTED OUT FOR DIAGNOSIS -->
                     <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
                     <!-- <input type="hidden" name="_captcha" value="false"> -->
 
@@ -767,7 +767,8 @@
             // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             brandingApplicationForm.addEventListener('submit', (event) => {
-                event.preventDefault(); // Prevent default form submission
+                // TEMPORARILY COMMENTED OUT for direct form submission diagnosis
+                // event.preventDefault(); // Prevent default form submission
 
                 const formData = new FormData(brandingApplicationForm);
 
@@ -785,6 +786,8 @@
                     console.log(pair[0]+ ': ' + pair[1]);
                 }
 
+                // TEMPORARILY COMMENTED OUT for direct form submission diagnosis
+                /*
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
                     body: formData,
@@ -835,6 +838,7 @@
                     // Use a custom message box instead of alert
                     showCustomMessage('An unexpected error occurred. Please try again. Error details: ' + error.message, false);
                 });
+                */
             });
 
             // Custom Message Box / Modal Implementation (instead of alert)
