@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papercut - Branding Application</title>
+    <!-- Favicon: Using s-icon-01.png for standard browsers (32x32) -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+    <!-- Favicon: Added 48x48 for better search engine display -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="48x48">
+    <!-- Apple Touch Icon: Using m-icon-01.png for iOS devices (512x512) -->
+    <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
+    <meta name="description" content="Application form for Papercut Design's comprehensive branding services.">
+
+    <!-- Google tag (gtag.js) - Added for Google Analytics tracking -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW5F6HJKKY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-GW5F6HJKKY');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        /* Custom purple colors from the logo */
+        .bg-papercut-purple { background-color: #6B46C1; }
+        .text-papercut-purple { color: #6B46C1; }
+        .border-papercut-purple { border-color: #6B46C1; }
+        .hover\:bg-papercut-purple-dark:hover { background-color: #553C9A; }
+        .bg-papercut-light-purple { background-color: #EDE9FE; }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.25rem;
+            overflow: hidden;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #6B46C1;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease-out;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Default Header Styles (Full width, connected to top) */
+        #app-header {
+            width: 100%;
+            max-width: 100vw;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease-in-out;
+            border: none;
+            top: 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Scrolled Header Styles (Floating, Rounded, with Border, and Glassiness) */
+        #app-header.header-scrolled {
+            width: calc(100% - 32px);
+            max-width: 1200px;
+            margin: 16px auto;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid #EDE9FE;
+            background-color: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            top: 16px;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        /* Logo scaling transition */
+        #app-header img {
+            transition: transform 0.4s ease-in-out;
+        }
+
+        #app-header.header-scrolled img {
+            transform: scale(0.85);
+        }
+
+        /* Mobile menu slide animation */
+        .mobile-menu-slide-enter {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .mobile-menu-slide-enter-active {
+            max-height: 500px;
+            opacity: 1;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .mobile-menu-slide-exit {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .mobile-menu-slide-exit-active {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+
+        /* Adjust mobile menu for floating header */
+        #app-header.header-scrolled #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            width: 100%;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.90);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Ensure mobile menu still takes full header width regardless of header state */
+        #mobile-menu {
+            width: 100%;
+            left: 0;
+            right: 0;
+        }
+
+        /* Adjustments for the main container within the header to fill available width */
+        #app-header nav .container {
+            width: 100%;
+            max-width: none;
+        }
+        @media (min-width: 640px) {
+            #app-header nav .container {
+                max-width: 640px;
+            }
+        }
+        @media (min-width: 768px) {
+            #app-header nav .container {
+                max-width: 768px;
+            }
+        }
+        @media (min-width: 1024px) {
+            #app-header nav .container {
+                max-width: 1024px;
+            }
+        }
+        @media (min-width: 1280px) {
+            #app-header nav .container {
+                max-width: 1280px;
+            }
+        }
+
+        /* Enhanced shadow for the main form container */
+        .form-container-shadow {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Style for icons next to labels */
+        .label-icon {
+            margin-right: 0.5rem;
+            color: #6B46C1;
+        }
+
+        /* General focus style for all form inputs/textareas/custom dropdown trigger */
+        .form-focus-purple:focus {
+            outline: none; /* Remove default outline */
+            border-color: #6B46C1; /* Papercut purple border */
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.5); /* A more visible, slightly transparent purple ring */
+        }
+
+        /* Specific styling for radio buttons */
+        input[type="radio"] {
+            /* Use accent-color for the filled color when checked */
+            accent-color: #6B46C1;
+            /* Ensure basic styling is consistent */
+            border-color: #D1D5DB; /* light gray border */
+            border-radius: 50%; /* round shape */
+            width: 1.25rem; /* size */
+            height: 1.25rem; /* size */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Specific styling for radio buttons on focus */
+        input[type="radio"]:focus {
+            outline: none !important; /* Ensure no default browser outline */
+            border-color: #6B46C1 !important; /* Make the radio button's border purple on focus */
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.5) !important; /* Apply the purple ring */
+            /* Overriding Tailwind's form-radio plugin's internal CSS variables for rings */
+            --tw-ring-color: #6B46C1 !important;
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-select-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.75rem; /* p-3 */
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #fff; /* bg-white */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        }
+
+        .custom-select-trigger .arrow {
+            color: #6B46C1; /* text-papercut-purple */
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .custom-select-trigger.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .custom-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background-color: #fff;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 210px; /* Increased height to show more options (approx 5-6) */
+            overflow-y: auto; /* Enable scrolling */
+            margin-top: 0.25rem; /* Space below trigger */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
+        }
+
+        .custom-options.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+            color: #4B5563; /* gray-700 */
+        }
+
+        .custom-option:hover {
+            background-color: #F3F4F6; /* gray-100 */
+        }
+
+        .custom-option.selected {
+            background-color: #EDE9FE; /* bg-papercut-light-purple */
+            color: #6B46C1; /* text-papercut-purple */
+            font-weight: 500;
+        }
+
+        /* Styles for file list display */
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f9fafb; /* bg-gray-50 */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem; /* rounded-md */
+            margin-top: 0.5rem;
+            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; /* text-gray-700 */
+        }
+
+        .file-item .file-name {
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 0.5rem;
+        }
+
+        .file-item .remove-file-btn {
+            background: none;
+            border: none;
+            color: #ef4444; /* text-red-500 */
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .file-item .remove-file-btn:hover {
+            background-color: #fee2e2; /* bg-red-100 */
+        }
+    </style>
+</head>
+<body>
+
+    <header id="app-header" class="bg-white shadow-md py-4 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="logopng.png" alt="Papercut Design Company Logo - Abstract Purple Graphic" class="h-8 md:h-10">
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#home" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Home</a>
+                <a href="index.html#services" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Services</a>
+                <a href="index.html#portfolio" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Portfolio</a>
+                <a href="index.html#about" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">About Me</a>
+                <a href="index.html#contact" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Contact</a>
+            </div>
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                <svg class="w-9 h-9 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-lg mobile-menu-slide-enter">
+            <a href="index.html#home" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Home</a>
+            <a href="index.html#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Services</a>
+            <a href="index.html#portfolio" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Portfolio</a>
+            <a href="index.html#about" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">About Me</a>
+            <a href="index.html#contact" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Contact</a>
+        </div>
+    </header>
+
+    <main class="flex-grow py-16 md:py-24 bg-gray-50 relative overflow-hidden">
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-papercut-purple">Branding Application</h1>
+            <p class="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+                Please fill out this form to help us understand your vision for your brand. This information will help us craft a comprehensive and impactful branding strategy that truly represents your company.
+            </p>
+
+            <div class="max-w-2xl mx-auto bg-white p-10 md:p-12 rounded-xl form-container-shadow border border-gray-200">
+                <!-- FormSubmit integration for email submission -->
+                <form id="branding-application-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" enctype="multipart/form-data" class="text-left">
+                    <!-- Hidden input to specify the email subject -->
+                    <input type="hidden" name="_subject" value="New Branding Application from Papercut Website!">
+                    <!-- Optional: Redirect to a thank you page after submission -->
+                    <!-- <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> -->
+                    <!-- Optional: Disable reCAPTCHA for testing (remove for production) -->
+                    <!-- <input type="hidden" name="_captcha" value="false"> -->
+
+                    <!-- Question 1: Company Name -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label for="company_name" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-building label-icon"></i>1. What is your company's name?
+                        </label>
+                        <input type="text" id="company_name" name="Company Name" placeholder="Your Company Name"
+                               class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm" required>
+                    </div>
+
+                    <!-- Question 2: Company Description -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label for="company_description" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-lightbulb label-icon"></i>2. Briefly describe your company/brand. What do you do, what are your core values?
+                        </label>
+                        <textarea id="company_description" name="Company Description" rows="4" placeholder="e.g., We are a sustainable coffee shop focusing on community and ethical sourcing."
+                                  class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm" required></textarea>
+                    </div>
+
+                    <!-- Question 3: Target Audience (General) -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label for="target_audience_general" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-users label-icon"></i>3. Who is your primary target audience?
+                        </label>
+                        <input type="text" id="target_audience_general" name="Target Audience (General)" placeholder="e.g., Young professionals, senior citizens, tech enthusiasts"
+                               class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm" required>
+                    </div>
+
+                    <!-- Question 4: Target Audience Age Range (Custom Dropdown) -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-chart-line label-icon"></i>4. What is the typical age range of your target audience?
+                        </label>
+                        <div class="custom-select-container" id="custom_age_select_container">
+                            <div class="custom-select-trigger form-focus-purple" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="target_audience_age_label">
+                                <span id="selected_age_range_display">Select an age range</span>
+                                <i class="fas fa-chevron-down arrow"></i>
+                            </div>
+                            <div class="custom-options" role="listbox" id="custom_age_options">
+                                <!-- Options will be dynamically populated here by JavaScript -->
+                            </div>
+                            <!-- Hidden native select for form submission -->
+                            <select id="target_audience_age" name="Target Audience Age Range" class="hidden">
+                                <option value="">Select an age range</option>
+                                <option value="Under 18">Under 18</option>
+                                <option value="18-24">18-24</option>
+                                <option value="25-34">25-34</option>
+                                <option value="35-44">35-44</option>
+                                <option value="45-54">45-54</option>
+                                <option value="55-64">55-64</option>
+                                <option value="65+">65+</option>
+                                <option value="All Ages">All Ages</option>
+                                <option value="Custom">Custom (please specify below)</option>
+                            </select>
+                        </div>
+                        <!-- Custom age range input, initially hidden -->
+                        <div id="custom_age_range_container" class="mt-4 hidden">
+                            <label for="custom_age_range" class="sr-only">Specify Custom Age Range</label>
+                            <input type="text" id="custom_age_range" name="Custom Age Range" placeholder="e.g., 28-45, or 'Parents of young children'"
+                                   class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Question 5: Target Audience Gender -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-venus-mars label-icon"></i>5. What is the typical gender of your target audience?
+                        </label>
+                        <div class="flex flex-wrap gap-x-6 gap-y-3">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="Target Audience Gender" value="Male" class="form-radio text-papercut-purple" required>
+                                <span class="ml-2 text-gray-700">Male</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="Target Audience Gender" value="Female" class="form-radio text-papercut-purple">
+                                <span class="ml-2 text-gray-700">Female</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="Target Audience Gender" value="All/Neutral" class="form-radio text-papercut-purple">
+                                <span class="ml-2 text-gray-700">All/Neutral</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="Target Audience Gender" value="Prefer not to say" class="form-radio text-papercut-purple">
+                                <span class="ml-2 text-gray-700">Prefer not to say</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 6: Key Message/Feeling to Convey -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label for="key_message" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-comment-dots label-icon"></i>6. What key message or feeling should your logo convey?
+                        </label>
+                        <textarea id="key_message" name="Key Message/Feeling" rows="3" placeholder="e.g., Trustworthy, innovative, playful, luxurious, approachable"
+                                  class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm" required></textarea>
+                    </div>
+
+                    <!-- Question 7: Specific Ideas/Preferences -->
+                    <div class="mb-10 pb-8 border-b border-gray-100">
+                        <label for="specific_ideas" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-pencil-ruler label-icon"></i>7. Do you have any specific ideas, preferences, or existing logos you like/dislike? (e.g., preferred colors, symbols, "do not use" elements)
+                        </label>
+                        <textarea id="specific_ideas" name="Specific Ideas/Preferences" rows="5" placeholder="e.g., I like minimalist designs. Please avoid bright reds. I'm open to abstract shapes."
+                                  class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm"></textarea>
+                    </div>
+
+                    <!-- Question 8: Upload Existing Files -->
+                    <div class="mb-10">
+                        <label for="branding_files" class="block text-gray-700 text-lg font-medium mb-4">
+                            <i class="fas fa-cloud-upload-alt label-icon"></i>8. Upload any existing logos, branding files, or visual assets (optional):
+                        </label>
+                        <input type="file" id="branding_files" name="Branding Files[]" multiple
+                               class="w-full p-3 border border-gray-300 rounded-lg form-focus-purple transition duration-200 ease-in-out shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-papercut-light-purple file:text-papercut-purple hover:file:bg-papercut-purple hover:file:text-white"
+                               accept="image/*, .pdf, .zip, .rar, .7zip, .doc, .docx, .ppt, .pptx, .xls, .xlsx">
+                        <p class="text-sm text-gray-500 mt-2">Accepted formats: Images, PDFs, common document types, and compressed archives. Max file size may apply.</p>
+                        <div id="file_list_display" class="mt-4">
+                            <!-- Selected files will be displayed here -->
+                        </div>
+                    </div>
+
+                    <!-- Submit Button - Centered -->
+                    <div class="flex justify-center mt-8">
+                        <button type="submit" class="bg-papercut-purple text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-papercut-purple-dark transition duration-300 ease-in-out transform hover:scale-105">
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-phone fa-lg text-white"></i>
+                    <a href="tel:+18456057080" class="text-white font-medium hover:underline">845.605.7080</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-envelope-open-text fa-lg text-white"></i>
+                    <a href="mailto:info@papercutdesign.co" class="text-white font-medium hover:underline">info@papercutdesign.co</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links (adapted for this page)
+        document.querySelectorAll('a[href^="index.html#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                // Allow default navigation for links pointing to the main page
+                // Close mobile menu if open
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                    mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                        mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                    }, 400); // Match CSS transition duration
+                }
+            });
+        });
+
+        // Toggle mobile menu visibility - Copied from index.html
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('mobile-menu-slide-enter');
+                    mobileMenu.classList.add('mobile-menu-slide-enter-active');
+                }, 10); // Small delay to ensure display property is set before transition
+            } else {
+                mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                    mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                }, 400); // Match CSS transition duration
+            }
+        });
+
+        // --- Header Floating and Dynamic Border Logic (Copied from index.html) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('app-header');
+            const scrollThreshold = 50;
+            const dynamicBorderColor = '#EDE9FE';
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > scrollThreshold) {
+                    header.classList.add('header-scrolled');
+                    header.style.borderColor = dynamicBorderColor;
+                } else {
+                    header.classList.remove('header-scrolled');
+                    header.style.borderColor = 'transparent';
+                }
+            });
+
+            // Initial state check on load
+            if (window.scrollY > scrollThreshold) {
+                header.classList.add('header-scrolled');
+                header.style.borderColor = dynamicBorderColor;
+            } else {
+                header.style.borderColor = 'transparent';
+            }
+
+            // --- Custom Dropdown Logic ---
+            const nativeSelect = document.getElementById('target_audience_age');
+            const customSelectTrigger = document.querySelector('#custom_age_select_container .custom-select-trigger');
+            const customOptionsContainer = document.getElementById('custom_age_options');
+            const selectedAgeRangeDisplay = document.getElementById('selected_age_range_display');
+            const customAgeRangeContainer = document.getElementById('custom_age_range_container');
+            const customAgeRangeInput = document.getElementById('custom_age_range');
+
+            // Populate custom options from native select
+            function populateCustomOptions() {
+                customOptionsContainer.innerHTML = ''; // Clear existing options
+                Array.from(nativeSelect.options).forEach(option => {
+                    const customOption = document.createElement('div');
+                    customOption.classList.add('custom-option', 'text-gray-700');
+                    customOption.textContent = option.textContent;
+                    customOption.dataset.value = option.value;
+                    customOption.setAttribute('role', 'option');
+                    customOption.setAttribute('aria-selected', 'false'); // Default to false
+
+                    // Add click listener to each custom option
+                    customOption.addEventListener('click', () => {
+                        selectCustomOption(customOption);
+                    });
+                    customOptionsContainer.appendChild(customOption);
+                });
+            }
+
+            // Handle selection of a custom option
+            function selectCustomOption(optionElement) {
+                // Remove 'selected' class from previously selected option
+                const previouslySelected = customOptionsContainer.querySelector('.custom-option.selected');
+                if (previouslySelected) {
+                    previouslySelected.classList.remove('selected');
+                    previouslySelected.setAttribute('aria-selected', 'false');
+                }
+
+                // Add 'selected' class to the new option
+                optionElement.classList.add('selected');
+                optionElement.setAttribute('aria-selected', 'true');
+
+                // Update the display text and native select value
+                selectedAgeRangeDisplay.textContent = optionElement.textContent;
+                nativeSelect.value = optionElement.dataset.value;
+
+                // Toggle custom age input visibility
+                toggleCustomAgeInput();
+
+                // Close the dropdown
+                customSelectTrigger.classList.remove('open');
+                customOptionsContainer.classList.remove('open');
+                customSelectTrigger.setAttribute('aria-expanded', 'false');
+            }
+
+            // Toggle custom dropdown visibility
+            customSelectTrigger.addEventListener('click', () => {
+                const isOpen = customSelectTrigger.classList.toggle('open');
+                customOptionsContainer.classList.toggle('open', isOpen);
+                customSelectTrigger.setAttribute('aria-expanded', isOpen);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!customSelectTrigger.contains(event.target) && !customOptionsContainer.contains(event.target)) {
+                    customSelectTrigger.classList.remove('open');
+                    customOptionsContainer.classList.remove('open');
+                    customSelectTrigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Keyboard navigation for accessibility
+            customSelectTrigger.addEventListener('keydown', (e) => {
+                const isDropdownOpen = customOptionsContainer.classList.contains('open');
+                let currentFocus = customOptionsContainer.querySelector('.custom-option.selected') || customOptionsContainer.querySelector('.custom-option');
+
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    e.preventDefault(); // Prevent page scroll
+                    if (!isDropdownOpen) {
+                        customSelectTrigger.click(); // Open dropdown
+                        return;
+                    }
+
+                    const options = Array.from(customOptionsContainer.children);
+                    let nextIndex = options.indexOf(currentFocus);
+
+                    if (e.key === 'ArrowDown') {
+                        nextIndex = (nextIndex + 1) % options.length;
+                    } else if (e.key === 'ArrowUp') {
+                        nextIndex = (nextIndex - 1 + options.length) % options.length;
+                    }
+
+                    if (currentFocus) {
+                        currentFocus.classList.remove('selected');
+                        currentFocus.setAttribute('aria-selected', 'false');
+                    }
+                    currentFocus = options[nextIndex];
+                    currentFocus.classList.add('selected');
+                    currentFocus.setAttribute('aria-selected', 'true');
+                    currentFocus.scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'Enter' && isDropdownOpen && currentFocus) {
+                    e.preventDefault();
+                    selectCustomOption(currentFocus);
+                } else if (e.key === 'Escape' && isDropdownOpen) {
+                    e.preventDefault();
+                    customSelectTrigger.classList.remove('open');
+                    customOptionsContainer.classList.remove('open');
+                    customSelectTrigger.setAttribute('aria-expanded', 'false');
+                    customSelectTrigger.focus(); // Return focus to trigger
+                }
+            });
+
+
+            // --- Dynamic "Custom" Age Range Input Logic (Integrated with custom dropdown) ---
+            function toggleCustomAgeInput() {
+                // Check the value of the hidden native select, which is updated by the custom dropdown
+                if (nativeSelect.value === 'Custom') {
+                    customAgeRangeContainer.classList.remove('hidden');
+                    customAgeRangeInput.setAttribute('required', 'required');
+                } else {
+                    customAgeRangeContainer.classList.add('hidden');
+                    customAgeRangeInput.removeAttribute('required');
+                    customAgeRangeInput.value = ''; // Clear input when hidden
+                }
+            }
+
+            // Initial population and state check on load
+            populateCustomOptions();
+            // Set initial display text based on native select's default value
+            const initialSelectedOption = nativeSelect.options[nativeSelect.selectedIndex];
+            if (initialSelectedOption) {
+                selectedAgeRangeDisplay.textContent = initialSelectedOption.textContent;
+                // Also mark the corresponding custom option as selected
+                const matchingCustomOption = customOptionsContainer.querySelector(`[data-value="${initialSelectedOption.value}"]`);
+                if (matchingCustomOption) {
+                    matchingCustomOption.classList.add('selected');
+                    matchingCustomOption.setAttribute('aria-selected', 'true');
+                }
+            }
+            toggleCustomAgeInput(); // Call on load to ensure correct initial state for custom input
+
+
+            // --- File Upload Logic ---
+            const brandingFilesInput = document.getElementById('branding_files');
+            const fileListDisplay = document.getElementById('file_list_display');
+            let selectedFiles = []; // Array to store File objects
+
+            // Function to render the list of selected files
+            function renderFileList() {
+                fileListDisplay.innerHTML = ''; // Clear current display
+                if (selectedFiles.length === 0) {
+                    return; // No files to display
+                }
+
+                selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.classList.add('file-item');
+                    fileItem.innerHTML = `
+                        <span class="file-name">${file.name}</span>
+                        <button type="button" class="remove-file-btn" data-index="${index}">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    `;
+                    fileListDisplay.appendChild(fileItem);
+                });
+            }
+
+            // Event listener for file input change
+            brandingFilesInput.addEventListener('change', (event) => {
+                // Add new files to the selectedFiles array
+                Array.from(event.target.files).forEach(file => {
+                    selectedFiles.push(file);
+                });
+                renderFileList(); // Update the display
+                brandingFilesInput.value = ''; // Clear the input's value to allow re-selection of same files if needed
+            });
+
+            // Event listener for removing files
+            fileListDisplay.addEventListener('click', (event) => {
+                if (event.target.closest('.remove-file-btn')) {
+                    const button = event.target.closest('.remove-file-btn');
+                    const indexToRemove = parseInt(button.dataset.index);
+                    selectedFiles.splice(indexToRemove, 1); // Remove file from array
+                    renderFileList(); // Re-render the list
+                }
+            });
+
+            // Handle form submission with dynamic files
+            const brandingApplicationForm = document.getElementById('branding-application-form');
+            brandingApplicationForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(brandingApplicationForm);
+
+                // Remove the default 'Branding Files[]' entry from the FormData
+                // as we will add our managed files.
+                formData.delete('Branding Files[]');
+
+                // Append each managed file to the FormData
+                selectedFiles.forEach(file => {
+                    formData.append('Branding Files[]', file, file.name);
+                });
+
+                // Now, submit the formData (e.g., using fetch or XMLHttpRequest)
+                // For FormSubmit.co, you generally just let the default form action handle it
+                // if you're not doing a custom fetch.
+                // However, since we're manipulating FormData, a fetch might be necessary
+                // if FormSubmit.co doesn't automatically pick up dynamically added files.
+                // For simplicity and compatibility with FormSubmit.co, the original `enctype` and `method`
+                // will work if the files are correctly attached to the input.
+                // For robust custom file handling with FormSubmit.co, you might need to use fetch:
+
+                fetch(brandingApplicationForm.action, {
+                    method: brandingApplicationForm.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' // FormSubmit.co often uses this for JSON responses
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Form submission response:', data);
+                    if (data.success) {
+                        // Handle success, e.g., show a thank you message
+                        alert('Application submitted successfully!');
+                        brandingApplicationForm.reset(); // Clear form fields
+                        selectedFiles = []; // Clear file list
+                        renderFileList(); // Clear file display
+                    } else {
+                        // Handle errors
+                        alert('There was an error submitting your application. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    alert('An unexpected error occurred. Please try again.');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
