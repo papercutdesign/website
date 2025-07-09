@@ -761,7 +761,8 @@
             // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             brandingApplicationForm.addEventListener('submit', (event) => {
-                event.preventDefault(); // RE-ENABLED: Prevent default form submission
+                // Temporarily commented out event.preventDefault() to allow direct browser submission for diagnosis.
+                // event.preventDefault();
 
                 const formData = new FormData(brandingApplicationForm);
 
@@ -779,7 +780,8 @@
                     console.log(pair[0]+ ': ' + pair[1]);
                 }
 
-                // RE-ENABLED: Form submission using fetch API
+                // Temporarily commented out fetch API call to allow direct browser submission for diagnosis.
+                /*
                 fetch(brandingApplicationForm.action, {
                     method: brandingApplicationForm.method,
                     body: formData,
@@ -830,6 +832,7 @@
                     // Use a custom message box instead of alert
                     showCustomMessage('An unexpected error occurred. Please try again. Error details: ' + error.message, false);
                 });
+                */
             });
 
             // Custom Message Box / Modal Implementation (instead of alert)
