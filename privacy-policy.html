@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papercut - Privacy Policy</title>
+    <!-- Favicon: Using s-icon-01.png for standard browsers (32x32) -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+    <!-- Favicon: Added 48x48 for better search engine display -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="48x48">
+    <!-- Apple Touch Icon: Using m-icon-01.png for iOS devices (512x512) -->
+    <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
+    <meta name="description" content="Papercut Design's privacy policy, including details on SMS messaging practices.">
+
+    <!-- Google tag (gtag.js) - Added for Google Analytics tracking -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW5F6HJKKY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-GW5F6HJKKY');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Matched from payment.html */
+            background-color: #f8fafc; /* Light gray background from your site */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure full viewport height */
+            margin: 0;
+            padding: 0;
+        }
+        /* Custom purple colors from the logo */
+        .bg-papercut-purple { background-color: #6B46C1; } /* Main purple */
+        .text-papercut-purple { color: #6B46C1; }
+        .border-papercut-purple { border-color: #6B46C1; }
+        .hover\:bg-papercut-purple-dark:hover { background-color: #553C9A; } /* Darker shade for hover */
+        .bg-papercut-light-purple { background-color: #EDE9FE; } /* Very light purple for cards */
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.25rem;
+            overflow: hidden;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #6B46C1;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease-out;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Header styles for the payment page */
+        #payment-header {
+            width: 100%;
+            max-width: 100vw;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease-in-out;
+            border: none;
+            top: 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        #payment-header img {
+            transition: transform 0.4s ease-in-out;
+        }
+
+        /* Responsive adjustments for main content padding */
+        .main-content-padding {
+            padding: 1rem; /* Default padding */
+        }
+        @media (min-width: 640px) { /* sm */
+            .main-content-padding {
+                padding: 2rem;
+            }
+        }
+        @media (min-width: 768px) { /* md */
+            .main-content-padding {
+                padding: 3rem;
+            }
+        }
+        @media (min-width: 1024px) { /* lg */
+            .main-content-padding {
+                padding: 4rem;
+            }
+        }
+
+        /* Mobile menu slide animation - Copied from payment.html */
+        .mobile-menu-slide-enter {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .mobile-menu-slide-enter-active {
+            max-height: 500px; /* Sufficient height to cover content */
+            opacity: 1;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .mobile-menu-slide-exit {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .mobile-menu-slide-exit-active {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section - Copied directly from payment.html -->
+    <header id="payment-header" class="bg-white shadow-md py-4 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="logopng.png" alt="Papercut Design Company Logo - Abstract Purple Graphic" class="h-8 md:h-10">
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#home" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Home</a>
+                <a href="index.html#services" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Services</a>
+                <a href="index.html#portfolio" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Portfolio</a>
+                <a href="index.html#about" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">About Me</a>
+                <a href="index.html#contact" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Contact</a>
+            </div>
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                <svg class="w-9 h-9 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-lg mobile-menu-slide-enter">
+            <a href="index.html#home" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Home</a>
+            <a href="index.html#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Services</a>
+            <a href="index.html#portfolio" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Portfolio</a>
+            <a href="index.html#about" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">About Me</a>
+            <a href="index.html#contact" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Contact</a>
+        </div>
+    </header>
+
+    <main class="flex-grow main-content-padding mx-auto max-w-4xl py-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-center text-papercut-purple mb-8">Privacy Policy</h1>
+        
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Introduction</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                This Privacy Policy describes how Papercut Design collects, uses, and protects your personal information when you use our website and services, including our SMS messaging program. By using our website and services, you consent to the data practices described in this policy.
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Information We Collect</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                We collect various types of information to provide and improve our services to you:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2 ml-4">
+                <li><strong class="font-semibold">Personal Identifiable Information (PII):</strong> This includes your name, email address, phone number, physical address, and billing information when you engage with our services, fill out forms, or make payments.</li>
+                <li><strong class="font-semibold">Usage Data:</strong> We automatically collect information on how the website and services are accessed and used. This Usage Data may include information such as your computer's Internet Protocol (IP) address, browser type, browser version, the pages of our website that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</li>
+                <li><strong class="font-semibold">SMS Messaging Data:</strong> When you opt-in to our SMS messaging program, we collect your phone number and your consent to receive text messages.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">How We Use Your Information</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Papercut Design uses the collected data for various purposes:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2 ml-4">
+                <li>To provide and maintain our services.</li>
+                <li>To notify you about changes to our services.</li>
+                <li>To allow you to participate in interactive features of our services when you choose to do so.</li>
+                <li>To provide customer support.</li>
+                <li>To gather analysis or valuable information so that we can improve our services.</li>
+                <li>To monitor the usage of our services.</li>
+                <li>To detect, prevent and address technical issues.</li>
+                <li>To send you transactional and promotional SMS messages (if you have opted in).</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">SMS Messaging Policy</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                By providing your mobile number and opting in, you agree to receive text messages from Papercut Design regarding appointments, project updates, promotions, and customer support. Message frequency will vary. Standard message and data rates may apply.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2 ml-4">
+                <li><strong class="font-semibold">Opt-in:</strong> You can opt-in to our SMS program by submitting your phone number through our website forms or by explicitly agreeing to receive messages. An example opt-in message you might receive is: "Thanks for agreeing to receive messages from Papercut Design. Messaging frequency may vary and messaging and data rates may apply. Reply YES to confirm or reply STOP to unsubscribe."</li>
+                <li><strong class="font-semibold">Opt-out:</strong> You can opt-out of receiving SMS messages at any time by replying "STOP" to any message you receive from us. Upon opting out, you will receive a confirmation message: "You have been removed from the Papercut Design SMS contact list. Reply YES to resume."</li>
+                <li><strong class="font-semibold">Help:</strong> For assistance, you can reply "HELP" to any message you receive from us. You will receive a message like: "Please call Papercut Design at 845.605.7080. Press 1 for customer service."</li>
+            </ul>
+            <p class="text-red-600 font-semibold mt-4">
+                <strong class="font-bold">Important: No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. All the above categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.</strong>
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Disclosure of Data</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Papercut Design may disclose your Personal Information in the good faith belief that such action is necessary to:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2 ml-4">
+                <li>Comply with a legal obligation.</li>
+                <li>Protect and defend the rights or property of Papercut Design.</li>
+                <li>Prevent or investigate possible wrongdoing in connection with the Service.</li>
+                <li>Protect the personal safety of users of the Service or the public.</li>
+                <li>Protect against legal liability.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Security of Data</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security.
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Links to Other Sites</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Changes to This Privacy Policy</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Contact Us</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                If you have any questions about this Privacy Policy, please contact us:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2 ml-4">
+                <li>By email: <a href="mailto:info@papercutdesign.co" class="text-papercut-purple hover:underline">info@papercutdesign.co</a></li>
+                <li>By phone: <a href="tel:+18456057080" class="text-papercut-purple hover:underline">845.605.7080</a></li>
+                <li>By visiting this page on our website: <a href="index.html#contact" class="text-papercut-purple hover:underline">Contact Us Page</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer Section - Copied directly from payment.html -->
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-phone fa-lg text-white"></i>
+                    <a href="tel:+18456057080" class="text-white font-medium hover:underline">845.605.7080</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-envelope-open-text fa-lg text-white"></i>
+                    <a href="mailto:info@papercutdesign.co" class="text-white font-medium hover:underline">info@papercutdesign.co</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links (adapted for this page)
+        document.querySelectorAll('a[href^="index.html#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                // Allow default navigation for links pointing to the main page
+                // Close mobile menu if open
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                    mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                        mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                    }, 400); // Match CSS transition duration
+                }
+            });
+        });
+
+        // Toggle mobile menu visibility - Copied from payment.html
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('mobile-menu-slide-enter');
+                    mobileMenu.classList.add('mobile-menu-slide-enter-active');
+                }, 10); // Small delay to ensure display property is set before transition
+            } else {
+                mobileMenu.classList.remove('mobile-menu-slide-enter-active');
+                mobileMenu.classList.add('mobile-menu-slide-exit-active');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('mobile-menu-slide-exit-active');
+                    mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
+                }, 400); // Match CSS transition duration
+            }
+        });
+    </script>
+
+</body>
+</html>
