@@ -556,6 +556,11 @@
                     <i class="fas fa-envelope-open-text fa-lg text-white"></i>
                     <a href="mailto:info@papercutdesign.co" class="text-white font-medium hover:underline">info@papercutdesign.co</a>
                 </div>
+                <!-- Privacy Policy Link Added -->
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-file-alt fa-lg text-white"></i>
+                    <a href="privacy-policy.html" class="text-white font-medium hover:underline">Privacy Policy</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -810,7 +815,7 @@
 
                 // Use a small tolerance for the edges
                 arrowLeft.classList.toggle('visible', scrollPos > 2);
-                arrowRight.classList.toggle('visible', scrollPos < maxScrollLeft - 2);
+                arrowRight.classList.toggle('visible', maxScrollLeft > 0 && scrollPos < maxScrollLeft - 2);
             }
 
             // Arrow click handlers
