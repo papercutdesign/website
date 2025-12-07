@@ -558,9 +558,12 @@
                     <p class="text-gray-600 text-lg">Ready to make your design cut through the noise?</p>
                 </div>
 
-                <!-- Added id="contact-form" to existing form -->
-                <form id="contact-form" action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" class="space-y-6">
+                <!-- Updated Form: Action and Hidden Captcha Field -->
+                <form id="contact-form" action="https://formsubmit.co/yossi@papercutdesign.co" method="POST" class="space-y-6">
                     <input type="hidden" name="_subject" value="New Contact from Papercut Glass Site">
+                    <!-- CRITICAL FIX: Disable captcha for AJAX to work reliably -->
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
                     
                     <div class="group">
                         <input type="text" name="name" placeholder="Your Name" class="glass-input" required>
@@ -572,11 +575,9 @@
                         <textarea name="message" rows="4" placeholder="How can we help you?" class="glass-input" required></textarea>
                     </div>
                     
-                    <!-- Added id="submit-btn" -->
                     <button id="submit-btn" type="submit" class="w-full glossy-btn py-4 rounded-2xl text-lg font-bold">
                         Send Message
                     </button>
-                    <!-- Added status message placeholder -->
                     <p id="form-status" class="text-center text-gray-700 font-semibold mt-4 hidden"></p>
                 </form>
             </div>
@@ -752,15 +753,24 @@
 
                     const formData = new FormData(contactForm);
 
-                    // We change the URL to the ajax endpoint
+                    // Updated URL to correct email
                     fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
                         method: "POST",
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        // Check if the response is actually JSON, if not, it might be an error page
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        if (data.success === "false") {
+                             throw new Error(data.message || "Form submission failed");
+                        }
                         formStatus.innerText = "Message sent successfully!";
-                        formStatus.classList.remove('hidden');
+                        formStatus.classList.remove('hidden', 'text-red-600');
                         formStatus.classList.add('text-green-600');
                         contactForm.reset();
                         submitBtn.innerText = "Sent!";
@@ -774,8 +784,8 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        formStatus.innerText = "Something went wrong. Please try again.";
-                        formStatus.classList.remove('hidden');
+                        formStatus.innerText = "Something went wrong. Please check your internet or try again later.";
+                        formStatus.classList.remove('hidden', 'text-green-600');
                         formStatus.classList.add('text-red-600');
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
