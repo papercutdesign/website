@@ -752,11 +752,19 @@
                     submitBtn.disabled = true;
 
                     const formData = new FormData(contactForm);
+                    
+                    // NEW: Convert to JSON object for better reliability with FormSubmit AJAX
+                    const object = Object.fromEntries(formData);
+                    const json = JSON.stringify(object);
 
                     // Updated URL to correct email
                     fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
                         method: "POST",
-                        body: formData
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: json
                     })
                     .then(response => {
                         // Check if the response is actually JSON, if not, it might be an error page
