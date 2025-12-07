@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papercut - Design that Cuts Through</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
+
+    <!-- SEO -->
+    <meta name="description" content="Papercut Design: Impactful brand identities and digital graphics that cut through the noise.">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP for High-End Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'papercut': {
+                            main: '#6B46C1',
+                            dark: '#553C9A',
+                            light: '#EDE9FE',
+                            accent: '#FCD34D' // Yellow accent
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    // Removed old blob keyframes, animations now handled by GSAP
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- Custom Cursor --- */
+        body { cursor: none; } /* Hide default cursor */
+        
+        /* Fallback for touch devices */
+        @media (hover: none) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-outline { display: none !important; }
+            .portfolio-item { cursor: pointer; } /* Restore pointer */
+        }
+
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #6B46C1;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(107, 70, 193, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        /* Hover state for cursor */
+        body.hovering .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(107, 70, 193, 0.1);
+            border-color: transparent;
+        }
+
+        /* --- Smoothness & Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #6B46C1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #553C9A; }
+
+        /* --- Utility Animations --- */
+        .magnetic-btn { display: inline-block; }
+        
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #6B46C1 0%, #9F7AEA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Horizontal Scroll Container Hide Scrollbar */
+        #horizontal-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        #horizontal-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Ensure the About Image wrapper is correctly sized for parallax */
+        .about-img-wrapper {
+            position: relative;
+            height: 400px; /* Fixed height for consistent parallax view */
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        /* The image itself is scaled up to allow movement within the wrapper */
+        .about-img {
+            height: 120%; /* 120% height for vertical parallax effect */
+            width: 100%;
+            object-fit: cover;
+            top: -10%; /* Start position slightly up so Y-movement is centered */
+        }
+
+        /* SVG Mesh Background for Services Section */
+        .bg-mesh {
+            /* Subtle blue-purple mesh pattern using SVG data URI */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%236B46C1' fill-opacity='0.1'%3E%3Cpath d='M80 0H0v80h80V0zM40 20a20 20 0 100 40 20 20 0 100-40zM20 60a10 10 0 100 20 10 10 0 100-20zM60 0a10 10 0 100 20 10 10 0 100-20z'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 80px 80px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden selection:bg-papercut-main selection:text-white">
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-papercut-accent z-[60] w-0 transition-all duration-100 ease-out"></div>
+
+    <!-- Navigation -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-transparent">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="relative z-50 hover-trigger" data-cursor="logo">
+                <img src="logopng.png" alt="Papercut Logo" class="h-8 md:h-10">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="nav-item text-sm font-medium uppercase tracking-wide hover:text-papercut-main transition-colors hover-trigger">Home</a>
+                <a href="#services" class="nav-item text-sm font-medium uppercase tracking-wide hover:text-papercut-main transition-colors hover-trigger">Services</a>
+                <a href="#portfolio" class="nav-item text-sm font-medium uppercase tracking-wide hover:text-papercut-main transition-colors hover-trigger">Work</a>
+                <a href="#about" class="nav-item text-sm font-medium uppercase tracking-wide hover:text-papercut-main transition-colors hover-trigger">About</a>
+                <a href="#contact" class="magnetic-btn px-6 py-2 bg-papercut-main text-white rounded-full font-semibold shadow-lg hover:bg-papercut-dark transition-all transform hover:-translate-y-1 hover-trigger">
+                    Start Project
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-btn" class="md:hidden z-50 text-papercut-main focus:outline-none p-2">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-40 flex flex-col justify-center items-center space-y-8 opacity-0 pointer-events-none transition-opacity duration-300">
+            <a href="#home" class="text-2xl font-bold text-slate-800 mobile-link hover:text-papercut-main transition-colors">Home</a>
+            <a href="#services" class="text-2xl font-bold text-slate-800 mobile-link hover:text-papercut-main transition-colors">Services</a>
+            <a href="#portfolio" class="text-2xl font-bold text-slate-800 mobile-link hover:text-papercut-main transition-colors">Work</a>
+            <a href="#contact" class="text-2xl font-bold text-papercut-main mobile-link">Contact</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Background Shapes (GSAP Animated Blobs) -->
+        <div class="absolute top-20 right-[10%] w-64 h-64 bg-papercut-light rounded-full mix-blend-multiply filter blur-xl opacity-70 blob blob-1"></div>
+        <div class="absolute top-40 left-[10%] w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 blob blob-2"></div>
+        <div class="absolute bottom-20 left-[20%] w-80 h-80 bg-yellow-100 rounded-full mix-blend-multiply filter blur-2xl opacity-50 blob blob-3"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl">
+                <h1 class="hero-title text-5xl md:text-8xl font-extrabold leading-tight tracking-tight text-slate-900 mb-6 opacity-0 translate-y-10">
+                    Design that <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-papercut-main to-purple-400 italic font-serif pr-2">cuts through</span>
+                    the noise.
+                </h1>
+                <p class="hero-text text-lg md:text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed opacity-0 translate-y-4">
+                    We don't just make things look good. We craft visual identities that resonate, engage, and drive results for your business.
+                </p>
+                <div class="hero-btns flex flex-wrap gap-4 opacity-0 translate-y-4">
+                    <a href="#portfolio" class="group relative px-8 py-4 bg-slate-900 text-white rounded-full font-semibold overflow-hidden hover-trigger transition-transform active:scale-95">
+                        <span class="relative z-10 group-hover:text-papercut-accent transition-colors">View Our Work</span>
+                        <div class="absolute inset-0 bg-papercut-main transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out"></div>
+                    </a>
+                    <a href="#contact" class="px-8 py-4 border border-slate-300 rounded-full font-semibold text-slate-700 hover:border-papercut-main hover:text-papercut-main transition-colors hover-trigger active:scale-95">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+            <i class="fas fa-arrow-down text-papercut-main opacity-50 text-xl"></i>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION (Redesigned) -->
+    <!-- Added bg-mesh for background texture -->
+    <section id="services" class="py-32 bg-mesh relative z-20 overflow-hidden">
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="mb-20 border-l-4 border-papercut-main pl-6 reveal-text opacity-0 translate-y-8">
+                <h2 class="text-sm font-bold text-papercut-main uppercase tracking-widest mb-2">What We Do</h2>
+                <h3 class="text-4xl font-bold text-slate-900">Comprehensive Design Solutions</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Service 1: BRANDING -->
+                <!-- Updated card styles to match the clean, light purple background from your reference image -->
+                <div class="service-card group p-10 rounded-2xl bg-papercut-light border border-papercut-main/30 shadow-lg transition-all duration-300 hover:shadow-papercut-main/30 hover:rotate-0 hover:scale-[1.03] hover-trigger opacity-0 translate-y-20">
+                    <div class="w-16 h-16 bg-white text-papercut-main rounded-xl shadow-lg flex items-center justify-center text-3xl mb-8 group-hover:scale-105 group-hover:shadow-2xl transition-all duration-300">
+                        <i class="fas fa-fingerprint"></i>
+                    </div>
+                    <h4 class="text-3xl font-bold mb-4 text-papercut-main transition-colors">Branding</h4> 
+                    <p class="text-slate-700 leading-relaxed text-lg">
+                        We build your visual identity from the ground up: crafting memorable **logos**, defining color systems, and developing consistent **brand guidelines**.
+                    </p>
+                </div>
+
+                <!-- Service 2: PRINT DESIGN -->
+                <div class="service-card group p-10 rounded-2xl bg-papercut-light border border-papercut-main/30 shadow-lg transition-all duration-300 hover:shadow-papercut-main/30 hover:rotate-0 hover:scale-[1.03] hover-trigger opacity-0 translate-y-20">
+                    <div class="w-16 h-16 bg-white text-papercut-main rounded-xl shadow-lg flex items-center justify-center text-3xl mb-8 group-hover:scale-105 group-hover:shadow-2xl transition-all duration-300">
+                        <i class="fas fa-print"></i> 
+                    </div>
+                    <h4 class="text-3xl font-bold mb-4 text-papercut-main transition-colors">Print Design</h4>
+                    <p class="text-slate-700 leading-relaxed text-lg">
+                        High-impact tactile materials including **business cards**, **brochures**, packaging, and stationery designed for a lasting impression.
+                    </p>
+                </div>
+
+                <!-- Service 3: DIGITAL DESIGN -->
+                <div class="service-card group p-10 rounded-2xl bg-papercut-light border border-papercut-main/30 shadow-lg transition-all duration-300 hover:shadow-papercut-main/30 hover:rotate-0 hover:scale-[1.03] hover-trigger opacity-0 translate-y-20">
+                    <div class="w-16 h-16 bg-white text-papercut-main rounded-xl shadow-lg flex items-center justify-center text-3xl mb-8 group-hover:scale-105 group-hover:shadow-2xl transition-all duration-300">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h4 class="text-3xl font-bold mb-4 text-papercut-main transition-colors">Digital Design</h4>
+                    <p class="text-slate-700 leading-relaxed text-lg">
+                        Engaging digital **ad graphics**, social media assets, website elements, and online visuals optimized to maximize reach and conversions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HORIZONTAL SCROLL PORTFOLIO -->
+    <section id="portfolio-wrapper" class="relative bg-slate-900 text-white overflow-hidden z-30">
+        <div class="container mx-auto px-6 pt-20 pb-10 relative z-10">
+            <h2 class="text-4xl md:text-6xl font-bold mb-4">
+                <!-- UPDATED: 'Selected' uses italic serif font -->
+                <span class="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-papercut-main to-purple-400 pr-2">Selected</span> 
+                Works
+            </h2>
+            <p class="text-slate-400 max-w-xl">A collection of our recent projects, showcasing our versatility across branding, print, and digital media.</p>
+        </div>
+
+        <!-- This container will scroll horizontally while the page stays pinned -->
+        <div id="horizontal-scroll-container" class="flex flex-nowrap h-[70vh] md:h-[80vh] items-center pl-6 md:pl-20 space-x-6 md:space-x-20 pb-20 w-[400%] md:w-[300%]">
+            
+            <!-- Project 1 -->
+            <div class="portfolio-item flex-shrink-0 w-[85vw] md:w-[600px] h-[50vh] md:h-[60vh] relative group overflow-hidden rounded-2xl hover-trigger cursor-none shadow-2xl border border-slate-700/50">
+                <img src="ad/1.jpg" alt="Project 1" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/600x800/222/FFF?text=Ad+Campaign'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                    <span class="text-papercut-accent text-sm font-bold tracking-wider mb-2">ADVERTISING</span>
+                    <h3 class="text-3xl font-bold text-white">Summer Launch</h3>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+             <div class="portfolio-item flex-shrink-0 w-[85vw] md:w-[600px] h-[50vh] md:h-[60vh] relative group overflow-hidden rounded-2xl hover-trigger shadow-2xl border border-slate-700/50">
+                <img src="logo/1.jpg" alt="Project 2" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/600x800/333/FFF?text=Brand+Identity'">
+                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                    <span class="text-papercut-accent text-sm font-bold tracking-wider mb-2">BRANDING</span>
+                    <h3 class="text-3xl font-bold text-white">Corporate Rebrand</h3>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+             <div class="portfolio-item flex-shrink-0 w-[85vw] md:w-[600px] h-[50vh] md:h-[60vh] relative group overflow-hidden rounded-2xl hover-trigger shadow-2xl border border-slate-700/50">
+                <img src="ad/2.jpg" alt="Project 3" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/600x800/444/FFF?text=Social+Media'">
+                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                    <span class="text-papercut-accent text-sm font-bold tracking-wider mb-2">DIGITAL</span>
+                    <h3 class="text-3xl font-bold text-white">Instagram Series</h3>
+                </div>
+            </div>
+
+             <!-- Project 4 -->
+             <div class="portfolio-item flex-shrink-0 w-[85vw] md:w-[600px] h-[50vh] md:h-[60vh] relative group overflow-hidden rounded-2xl hover-trigger shadow-2xl border border-slate-700/50">
+                <img src="logo/2.jpg" alt="Project 4" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/600x800/555/FFF?text=Logo+Design'">
+                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                    <span class="text-papercut-accent text-sm font-bold tracking-wider mb-2">BRANDING</span>
+                    <h3 class="text-3xl font-bold text-white">Tech Startup Logo</h3>
+                </div>
+            </div>
+            
+             <!-- End Card -->
+             <div class="portfolio-item flex-shrink-0 w-[85vw] md:w-[400px] h-[50vh] md:h-[60vh] flex items-center justify-center bg-papercut-main rounded-2xl hover-trigger shadow-xl">
+                <div class="text-center p-8">
+                    <h3 class="text-3xl font-bold mb-6 text-white">Have a project in mind?</h3>
+                    <a href="#contact" class="inline-block px-8 py-4 bg-white text-papercut-main font-bold rounded-full hover:bg-papercut-accent hover:text-slate-900 transition-all shadow-lg transform hover:scale-105">Let's Talk</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-32 bg-papercut-light/30 relative z-20 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2 relative">
+                    <!-- Parallax Effect Wrapper -->
+                    <div class="about-img-wrapper relative overflow-hidden rounded-2xl shadow-2xl">
+                        <div class="absolute -top-4 -left-4 w-full h-full border-2 border-papercut-main rounded-2xl hidden md:block z-0"></div>
+                        <!-- Increased height for parallax movement -->
+                        <img src="https://images.unsplash.com/photo-1553877615-2f114f9d23b7?auto=format&fit=crop&q=80&w=800" 
+                             alt="Creative Workspace" 
+                             class="about-img w-full h-[120%] object-cover relative z-10 transform scale-110">
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <div class="reveal-text-about">
+                        <h2 class="text-sm font-bold text-papercut-main uppercase tracking-widest mb-2">Behind the Brand</h2>
+                        <h3 class="text-4xl font-bold text-slate-900 mb-6">Small Business, Big Vision</h3>
+                        <p class="text-lg text-slate-700 mb-6 leading-relaxed">
+                            Hi, I'm <strong>Yossi Breuer</strong>. I founded Papercut Design with a simple mission: to prove that powerful design shouldn't be a luxury reserved for Fortune 500 companies.
+                        </p>
+                        <p class="text-lg text-slate-700 mb-8 leading-relaxed">
+                            I believe in design that works as hard as you do. Whether it's a logo that defines your market presence or a print campaign that drives foot traffic, I partner directly with you to turn your vision into a visual asset.
+                        </p>
+                        <div class="flex items-center gap-4 opacity-0 translate-y-4 about-icon-reveal">
+                            <img src="s-icon-01.png" alt="Icon" class="w-12 h-12 opacity-80 animate-pulse">
+                            <span class="font-serif italic text-slate-500 text-xl">Design that cuts through.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-32 bg-white relative z-20">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-16 reveal-text opacity-0 translate-y-8">
+                <h2 class="text-5xl font-bold text-slate-900 mb-4">Let's Create Something Real</h2>
+                <p class="text-xl text-slate-500">Ready to elevate your brand? Drop us a line.</p>
+            </div>
+
+            <form action="https://formsubmit.co/yossi.papercut@gmail.com" method="POST" class="space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="relative group contact-item opacity-0 translate-y-10">
+                        <input type="text" name="name" required class="w-full bg-slate-50 border-b-2 border-slate-200 px-4 py-4 text-lg focus:outline-none focus:border-papercut-main transition-colors peer placeholder-transparent rounded-t-lg" placeholder="Name">
+                        <label class="absolute left-4 top-4 text-slate-400 transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-papercut-main peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs cursor-text">Your Name</label>
+                    </div>
+                    <div class="relative group contact-item opacity-0 translate-y-10">
+                        <input type="email" name="email" required class="w-full bg-slate-50 border-b-2 border-slate-200 px-4 py-4 text-lg focus:outline-none focus:border-papercut-main transition-colors peer placeholder-transparent rounded-t-lg" placeholder="Email">
+                        <label class="absolute left-4 top-4 text-slate-400 transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-papercut-main peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs cursor-text">Your Email</label>
+                    </div>
+                </div>
+                
+                <div class="relative group contact-item opacity-0 translate-y-10">
+                    <textarea name="message" rows="4" required class="w-full bg-slate-50 border-b-2 border-slate-200 px-4 py-4 text-lg focus:outline-none focus:border-papercut-main transition-colors peer placeholder-transparent rounded-t-lg" placeholder="Message"></textarea>
+                    <label class="absolute left-4 top-4 text-slate-400 transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-papercut-main peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs cursor-text">Tell us about your project</label>
+                </div>
+
+                <div class="text-center pt-8 contact-item opacity-0 translate-y-10">
+                    <button type="submit" class="magnetic-btn px-12 py-4 bg-papercut-main text-white text-lg font-bold rounded-full shadow-xl hover:bg-papercut-dark hover:shadow-2xl transition-all transform hover:-translate-y-1 hover-trigger w-full md:w-auto">
+                        Send Message <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white py-12 border-t border-slate-800 relative z-20">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-6 md:mb-0">
+                <img src="logopng.png" class="h-8 brightness-0 invert opacity-50" alt="Logo White">
+                <span class="text-slate-500 text-sm">© 2025 Papercut Design</span>
+            </div>
+            <div class="flex space-x-8">
+                <a href="tel:+18456057080" class="text-slate-400 hover:text-white transition-colors hover-trigger flex items-center"><i class="fas fa-phone mr-2 text-papercut-main"></i> 845.605.7080</a>
+                <a href="mailto:info@papercutdesign.co" class="text-slate-400 hover:text-white transition-colors hover-trigger flex items-center"><i class="fas fa-envelope mr-2 text-papercut-main"></i> info@papercutdesign.co</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Register GSAP Plugins
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // --- 1. Hero Blob Animation (Fix) ---
+        // GSAP is now constantly animating the positions for a smooth, gentle float
+        gsap.to(".blob-1", { y: "random(-50, 50)", x: "random(-30, 30)", scale: 1.1, duration: 8, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        gsap.to(".blob-2", { y: "random(20, -20)", x: "random(-40, 40)", scale: 0.9, duration: 10, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 1 });
+        gsap.to(".blob-3", { y: "random(-30, 30)", x: "random(50, -50)", scale: 1.2, duration: 9, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2 });
+        
+        // --- 2. Custom Cursor Logic ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        if(window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                if(cursorDot) {
+                    cursorDot.style.left = `${posX}px`;
+                    cursorDot.style.top = `${posY}px`;
+                }
+
+                if(cursorOutline) {
+                    gsap.to(cursorOutline, {
+                        x: posX,
+                        y: posY,
+                        duration: 0.15,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        }
+
+        // Hover States for Cursor
+        const hoverTriggers = document.querySelectorAll('.hover-trigger');
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            trigger.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // --- 3. Hero Animations ---
+        const tl = gsap.timeline();
+        tl.to(".hero-title", { y: 0, opacity: 1, duration: 1.2, ease: "power4.out" })
+          .to(".hero-text", { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.8")
+          .to(".hero-btns", { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.8");
+
+        // --- 4. Progress Bar ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const bar = document.getElementById("progress-bar");
+            if(bar) bar.style.width = scrolled + "%";
+        });
+
+        // --- 5. Scroll Animations (Reveal on Scroll) ---
+        // Services Cards Stagger (Adjusted trigger start for earlier visibility)
+        gsap.from(".service-card", {
+            scrollTrigger: {
+                trigger: "#services",
+                start: "top 90%", // Start earlier than before
+            },
+            y: 50, // Reduced vertical movement
+            opacity: 0,
+            duration: 0.6, // Faster duration
+            stagger: 0.1, // Faster stagger
+            ease: "power2.out"
+        });
+
+        // General Text Reveals
+        gsap.utils.toArray('.reveal-text').forEach(section => {
+            gsap.to(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 85%",
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+
+        // About Text Reveal (Staggered for better feedback)
+        gsap.from(".reveal-text-about > *", {
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 75%",
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power2.out"
+        });
+        
+        // About Image Parallax (Moves slightly on scroll for 3D feel)
+        gsap.to(".about-img", {
+            yPercent: -10, // Move image up 10% (from initial -10% top position) as we scroll down
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+        
+        // About Icon Reveal
+        gsap.to(".about-icon-reveal", {
+             scrollTrigger: {
+                trigger: "#about",
+                start: "top 60%",
+            },
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: "power3.out"
+        });
+
+        // Contact Form Stagger Reveal
+        gsap.to(".contact-item", {
+             scrollTrigger: {
+                trigger: "#contact",
+                start: "top 70%",
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.1, // 0.1s delay between each input field
+            ease: "back.out(1.7)" // Slight bounce effect
+        });
+
+
+        // --- 6. THE BIG FEATURE: Horizontal Scroll Portfolio ---
+        const container = document.getElementById("horizontal-scroll-container");
+        
+        if (window.innerWidth > 768 && container) { 
+            let sections = gsap.utils.toArray(".portfolio-item");
+            
+            gsap.to(sections, {
+                xPercent: -100 * (sections.length - 1), 
+                ease: "none", 
+                scrollTrigger: {
+                    trigger: "#portfolio-wrapper",
+                    pin: true, 
+                    scrub: 1, 
+                    end: () => "+=" + container.offsetWidth 
+                }
+            });
+        } else {
+            if(container) {
+                container.classList.add("overflow-x-auto", "snap-x", "snap-mandatory");
+                container.style.width = "100%"; 
+                const items = document.querySelectorAll('.portfolio-item');
+                items.forEach(item => {
+                    item.classList.add("snap-center", "mx-4");
+                    item.style.width = "85vw"; 
+                });
+            }
+        }
+
+        // --- 7. Magnetic Buttons (Micro-interaction) ---
+        if(window.matchMedia("(pointer: fine)").matches) {
+            const magnets = document.querySelectorAll('.magnetic-btn');
+            magnets.forEach((magnet) => {
+                magnet.addEventListener('mousemove', (e) => {
+                    const position = magnet.getBoundingClientRect();
+                    const x = e.clientX - position.left - position.width / 2;
+                    const y = e.clientY - position.top - position.height / 2;
+
+                    gsap.to(magnet, {
+                        x: x * 0.3, 
+                        y: y * 0.3,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+
+                magnet.addEventListener('mouseleave', (e) => {
+                    gsap.to(magnet, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" }); 
+                });
+            });
+        }
+
+        // --- 8. Header Transparency Logic ---
+        const header = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-sm', 'bg-white/90');
+                header.classList.remove('bg-white/80');
+                header.classList.replace('py-4', 'py-2');
+            } else {
+                header.classList.remove('shadow-sm', 'bg-white/90');
+                header.classList.add('bg-white/80');
+                header.classList.replace('py-2', 'py-4');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let isMenuOpen = false;
+
+        if(mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                const icon = mobileBtn.querySelector('i');
+                
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('pointer-events-none', 'opacity-0');
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                    gsap.from(".mobile-link", { y: 20, opacity: 0, stagger: 0.1, duration: 0.5 });
+                } else {
+                    mobileMenu.classList.add('pointer-events-none', 'opacity-0');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    isMenuOpen = false;
+                    mobileMenu.classList.add('pointer-events-none', 'opacity-0');
+                    const icon = mobileBtn.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
