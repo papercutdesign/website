@@ -1,239 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Papercut - Secure Payment</title>
-    <!-- Favicon: Using s-icon-01.png for standard browsers (32x32) -->
+    <!-- Favicon -->
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
-    <!-- Favicon: Added 48x48 for better search engine display -->
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="48x48">
-    <!-- Apple Touch Icon: Using m-icon-01.png for iOS devices (512x512) -->
     <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
     <meta name="description" content="Secure payment page for Papercut Design services.">
 
-    <!-- Google tag (gtag.js) - Added for Google Analytics tracking -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW5F6HJKKY"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-GW5F6HJKKY');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-GW5F6HJKKY');
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Import Rubik font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Force Tailwind to use the Rubik font stack everywhere -->
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['"Rubik"', 'system-ui', 'sans-serif'],
+                    heading: ['"Rubik"', 'system-ui', 'sans-serif'],
+                },
+                extend: {}
+            }
+        }
+    </script>
+
     <style>
+        :root {
+            --brand-purple: #7C3AED;
+            --brand-pink: #D946EF;
+            --brand-blue: #3B82F6;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+            --font-main: 'Rubik', system-ui, sans-serif;
+        }
+
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        a,
+        button,
+        span,
+        div {
+            font-family: var(--font-main) !important;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Light gray background from your site */
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #F8FAFC;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure full viewport height */
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
         }
-        /* Custom purple colors from the logo */
-        .bg-papercut-purple { background-color: #6B46C1; } /* Main purple */
-        .text-papercut-purple { color: #6B46C1; }
-        .border-papercut-purple { border-color: #6B46C1; }
-        .hover\:bg-papercut-purple-dark:hover { background-color: #553C9A; } /* Darker shade for hover */
-        .bg-papercut-light-purple { background-color: #EDE9FE; } /* Very light purple for cards */
 
-        .nav-link {
-            position: relative;
-            padding-bottom: 0.25rem;
+        /* --- Premium Aurora Background --- */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
             overflow: hidden;
+            background: #F8FAFC;
+            pointer-events: none;
         }
 
-        .nav-link::after {
+        .aurora-blob {
+            position: absolute;
+            filter: blur(90px);
+            opacity: 0.5;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            animation: floatBlob 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: #E9D5FF;
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            top: 40%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: #DBEAFE;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            bottom: -20%;
+            left: 20%;
+            width: 55vw;
+            height: 55vw;
+            background: #FCE7F3;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatBlob {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(3%, 5%) scale(1.05);
+            }
+
+            100% {
+                transform: translate(-3%, -2%) scale(0.95);
+            }
+        }
+
+        /* --- Smooth Scroll Reveal Animations --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px) scale(0.97);
+            transition: opacity 1.2s var(--ease-lux), transform 1.2s var(--ease-lux);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .delay-100 {
+            transition-delay: 100ms;
+        }
+
+        .delay-200 {
+            transition-delay: 200ms;
+        }
+
+        /* --- Premium Glass Cards --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 28px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+            transition: all 0.6s var(--ease-lux);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 20px 40px -15px rgba(124, 58, 237, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        /* --- Satisfying Premium Buttons --- */
+        .btn-premium {
+            background: linear-gradient(135deg, var(--brand-purple), var(--brand-pink));
+            color: white;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s var(--ease-lux);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-family: var(--font-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-premium::after {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
-            background-color: #6B46C1;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s ease-out;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* Header styles for the payment page */
-        #payment-header {
-            width: 100%;
-            max-width: 100vw;
-            margin: 0 auto;
-            border-radius: 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.4s ease-in-out;
-            border: none;
             top: 0;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-20deg);
+            transition: 0.7s var(--ease-lux);
+            z-index: -1;
         }
 
-        #payment-header img {
-            transition: transform 0.4s ease-in-out;
+        .btn-premium:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 18px 35px -5px rgba(124, 58, 237, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Main content area for the iframe */
+        .btn-premium:hover::after {
+            left: 150%;
+        }
+
+        /* --- Header Scrolled State --- */
+        #main-header {
+            transition: all 0.6s var(--ease-lux);
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        #main-header.header-scrolled {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Payment specific container styles */
         .payment-container {
-            flex-grow: 1; /* Allows the container to take up available space */
+            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem; /* Add some padding around the iframe */
-            background-color: #f8fafc; /* Match body background */
+            padding: 1rem;
+            padding-top: 8rem;
+            /* Offset for fixed header */
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            .payment-container {
+                padding-top: 10rem;
+            }
         }
 
         .iframe-wrapper {
             width: 100%;
-            max-width: 900px; /* Increased max-width for the iframe wrapper */
-            height: 70vh; /* Set a responsive height for the iframe */
-            border-radius: 0.75rem; /* Rounded corners for the wrapper */
-            overflow: hidden; /* Ensures iframe corners are also rounded */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Subtle shadow */
-            background-color: #ffffff; /* Background for the wrapper */
-            border: 1px solid #e2e8f0; /* Light border */
-            padding: 1.5rem; /* Added padding inside the wrapper */
+            max-width: 900px;
+            height: 70vh;
+            border-radius: 28px;
+            overflow: hidden;
+            padding: 1rem;
         }
 
         iframe {
             width: 100%;
             height: 100%;
-            border: 0; /* Remove default iframe border */
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .iframe-wrapper {
-                height: 80vh; /* Taller iframe on smaller screens */
-                padding: 1rem; /* Slightly less padding on mobile */
-            }
-        }
-
-        /* Mobile menu slide animation - Copied from index.html */
-        .mobile-menu-slide-enter {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        .mobile-menu-slide-enter-active {
-            max-height: 500px; /* Sufficient height to cover content */
-            opacity: 1;
-            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
-        }
-        .mobile-menu-slide-exit {
-            max-height: 500px;
-            opacity: 1;
-        }
-        .mobile-menu-slide-exit-active {
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            border: 0;
+            border-radius: 20px;
         }
     </style>
 </head>
+
 <body>
 
-    <header id="payment-header" class="bg-white shadow-md py-4 sticky top-0 z-50">
-        <nav class="container mx-auto px-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2">
-                <img src="logopng.png" alt="Papercut Design Company Logo - Abstract Purple Graphic" class="h-8 md:h-10">
+    <!-- Soft Aurora Background -->
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+
+    <!-- Header (Frosted Glass Transition) -->
+    <header id="main-header" class="fixed w-full top-0 z-50">
+        <nav class="container mx-auto px-6 max-w-7xl flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 z-50">
+                <img src="logopng.png" alt="Papercut Design"
+                    class="h-7 md:h-9 transition-transform hover:scale-105 duration-700 ease-out">
             </a>
-            <div class="hidden md:flex space-x-8">
-                <a href="index.html#home" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Home</a>
-                <a href="index.html#services" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Services</a>
-                <a href="index.html#portfolio" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Portfolio</a>
-                <a href="index.html#about" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">About Me</a>
-                <a href="index.html#contact" class="nav-link text-gray-600 hover:text-papercut-purple text-lg font-medium transition duration-300 ease-in-out">Contact</a>
+
+            <!-- Desktop Menu -->
+            <div
+                class="hidden md:flex space-x-10 items-center bg-white/40 backdrop-blur-md px-8 py-3 rounded-full border border-white/60 shadow-sm font-heading">
+                <a href="index.html#home"
+                    class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Home</a>
+                <a href="index.html#services"
+                    class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Services</a>
+                <a href="index.html#portfolio"
+                    class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Portfolio</a>
+                <a href="index.html#about"
+                    class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">About
+                    Me</a>
             </div>
-            <!-- Mobile menu button -->
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-3 rounded-lg hover:bg-gray-100 transition duration-200">
-                <svg class="w-9 h-9 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+
+            <div class="hidden md:block">
+                <a href="index.html#contact"
+                    class="btn-premium px-8 py-3 font-medium text-[15px] tracking-wide">Contact</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button"
+                class="md:hidden focus:outline-none p-2 bg-white/50 backdrop-blur-md rounded-full border border-white/60 text-slate-900 transition-transform active:scale-90">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
                 </svg>
             </button>
         </nav>
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-lg mobile-menu-slide-enter">
-            <a href="index.html#home" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Home</a>
-            <a href="index.html#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Services</a>
-            <a href="index.html#portfolio" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Portfolio</a>
-            <a href="index.html#about" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">About Me</a>
-            <a href="index.html#contact" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out border-b border-gray-100">Contact</a>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full mt-2 left-4 right-4 bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-3xl origin-top transform scale-y-0 opacity-0 transition-all duration-500 var(--ease-lux)">
+            <div class="flex flex-col p-6 space-y-4 text-center font-heading">
+                <a href="index.html#home" class="text-xl font-normal text-slate-800 hover:text-purple-600">Home</a>
+                <a href="index.html#services"
+                    class="text-xl font-normal text-slate-800 hover:text-purple-600">Services</a>
+                <a href="index.html#portfolio"
+                    class="text-xl font-normal text-slate-800 hover:text-purple-600">Portfolio</a>
+                <a href="index.html#about" class="text-xl font-normal text-slate-800 hover:text-purple-600">About Me</a>
+                <a href="index.html#contact" class="btn-premium py-4 mt-4 text-center text-lg font-medium">Contact
+                    Us</a>
+            </div>
         </div>
     </header>
 
     <main class="payment-container">
-        <div class="iframe-wrapper">
+        <div class="iframe-wrapper glass-card reveal">
             <iframe src="https://secure.cardknox.com/papercutdesign"></iframe>
         </div>
     </main>
 
-    <footer class="bg-gray-800 text-white py-8 mt-auto">
-        <div class="container mx-auto px-4 text-center">
-            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-phone fa-lg text-white"></i>
-                    <a href="tel:+18456057080" class="text-white font-medium hover:underline">845.605.7080</a>
+    <!-- Footer -->
+    <footer
+        class="bg-white/80 backdrop-blur-xl border-t border-white py-16 mt-auto relative z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+
+                <a href="index.html" class="flex items-center">
+                    <img src="logopng.png" alt="Papercut Design"
+                        class="h-8 md:h-10 opacity-90 hover:opacity-100 transition-opacity">
+                </a>
+
+                <div class="flex flex-col sm:flex-row items-center gap-6 md:gap-8 font-heading">
+                    <a href="tel:+18456057080"
+                        class="px-5 py-2.5 rounded-full bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors text-[15px] font-light shadow-sm border border-slate-100">
+                        <i class="fas fa-phone mr-2"></i> 845.605.7080
+                    </a>
+                    <a href="mailto:info@papercutdesign.co"
+                        class="px-5 py-2.5 rounded-full bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors text-[15px] font-light shadow-sm border border-slate-100">
+                        <i class="fas fa-envelope mr-2"></i> info@papercutdesign.co
+                    </a>
+                    <a href="payment.html"
+                        class="text-purple-700 transition-colors text-[15px] font-medium">Payments</a>
+                    <a href="privacy-policy.html"
+                        class="text-slate-500 hover:text-purple-700 transition-colors text-[15px] font-light">Privacy</a>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-envelope-open-text fa-lg text-white"></i>
-                    <a href="mailto:info@papercutdesign.co" class="text-white font-medium hover:underline">info@papercutdesign.co</a>
-                </div>
+
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-slate-200 flex justify-center items-center text-center">
+                <p class="text-slate-400 text-sm font-light">
+                    &copy;
+                    <script>document.write(new Date().getFullYear())</script> Papercut Design. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Smooth scrolling for navigation links (adapted for this page)
-        document.querySelectorAll('a[href^="index.html#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                // Allow default navigation for links pointing to the main page
-                // Close mobile menu if open
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.remove('mobile-menu-slide-enter-active');
-                    mobileMenu.classList.add('mobile-menu-slide-exit-active');
-                    setTimeout(() => {
-                        mobileMenu.classList.add('hidden');
-                        mobileMenu.classList.remove('mobile-menu-slide-exit-active');
-                        mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
-                    }, 400); // Match CSS transition duration
-                }
+        // --- Scroll Reveal Animation Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const revealOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const revealOnScroll = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, revealOptions);
+            reveals.forEach(reveal => revealOnScroll.observe(reveal));
+        });
+
+        // --- Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                void menu.offsetWidth;
+                menu.classList.remove('scale-y-0', 'opacity-0');
+            } else {
+                menu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 500);
+            }
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => { menu.classList.add('hidden'); }, 500);
             });
         });
 
-        // Toggle mobile menu visibility - Copied from index.html
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
-            if (mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.remove('hidden');
-                setTimeout(() => {
-                    mobileMenu.classList.remove('mobile-menu-slide-enter');
-                    mobileMenu.classList.add('mobile-menu-slide-enter-active');
-                }, 10); // Small delay to ensure display property is set before transition
+        // --- Scroll Effect for Header ---
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                header.classList.add('header-scrolled');
             } else {
-                mobileMenu.classList.remove('mobile-menu-slide-enter-active');
-                mobileMenu.classList.add('mobile-menu-slide-exit-active');
-                setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
-                    mobileMenu.classList.remove('mobile-menu-slide-exit-active');
-                    mobileMenu.classList.add('mobile-menu-slide-enter'); // Reset for next open
-                }, 400); // Match CSS transition duration
+                header.classList.remove('header-scrolled');
             }
         });
     </script>
-
 </body>
+
 </html>
