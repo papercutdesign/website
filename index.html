@@ -19,36 +19,56 @@
       gtag('config', 'G-GW5F6HJKKY');
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Import Rubik font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Force Tailwind to use the Rubik font stack everywhere -->
+    <script>
+      tailwind.config = {
+        theme: {
+          fontFamily: {
+            sans: ['"Rubik"', 'system-ui', 'sans-serif'],
+            heading: ['"Rubik"', 'system-ui', 'sans-serif'],
+          },
+          extend: {}
+        }
+      }
+    </script>
 
     <style>
         :root {
-            /* Deeper glass settings for that "thick" look */
-            --glass-bg: rgba(255, 255, 255, 0.1); 
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-border-faint: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            --glass-shine: rgba(255, 255, 255, 0.4);
-            
-            --primary-purple: #7c3aed;
-            --accent-pink: #d946ef;
-            --accent-blue: #3b82f6;
-            --text-dark: #1e1b4b;
+            --brand-purple: #7C3AED;
+            --brand-pink: #D946EF;
+            --brand-blue: #3B82F6;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            /* Ultra-premium, elongated easing curve for satisfying animations */
+            --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+            /* Iron-clad font stack using Rubik */
+            --font-main: 'Rubik', system-ui, sans-serif;
+        }
+
+        body, h1, h2, h3, h4, p, a, button, span, div {
+            font-family: var(--font-main) !important;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
             overflow-x: hidden;
-            background-color: #f0f2f5;
-            color: var(--text-dark);
-            min-height: 100vh;
+            background-color: #F8FAFC;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Advanced Liquid Background --- */
-        .liquid-bg {
+        /* --- Premium Aurora Background --- */
+        .aurora-bg {
             position: fixed;
             top: 0;
             left: 0;
@@ -56,390 +76,346 @@
             height: 100vh;
             z-index: -1;
             overflow: hidden;
-            background: #f8fafc;
+            background: #F8FAFC;
+            pointer-events: none;
         }
 
-        .blob {
+        .aurora-blob {
             position: absolute;
-            filter: blur(80px); /* Heavy blur for liquid feel */
-            z-index: -1;
-            opacity: 0.7;
-            border-radius: 40% 50% 30% 40%;
-            animation: moveBlobs 25s infinite alternate ease-in-out;
-            mix-blend-mode: multiply; /* This makes colors mix vibrantly */
+            filter: blur(90px);
+            opacity: 0.5;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            animation: floatBlob 20s infinite alternate ease-in-out;
         }
 
-        .blob-1 {
-            top: -10%;
-            left: -10%;
-            width: 60vw;
-            height: 60vw;
-            background: #e9d5ff; /* Purple 200 */
-            animation-duration: 30s;
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #E9D5FF; animation-duration: 25s; }
+        .blob-2 { top: 40%; right: -10%; width: 60vw; height: 60vw; background: #DBEAFE; animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 55vw; height: 55vw; background: #FCE7F3; animation-delay: -10s; }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(3%, 5%) scale(1.05); }
+            100% { transform: translate(-3%, -2%) scale(0.95); }
         }
 
-        .blob-2 {
-            bottom: -20%;
-            right: -10%;
-            width: 70vw;
-            height: 70vw;
-            background: #ddd6fe; /* Violet 200 */
-            animation-duration: 35s;
-            animation-delay: -5s;
+        /* --- Smooth Scroll Reveal Animations (Upgraded) --- */
+        .reveal {
+            opacity: 0;
+            /* Added a subtle scale down for a more satisfying 'pop' into place */
+            transform: translateY(50px) scale(0.97);
+            transition: opacity 1.2s var(--ease-lux), transform 1.2s var(--ease-lux);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        /* Stagger Classes for the Waterfall Effect */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-500 { transition-delay: 500ms; }
+        .delay-600 { transition-delay: 600ms; }
+
+        /* --- Typography & Gradients --- */
+        .hero-title {
+            letter-spacing: -0.03em; /* Tight letter spacing typical of Apple headings */
+            line-height: 1.05;
+        }
+        
+        .animated-gradient-text {
+            background: linear-gradient(to right, var(--brand-purple), var(--brand-pink), var(--brand-blue), var(--brand-purple));
+            background-size: 300% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: textShine 8s linear infinite;
+            padding-bottom: 0.3em; /* Increased padding to prevent 'g' from clipping */
+            margin-bottom: -0.3em; /* Negative margin to offset the padding so layout doesn't shift */
+            display: inline-block;
         }
 
-        .blob-3 {
-            top: 20%;
-            left: 30%;
-            width: 50vw;
-            height: 50vw;
-            background: #bfdbfe; /* Blue 200 */
-            animation-duration: 28s;
-            animation-delay: -10s;
+        @keyframes textShine {
+            to { background-position: 300% center; }
         }
 
-        .blob-4 {
-            bottom: 10%;
-            left: 0%;
-            width: 40vw;
-            height: 40vw;
-            background: #f5d0fe; /* Fuchsia 200 */
-            animation-duration: 32s;
-            animation-delay: -2s;
+        /* --- Premium Glass Cards --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 28px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+            transition: all 0.6s var(--ease-lux);
+        }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 20px 40px -15px rgba(124, 58, 237, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 1);
         }
 
-        @keyframes moveBlobs {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            33% { transform: translate(30px, -50px) rotate(20deg) scale(1.1); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            66% { transform: translate(-20px, 20px) rotate(-10deg) scale(0.9); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-        }
-
-        /* --- Ultra Glassmorphism --- */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.25); /* Less opacity for transparency */
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            
-            /* The "Thick Edge" Trick */
-            border-top: 1px solid var(--glass-border);
-            border-left: 1px solid var(--glass-border);
-            border-bottom: 1px solid var(--glass-border-faint);
-            border-right: 1px solid var(--glass-border-faint);
-            
-            border-radius: 24px;
-            box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.05),
-                inset 0 0 20px rgba(255, 255, 255, 0.4); /* Inner glow/thickness */
-            
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .glass-panel:hover {
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.1),
-                inset 0 0 20px rgba(255, 255, 255, 0.6);
-            transform: translateY(-5px) scale(1.005);
-        }
-
-        /* Header specific glass */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-
-        /* --- Glossy Buttons --- */
-        .glossy-btn {
-            background: linear-gradient(145deg, #8b5cf6, #6d28d9);
-            border: none;
+        /* --- Satisfying Premium Buttons --- */
+        .btn-premium {
+            background: linear-gradient(135deg, var(--brand-purple), var(--brand-pink));
             color: white;
+            border-radius: 50px;
+            /* Added deeper inner shadow to make it feel like physical hardware */
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(0,0,0,0.1);
+            transition: all 0.5s var(--ease-lux);
             position: relative;
             overflow: hidden;
-            border-radius: 50px;
-            box-shadow: 
-                0 10px 20px rgba(109, 40, 217, 0.3),
-                inset 0 2px 0 rgba(255,255,255,0.3), /* Top highlight */
-                inset 0 -2px 0 rgba(0,0,0,0.1);    /* Bottom shadow */
-            transition: all 0.3s ease;
             z-index: 1;
+            font-family: var(--font-main);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .glossy-btn::before {
+        
+        /* The Shimmer Effect */
+        .btn-premium::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            transition: 0.7s var(--ease-lux);
             z-index: -1;
         }
-
-        .glossy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(109, 40, 217, 0.4);
-            filter: brightness(1.1);
+        
+        .btn-premium:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 18px 35px -5px rgba(124, 58, 237, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0,0,0,0.1);
         }
         
-        .glossy-btn-secondary {
-            background: rgba(255, 255, 255, 0.3);
-            color: #6d28d9;
-            border: 1px solid rgba(255,255,255,0.6);
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 5px 15px rgba(0,0,0,0.05),
-                inset 0 2px 0 rgba(255,255,255,0.4);
-        }
-        
-        .glossy-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.5);
-            color: #5b21b6;
+        .btn-premium:hover::after {
+            left: 150%;
         }
 
-        /* --- Nav & Header Logic --- */
-        #main-header {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            color: var(--text-main);
+            border-radius: 50px;
+            transition: all 0.5s var(--ease-lux);
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            font-family: var(--font-main);
+        }
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.8);
         }
 
-        #main-header.header-scrolled {
-            margin-top: 1rem;
-            width: 90%;
-            max-width: 1200px;
-            border-radius: 100px; /* Pill shape */
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid rgba(255,255,255,0.8);
-            background: rgba(255, 255, 255, 0.75);
-        }
-
-        .nav-link {
-            position: relative;
-            font-weight: 500;
-            color: #4b5563;
-        }
-        
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(139, 92, 246, 0.1);
-            border-radius: 8px;
-            transform: scale(0.8);
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: -1;
-        }
-
-        .nav-link:hover {
-            color: #7c3aed;
-        }
-        
-        .nav-link:hover::before {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        /* --- Typography Effects --- */
-        .hero-title {
-            background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            /* Drop shadow to lift text off background */
-            filter: drop-shadow(0 2px 10px rgba(124, 58, 237, 0.15));
-            letter-spacing: -0.02em;
-        }
-
-        /* --- Portfolio Scroll --- */
+        /* --- Portfolio Gallery Scroll --- */
         .horizontal-scroll-container {
             display: flex;
             overflow-x: auto;
             scroll-behavior: smooth;
-            padding: 2rem 1rem;
-            gap: 2rem;
+            padding: 3rem 1rem;
+            gap: 2.5rem;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
         }
-        
         .horizontal-scroll-container::-webkit-scrollbar {
             display: none;
         }
 
-        .horizontal-scroll-item {
+        .portfolio-item {
             flex-shrink: 0;
             position: relative;
-            border-radius: 20px;
-            overflow: hidden;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            /* Glass border around images */
-            border: 4px solid rgba(255,255,255,0.4);
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.1);
+            transition: all 0.6s var(--ease-lux);
         }
-
-        .horizontal-scroll-item:hover {
-            transform: scale(1.05) translateY(-5px);
-            border-color: rgba(255,255,255,0.8);
-            box-shadow: 0 20px 30px -5px rgba(124, 58, 237, 0.2);
+        .portfolio-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(124,58,237,0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.6s var(--ease-lux);
+        }
+        .portfolio-item:hover {
+            transform: scale(1.04) translateY(-10px);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 30px 50px -15px rgba(124, 58, 237, 0.3);
             z-index: 10;
+        }
+        .portfolio-item:hover::after {
+            opacity: 1;
         }
 
         .portfolio-item-img {
             display: block;
-            height: 380px;
+            height: 420px;
             width: auto;
             object-fit: cover;
+            transition: transform 0.8s var(--ease-lux);
+        }
+        .portfolio-item:hover .portfolio-item-img {
+            transform: scale(1.05);
         }
         
         @media(max-width: 768px) {
-            .portfolio-item-img {
-                height: 280px;
-            }
+            .portfolio-item-img { height: 320px; }
         }
 
-        /* --- Custom Inputs --- */
-        .glass-input {
+        /* --- Header Scrolled State --- */
+        #main-header {
+            transition: all 0.6s var(--ease-lux);
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        #main-header.header-scrolled {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        /* --- Form Inputs --- */
+        .editorial-input {
             width: 100%;
-            padding: 1rem 1.5rem;
-            background: rgba(255,255,255,0.4);
-            border: 1px solid rgba(255,255,255,0.5);
+            padding: 1.25rem 1.5rem;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.8);
             border-radius: 16px;
-            color: #1e1b4b;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            color: var(--text-main);
+            transition: all 0.4s var(--ease-lux);
+            font-family: var(--font-main);
         }
-        
-        .glass-input:focus {
+        .editorial-input:focus {
             outline: none;
-            background: rgba(255,255,255,0.7);
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
-        }
-        
-        .glass-input::placeholder {
-            color: #64748b;
+            background: rgba(255,255,255,0.95);
+            border-color: var(--brand-purple);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
         }
 
         /* --- Modal --- */
         .image-modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(16px); /* Heavy frosted glass background */
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.5s var(--ease-lux);
         }
-        
         .image-modal-overlay.show {
             opacity: 1;
             visibility: visible;
         }
-        
         .modal-content-wrapper {
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
+            position: relative;
+            padding: 8px;
+            background: rgba(255,255,255,0.2);
             border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: scale(0.9) translateY(40px);
+            transition: all 0.6s var(--ease-lux);
         }
-        
         .image-modal-overlay.show .modal-content-wrapper {
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
-
         .image-modal-overlay img {
-            max-width: 85vw;
-            max-height: 80vh;
+            max-width: 90vw;
+            max-height: 85vh;
             border-radius: 16px;
             display: block;
-        }
-
-        /* --- Footer --- */
-        .glass-footer {
-            background: linear-gradient(to top, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.5);
         }
     </style>
 </head>
 <body>
 
-    <!-- Advanced Liquid Background -->
-    <div class="liquid-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="blob blob-4"></div>
+    <!-- Soft Aurora Background -->
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
     </div>
 
-    <!-- Header -->
-    <header id="main-header" class="fixed w-full top-0 z-50 glass-header transition-all duration-300">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- Header (Frosted Glass Transition) -->
+    <header id="main-header" class="fixed w-full top-0 z-50">
+        <nav class="container mx-auto px-6 max-w-7xl flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2 z-50">
-                <img src="logopng.png" alt="Papercut Design" class="h-8 md:h-8 drop-shadow-sm transform hover:scale-105 transition-transform duration-300">
+                <img src="logopng.png" alt="Papercut Design" class="h-7 md:h-9 transition-transform hover:scale-105 duration-700 ease-out">
             </a>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="#home" class="nav-link text-lg transition duration-300">Home</a>
-                <a href="#services" class="nav-link text-lg transition duration-300">Services</a>
-                <a href="#portfolio" class="nav-link text-lg transition duration-300">Portfolio</a>
-                <a href="#about" class="nav-link text-lg transition duration-300">About Me</a>
-                <a href="#contact" class="px-8 py-3 rounded-full glossy-btn font-semibold text-sm tracking-wide">Contact</a>
+            <div class="hidden md:flex space-x-10 items-center bg-white/40 backdrop-blur-md px-8 py-3 rounded-full border border-white/60 shadow-sm font-heading">
+                <a href="#home" class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Home</a>
+                <a href="#services" class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Services</a>
+                <a href="#portfolio" class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Portfolio</a>
+                <a href="#about" class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">About Me</a>
+            </div>
+            
+            <div class="hidden md:block">
+                <a href="#contact" class="btn-premium px-8 py-3 font-medium text-[15px] tracking-wide">Contact</a>
             </div>
 
             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-2 rounded-xl hover:bg-white/40 transition duration-200">
-                <svg class="w-8 h-8 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none p-2 bg-white/50 backdrop-blur-md rounded-full border border-white/60 text-slate-900 transition-transform active:scale-90">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
         </nav>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden absolute w-full shadow-xl overflow-hidden transition-all duration-300 origin-top transform scale-y-0 opacity-0 bg-white/90 backdrop-blur-xl rounded-b-3xl border-t border-white/50">
-            <div class="flex flex-col p-6 space-y-3">
-                <a href="#home" class="block px-4 py-3 rounded-xl hover:bg-purple-50 text-gray-800 font-medium">Home</a>
-                <a href="#services" class="block px-4 py-3 rounded-xl hover:bg-purple-50 text-gray-800 font-medium">Services</a>
-                <a href="#portfolio" class="block px-4 py-3 rounded-xl hover:bg-purple-50 text-gray-800 font-medium">Portfolio</a>
-                <a href="#about" class="block px-4 py-3 rounded-xl hover:bg-purple-50 text-gray-800 font-medium">About Me</a>
-                <a href="#contact" class="block px-4 py-3 rounded-xl bg-purple-100 text-purple-800 font-bold text-center">Contact Us</a>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full mt-2 left-4 right-4 bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-3xl origin-top transform scale-y-0 opacity-0 transition-all duration-500 var(--ease-lux)">
+            <div class="flex flex-col p-6 space-y-4 text-center font-heading">
+                <a href="#home" class="text-xl font-normal text-slate-800 hover:text-purple-600">Home</a>
+                <a href="#services" class="text-xl font-normal text-slate-800 hover:text-purple-600">Services</a>
+                <a href="#portfolio" class="text-xl font-normal text-slate-800 hover:text-purple-600">Portfolio</a>
+                <a href="#about" class="text-xl font-normal text-slate-800 hover:text-purple-600">About Me</a>
+                <a href="#contact" class="btn-premium py-4 mt-4 text-center text-lg font-medium">Contact Us</a>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section id="home" class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4 min-h-screen flex items-center justify-center">
-        <div class="container mx-auto text-center z-10">
-            <div class="glass-panel inline-flex items-center gap-2 px-6 py-2 mb-8 rounded-full animate-[bounce_3s_infinite]">
-                <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                <span class="text-purple-900 font-semibold tracking-wide uppercase text-xs">Ask for our pricing</span>
+    <section id="home" class="relative pt-48 pb-20 md:pt-60 md:pb-32 px-6 min-h-[95vh] flex flex-col justify-center">
+        <div class="container mx-auto max-w-7xl relative z-10 text-center">
+            
+            <div class="reveal inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-md border border-white shadow-sm text-xs font-medium tracking-widest uppercase text-slate-600 rounded-full mb-8">
+                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                Ask for our pricing
             </div>
             
-            <h1 class="text-6xl md:text-8xl font-extrabold leading-tight mb-8 hero-title">
-                Design that <br class="hidden md:block" /> cuts through.
+            <!-- Guaranteed SF Pro Rounded font with font-black (900 weight) boldness -->
+            <h1 class="reveal delay-100 text-6xl md:text-[8rem] hero-title font-heading font-bold mb-8 text-slate-900 leading-[1.05]">
+                Design that <br class="hidden md:block" />
+                <span class="animated-gradient-text relative inline-block">
+                    cuts through.
+                </span>
             </h1>
             
-            <div class="glass-panel p-8 md:p-10 max-w-3xl mx-auto mb-12 backdrop-blur-3xl">
-                <p class="text-lg md:text-xl text-gray-700 leading-relaxed font-medium">
-                    At Papercut, we craft impactful and memorable designs that truly stand out. 
-                    From branding to print, we ensure your message resonates with clarity and style.
-                </p>
-            </div>
+            <p class="reveal delay-200 text-lg md:text-2xl text-slate-600 leading-relaxed font-light max-w-2xl mb-12 mx-auto">
+                At Papercut, we craft impactful and memorable designs that truly stand out. 
+                From branding to print, we ensure your message resonates with clarity and style.
+            </p>
             
-            <div class="flex flex-col md:flex-row justify-center gap-6">
-                <a href="#portfolio" class="glossy-btn py-4 px-12 rounded-full text-lg font-bold">
+            <div class="reveal delay-300 flex flex-col sm:flex-row gap-5 justify-center">
+                <a href="#portfolio" class="btn-premium py-4 px-10 text-center font-medium tracking-wide text-lg">
                     View Our Work
                 </a>
-                <a href="#contact" class="glossy-btn-secondary py-4 px-12 rounded-full text-lg font-bold transition-all">
+                <a href="#contact" class="btn-glass py-4 px-10 text-center font-medium tracking-wide text-lg">
                     Get in Touch
                 </a>
             </div>
@@ -447,43 +423,48 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="py-24 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Our Services</h2>
-                <div class="w-24 h-1.5 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto rounded-full opacity-80"></div>
+    <section id="services" class="py-24 md:py-32 relative">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="reveal flex flex-col items-center text-center mb-16 gap-6">
+                <div>
+                    <h2 class="text-5xl md:text-7xl font-bold text-slate-900 mb-4 tracking-tight font-heading">Our Services.</h2>
+                    <p class="text-slate-500 text-lg md:text-xl max-w-xl font-light mx-auto">Comprehensive design solutions tailored to elevate your business above the competition.</p>
+                </div>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Service 1 -->
-                <div class="glass-panel p-10 flex flex-col items-center text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-white rounded-2xl flex items-center justify-center mb-6 text-purple-600 shadow-lg border border-white/50 transform rotate-3">
-                        <i class="fas fa-lightbulb fa-2x"></i>
+                <div class="reveal delay-100 glass-card p-10 flex flex-col items-center text-center relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-700"></div>
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-white flex items-center justify-center mb-8 text-purple-600 text-2xl group-hover:scale-110 transition-transform duration-500 var(--ease-lux)">
+                        <i class="fas fa-lightbulb"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Brand Identity</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="text-3xl font-medium mb-4 text-slate-900 font-heading">Brand Identity</h3>
+                    <p class="text-slate-600 leading-relaxed font-light">
                         Crafting unique logos, brand guidelines, and visual identities that truly represent your business and values.
                     </p>
                 </div>
 
                 <!-- Service 2 -->
-                <div class="glass-panel p-10 flex flex-col items-center text-center relative top-8 md:top-0">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-white rounded-2xl flex items-center justify-center mb-6 text-purple-600 shadow-lg border border-white/50 transform -rotate-2">
-                        <i class="fas fa-print fa-2x"></i>
+                <div class="reveal delay-300 glass-card p-10 flex flex-col items-center text-center relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-700"></div>
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-white flex items-center justify-center mb-8 text-blue-500 text-2xl group-hover:scale-110 transition-transform duration-500 var(--ease-lux)">
+                        <i class="fas fa-print"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Print Design</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="text-3xl font-medium mb-4 text-slate-900 font-heading">Print Design</h3>
+                    <p class="text-slate-600 leading-relaxed font-light">
                         From business cards to brochures, we design stunning print materials that leave a lasting tactile impression.
                     </p>
                 </div>
 
                 <!-- Service 3 -->
-                <div class="glass-panel p-10 flex flex-col items-center text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-white rounded-2xl flex items-center justify-center mb-6 text-purple-600 shadow-lg border border-white/50 transform rotate-1">
-                        <i class="fas fa-palette fa-2x"></i>
+                <div class="reveal delay-500 glass-card p-10 flex flex-col items-center text-center relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-pink-200 rounded-full blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-700"></div>
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-white flex items-center justify-center mb-8 text-pink-500 text-2xl group-hover:scale-110 transition-transform duration-500 var(--ease-lux)">
+                        <i class="fas fa-palette"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Digital Graphics</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="text-3xl font-medium mb-4 text-slate-900 font-heading">Digital Graphics</h3>
+                    <p class="text-slate-600 leading-relaxed font-light">
                         Creating captivating digital visuals for social media, websites, and all your online content needs.
                     </p>
                 </div>
@@ -492,132 +473,171 @@
     </section>
 
     <!-- Portfolio Section -->
-    <section id="portfolio" class="py-24 overflow-hidden">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gray-900 tracking-tight">Recent Work</h2>
-            
-            <!-- Glass Tabs -->
-            <div class="inline-flex bg-white/30 backdrop-blur-md p-1.5 rounded-full border border-white/50 mb-12 shadow-inner">
-                <button id="ad-tab" class="px-8 py-3 rounded-full text-lg font-semibold text-gray-600 transition-all duration-300 hover:text-purple-700 focus:outline-none data-[active=true]:bg-white data-[active=true]:text-purple-700 data-[active=true]:shadow-lg">
-                    Ads
-                </button>
-                <button id="logo-tab" class="px-8 py-3 rounded-full text-lg font-semibold text-gray-600 transition-all duration-300 hover:text-purple-700 focus:outline-none data-[active=true]:bg-white data-[active=true]:text-purple-700 data-[active=true]:shadow-lg">
-                    Logos
-                </button>
+    <section id="portfolio" class="py-24 md:py-32 overflow-hidden relative">
+        <div class="container mx-auto px-6 max-w-[1400px]">
+            <div class="reveal flex flex-col items-center text-center mb-12 gap-8">
+                <h2 class="text-5xl md:text-7xl font-bold text-slate-900 tracking-tight font-heading">Recent Work.</h2>
+                
+                <!-- Pill Tabs -->
+                <div class="inline-flex bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-sm">
+                    <button id="ad-tab" class="px-8 py-3 text-[15px] font-normal text-slate-500 transition-all duration-300 focus:outline-none data-[active=true]:bg-white data-[active=true]:text-purple-700 data-[active=true]:shadow-md rounded-full font-heading">
+                        Ads
+                    </button>
+                    <button id="logo-tab" class="px-8 py-3 text-[15px] font-normal text-slate-500 transition-all duration-300 focus:outline-none data-[active=true]:bg-white data-[active=true]:text-purple-700 data-[active=true]:shadow-md rounded-full font-heading">
+                        Logos
+                    </button>
+                </div>
             </div>
 
             <!-- Carousel -->
-            <div class="portfolio-carousel-wrapper relative group">
+            <div class="reveal delay-200 relative group">
                 <div id="portfolio-container" class="horizontal-scroll-container">
                     <!-- Items injected via JS -->
                 </div>
 
-                <!-- Glass Arrows -->
-                <button id="arrow-left" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full bg-white/70 backdrop-blur-md border border-white/80 flex items-center justify-center text-purple-700 hover:bg-white hover:scale-110 transition-all shadow-xl opacity-0 group-hover:opacity-100 z-20">
-                    <i class="fas fa-chevron-left fa-lg"></i>
+                <!-- Floating Glass Arrows -->
+                <button id="arrow-left" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-16 h-16 rounded-full bg-white/80 backdrop-blur-xl border border-white flex items-center justify-center text-purple-700 hover:bg-white hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl opacity-0 group-hover:opacity-100 z-20 hidden md:flex">
+                    <i class="fas fa-arrow-left text-xl"></i>
                 </button>
-                <button id="arrow-right" class="absolute right-4 top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full bg-white/70 backdrop-blur-md border border-white/80 flex items-center justify-center text-purple-700 hover:bg-white hover:scale-110 transition-all shadow-xl opacity-0 group-hover:opacity-100 z-20">
-                    <i class="fas fa-chevron-right fa-lg"></i>
+                <button id="arrow-right" class="absolute right-4 top-1/2 transform -translate-y-1/2 w-16 h-16 rounded-full bg-white/80 backdrop-blur-xl border border-white flex items-center justify-center text-purple-700 hover:bg-white hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl opacity-0 group-hover:opacity-100 z-20 hidden md:flex">
+                    <i class="fas fa-arrow-right text-xl"></i>
                 </button>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-24">
-        <div class="container mx-auto px-4">
-            <div class="glass-panel p-8 md:p-16 max-w-5xl mx-auto relative overflow-hidden">
-                <!-- Decorative element behind text -->
-                <div class="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-purple-300 to-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-                <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-pink-300 to-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="animation-delay: 1s;"></div>
-
-                <div class="relative z-10 text-center">
-                    <h2 class="text-3xl md:text-5xl font-bold mb-10 text-gray-900">About Papercut Design</h2>
-                    <div class="text-lg md:text-xl text-gray-700 space-y-8 leading-relaxed font-medium max-w-3xl mx-auto">
-                        <p>
-                            Hi, I'm <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-extrabold">Yossi Breuer</span>, the founder of Papercut Design. I believe that powerful design shouldn't be out of reach for small businesses. My mission is to bring beautiful, impactful design solutions that truly stand out, all at accessible prices.
-                        </p>
-                        <p>
-                            With a dedicated focus on transforming your vision into compelling visual realities, I work closely with each client to understand their unique story. My goal is to deliver creative solutions that not only look exceptional but also drive tangible results for your brand.
-                        </p>
-                        <p>
-                            At Papercut Design, I'm committed to excellence in every project. Let me help your small business define and amplify its voice without breaking the bank.
-                        </p>
+    <section id="about" class="py-24 md:py-32 relative">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="reveal glass-card p-10 md:p-16">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-5 relative reveal delay-200">
+                        <!-- Colorful backdrop for icon -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-purple-200 to-pink-200 rounded-3xl transform rotate-3 scale-105 opacity-50"></div>
+                        <div class="relative w-full aspect-square bg-white rounded-3xl border border-white shadow-lg flex items-center justify-center p-12 overflow-hidden">
+                             <img src="iconnew.png" alt="Papercut Icon" class="w-full h-full object-contain hover:scale-110 transition-transform duration-1000 var(--ease-lux)" />
+                        </div>
                     </div>
+
+                    <div class="lg:col-span-7 lg:pl-8">
+                        <h2 class="reveal delay-300 text-5xl md:text-6xl font-bold text-slate-900 mb-8 font-heading">About Papercut.</h2>
+                        <div class="reveal delay-400 text-lg md:text-xl text-slate-600 space-y-6 leading-relaxed font-light">
+                            <p>
+                                Hi, I'm <strong class="text-slate-900 font-medium">Yossi Breuer</strong>, the founder of Papercut Design. I believe that powerful design shouldn't be out of reach for small businesses. My mission is to bring beautiful, impactful design solutions that truly stand out, all at accessible prices.
+                            </p>
+                            <p>
+                                With a dedicated focus on transforming your vision into compelling visual realities, I work closely with each client to understand their unique story. My goal is to deliver creative solutions that not only look exceptional but also drive tangible results for your brand.
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-24 mb-12">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto glass-panel p-8 md:p-12 border-t-4 border-t-purple-400">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Get in Touch</h2>
-                    <p class="text-gray-600 text-lg">Ready to make your design cut through the noise?</p>
-                </div>
+    <section id="contact" class="py-24 md:py-32">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="reveal text-center mb-16">
+                <h2 class="text-5xl md:text-7xl font-bold text-slate-900 mb-4 tracking-tight font-heading">Get in Touch.</h2>
+                <p class="text-slate-500 text-xl font-light">Ready to make your design cut through the noise?</p>
+            </div>
 
-                <!-- Updated Form: Action and Hidden Captcha Field -->
+            <div class="reveal delay-200 glass-card p-10 md:p-14">
                 <form id="contact-form" action="https://formsubmit.co/yossi@papercutdesign.co" method="POST" class="space-y-6">
-                    <input type="hidden" name="_subject" value="New Contact from Papercut Glass Site">
-                    <!-- CRITICAL FIX: Disable captcha for AJAX to work reliably -->
+                    <input type="hidden" name="_subject" value="New Contact from Papercut Site">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_template" value="table">
                     
-                    <div class="group">
-                        <input type="text" name="name" placeholder="Your Name" class="glass-input" required>
-                    </div>
-                    <div class="group">
-                        <input type="email" name="email" placeholder="Your Email" class="glass-input" required>
-                    </div>
-                    <div class="group">
-                        <textarea name="message" rows="4" placeholder="How can we help you?" class="glass-input" required></textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <input type="text" name="name" placeholder="Your Name" class="editorial-input" required>
+                        </div>
+                        <div>
+                            <input type="email" name="email" placeholder="Email Address" class="editorial-input" required>
+                        </div>
                     </div>
                     
-                    <button id="submit-btn" type="submit" class="w-full glossy-btn py-4 rounded-2xl text-lg font-bold">
-                        Send Message
-                    </button>
-                    <p id="form-status" class="text-center text-gray-700 font-semibold mt-4 hidden"></p>
+                    <div>
+                        <textarea name="message" rows="4" placeholder="Tell us about your project..." class="editorial-input resize-y" required></textarea>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button id="submit-btn" type="submit" class="btn-premium w-full py-4 text-xl font-medium tracking-wide">
+                            Send Message
+                        </button>
+                        <p id="form-status" class="text-center font-normal mt-4 hidden"></p>
+                    </div>
                 </form>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="glass-footer text-gray-800 py-12">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-12">
-                <div class="flex items-center space-x-3 group cursor-pointer bg-white/50 px-6 py-3 rounded-full hover:bg-white transition-all shadow-sm">
-                    <i class="fas fa-phone text-purple-600"></i>
-                    <a href="tel:+18456057080" class="font-medium hover:text-purple-700 transition-colors">845.605.7080</a>
-                </div>
+    <footer class="bg-white/80 backdrop-blur-xl border-t border-white py-16 mt-12 relative z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 
-                <div class="flex items-center space-x-3 group cursor-pointer bg-white/50 px-6 py-3 rounded-full hover:bg-white transition-all shadow-sm">
-                    <i class="fas fa-envelope text-purple-600"></i>
-                    <a href="mailto:info@papercutdesign.co" class="font-medium hover:text-purple-700 transition-colors">info@papercutdesign.co</a>
+                <a href="index.html" class="flex items-center">
+                    <img src="logopng.png" alt="Papercut Design" class="h-8 md:h-10 opacity-90 hover:opacity-100 transition-opacity">
+                </a>
+
+                <div class="flex flex-col sm:flex-row items-center gap-6 md:gap-8 font-heading">
+                    <a href="tel:+18456057080" class="px-5 py-2.5 rounded-full bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors text-[15px] font-light shadow-sm border border-slate-100">
+                        <i class="fas fa-phone mr-2"></i> 845.605.7080
+                    </a>
+                    <a href="mailto:info@papercutdesign.co" class="px-5 py-2.5 rounded-full bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors text-[15px] font-light shadow-sm border border-slate-100">
+                        <i class="fas fa-envelope mr-2"></i> info@papercutdesign.co
+                    </a>
+                    <a href="payment.html" class="text-slate-500 hover:text-purple-700 transition-colors text-[15px] font-light">Payments</a>
+                    <a href="privacy-policy.html" class="text-slate-500 hover:text-purple-700 transition-colors text-[15px] font-light">Privacy</a>
                 </div>
 
-                <div class="flex items-center space-x-3 group cursor-pointer bg-white/50 px-6 py-3 rounded-full hover:bg-white transition-all shadow-sm">
-                    <i class="fas fa-file-alt text-purple-600"></i>
-                    <a href="privacy-policy.html" class="font-medium hover:text-purple-700 transition-colors">Privacy Policy</a>
-                </div>
             </div>
-            <div class="text-center mt-10 text-gray-500 text-sm font-medium">
-                &copy; <script>document.write(new Date().getFullYear())</script> Papercut Design. All rights reserved.
+            
+            <div class="mt-12 pt-8 border-t border-slate-200 flex justify-center items-center text-center">
+                <p class="text-slate-400 text-sm font-light">
+                    &copy; <script>document.write(new Date().getFullYear())</script> Papercut Design. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>
 
     <!-- Image Modal -->
     <div id="image-modal-overlay" class="image-modal-overlay">
-        <div class="relative modal-content-wrapper">
-            <button id="close-modal-btn" class="absolute -top-12 right-0 md:-right-12 text-white hover:text-purple-300 text-4xl focus:outline-none transition-colors drop-shadow-lg">&times;</button>
+        <div class="modal-content-wrapper">
+            <button id="close-modal-btn" class="absolute -top-12 right-0 text-white hover:text-purple-300 text-5xl focus:outline-none transition-transform hover:scale-110 duration-300 drop-shadow-md">&times;</button>
             <img id="modal-image" src="" alt="Portfolio Preview">
         </div>
     </div>
 
     <script>
+        // --- Scroll Reveal Animation Logic (Intersection Observer) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.1, // Trigger when 10% of element is visible
+                rootMargin: "0px 0px -50px 0px" // Trigger slightly before it hits the bottom
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Stop observing once revealed if you only want it to happen once
+                        // observer.unobserve(entry.target); 
+                    }
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+
         // --- Mobile Menu Toggle ---
         const btn = document.getElementById('mobile-menu-button');
         const menu = document.getElementById('mobile-menu');
@@ -631,14 +651,22 @@
                 menu.classList.add('scale-y-0', 'opacity-0');
                 setTimeout(() => {
                     menu.classList.add('hidden');
-                }, 300);
+                }, 500);
             }
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => { menu.classList.add('hidden'); }, 500);
+            });
         });
 
         // --- Scroll Effect for Header ---
         const header = document.getElementById('main-header');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+            if (window.scrollY > 20) {
                 header.classList.add('header-scrolled');
             } else {
                 header.classList.remove('header-scrolled');
@@ -654,50 +682,56 @@
             const modalImage = document.getElementById('modal-image');
             const closeBtn = document.getElementById('close-modal-btn');
             
-            // Initial Active State
             adTab.setAttribute('data-active', 'true');
 
             function loadItems(folder) {
-                portfolioContainer.innerHTML = '';
+                // Fade out existing items for smooth transition
+                portfolioContainer.style.opacity = '0';
                 
-                // Update tabs visual state
-                if(folder === 'ad') {
-                    adTab.setAttribute('data-active', 'true');
-                    logoTab.removeAttribute('data-active');
-                } else {
-                    logoTab.setAttribute('data-active', 'true');
-                    adTab.removeAttribute('data-active');
-                }
-
-                // Load images
-                for (let i = 1; i <= 20; i++) {
-                    const img = new Image();
-                    const src = `${folder}/${i}.jpg`;
+                setTimeout(() => {
+                    portfolioContainer.innerHTML = '';
                     
-                    img.onload = function() {
-                        const item = document.createElement('div');
-                        item.className = 'horizontal-scroll-item glass-panel';
-                        
-                        const imageEl = document.createElement('img');
-                        imageEl.src = src;
-                        imageEl.className = 'portfolio-item-img';
-                        imageEl.alt = `Portfolio ${folder} ${i}`;
-                        
-                        item.appendChild(imageEl);
-                        
-                        item.addEventListener('click', () => {
-                            modalImage.src = src;
-                            modalOverlay.classList.add('show');
-                        });
+                    if(folder === 'ad') {
+                        adTab.setAttribute('data-active', 'true');
+                        logoTab.removeAttribute('data-active');
+                    } else {
+                        logoTab.setAttribute('data-active', 'true');
+                        adTab.removeAttribute('data-active');
+                    }
 
-                        portfolioContainer.appendChild(item);
-                    };
-                    img.onerror = function() {};
-                    img.src = src;
-                }
+                    for (let i = 1; i <= 20; i++) {
+                        const img = new Image();
+                        const src = `${folder}/${i}.jpg`;
+                        
+                        img.onload = function() {
+                            const item = document.createElement('div');
+                            item.className = 'portfolio-item';
+                            
+                            const imageEl = document.createElement('img');
+                            imageEl.src = src;
+                            imageEl.className = 'portfolio-item-img';
+                            imageEl.alt = `Portfolio ${folder} ${i}`;
+                            
+                            item.appendChild(imageEl);
+                            
+                            item.addEventListener('click', () => {
+                                modalImage.src = src;
+                                modalOverlay.classList.add('show');
+                            });
+
+                            portfolioContainer.appendChild(item);
+                        };
+                        img.onerror = function() {};
+                        img.src = src;
+                    }
+                    
+                    // Fade back in
+                    portfolioContainer.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    portfolioContainer.style.opacity = '1';
+                    portfolioContainer.scrollLeft = 0; // Reset scroll position
+                }, 400);
             }
 
-            // Initial load
             loadItems('ad');
 
             logoTab.addEventListener('click', () => loadItems('logo'));
@@ -715,13 +749,19 @@
 
             portfolioContainer.addEventListener('mousedown', (e) => {
                 isDown = true;
-                portfolioContainer.classList.add('active');
+                portfolioContainer.style.cursor = 'grabbing';
                 startX = e.pageX - portfolioContainer.offsetLeft;
                 scrollLeft = portfolioContainer.scrollLeft;
             });
 
-            portfolioContainer.addEventListener('mouseleave', () => { isDown = false; });
-            portfolioContainer.addEventListener('mouseup', () => { isDown = false; });
+            portfolioContainer.addEventListener('mouseleave', () => { 
+                isDown = false; 
+                portfolioContainer.style.cursor = 'pointer';
+            });
+            portfolioContainer.addEventListener('mouseup', () => { 
+                isDown = false; 
+                portfolioContainer.style.cursor = 'pointer';
+            });
             portfolioContainer.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
@@ -731,10 +771,10 @@
             });
 
             document.getElementById('arrow-left').addEventListener('click', () => {
-                portfolioContainer.scrollBy({ left: -400, behavior: 'smooth' });
+                portfolioContainer.scrollBy({ left: -450, behavior: 'smooth' });
             });
             document.getElementById('arrow-right').addEventListener('click', () => {
-                portfolioContainer.scrollBy({ left: 400, behavior: 'smooth' });
+                portfolioContainer.scrollBy({ left: 450, behavior: 'smooth' });
             });
 
             // --- Form Submit AJAX Logic ---
@@ -746,18 +786,14 @@
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     
-                    // UI Loading state
                     const originalBtnText = submitBtn.innerText;
                     submitBtn.innerText = 'Sending...';
                     submitBtn.disabled = true;
 
                     const formData = new FormData(contactForm);
-                    
-                    // NEW: Convert to JSON object for better reliability with FormSubmit AJAX
                     const object = Object.fromEntries(formData);
                     const json = JSON.stringify(object);
 
-                    // Updated URL to correct email
                     fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
                         method: "POST",
                         headers: { 
@@ -767,23 +803,18 @@
                         body: json
                     })
                     .then(response => {
-                        // Check if the response is actually JSON, if not, it might be an error page
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
+                        if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
                     })
                     .then(data => {
-                        if (data.success === "false") {
-                             throw new Error(data.message || "Form submission failed");
-                        }
+                        if (data.success === "false") throw new Error(data.message || "Form submission failed");
+                        
                         formStatus.innerText = "Message sent successfully!";
                         formStatus.classList.remove('hidden', 'text-red-600');
-                        formStatus.classList.add('text-green-600');
+                        formStatus.classList.add('text-green-600', 'block');
                         contactForm.reset();
                         submitBtn.innerText = "Sent!";
                         
-                        // Reset button after 5 seconds
                         setTimeout(() => {
                             submitBtn.innerText = originalBtnText;
                             submitBtn.disabled = false;
@@ -792,9 +823,9 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        formStatus.innerText = "Something went wrong. Please check your internet or try again later.";
+                        formStatus.innerText = "Something went wrong. Please try again.";
                         formStatus.classList.remove('hidden', 'text-green-600');
-                        formStatus.classList.add('text-red-600');
+                        formStatus.classList.add('text-red-600', 'block');
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
                     });
