@@ -315,6 +315,47 @@
         .preview-close:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* Lead Cards */
+        .lead-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .lead-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-new {
+            background: #EFF6FF;
+            color: #2563EB;
+        }
+
+        .status-replied {
+            background: #FFF7ED;
+            color: #EA580C;
+        }
+
+        .status-signed {
+            background: #F0FDF4;
+            color: #16A34A;
+        }
     </style>
 </head>
 
@@ -335,6 +376,9 @@
         <div class="flex gap-2 p-1 bg-slate-100 rounded-full">
             <button onclick="switchView('gallery')" id="nav-gallery"
                 class="px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition">Gallery</button>
+            <button onclick="switchView('leads')" id="nav-leads"
+                class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
+                    class="fas fa-inbox mr-1"></i> Leads</button>
             <button onclick="switchView('upload')" id="nav-upload"
                 class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
                     class="fas fa-plus mr-1"></i> Upload</button>
@@ -440,6 +484,39 @@
             </div>
         </div>
 
+        <!-- Leads CRM View -->
+        <div id="view-leads" class="view-section">
+            <div class="glass-card p-10">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-slate-200 pb-6 gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900"><i
+                                class="fas fa-inbox mr-2 text-purple-500"></i>Leads</h2>
+                        <p class="text-slate-500 mt-1 text-lg">All contact form submissions from your website.</p>
+                    </div>
+                    <div class="flex bg-slate-100/80 p-1.5 rounded-full shadow-inner" id="leads-filters">
+                        <button class="px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
+                            data-filter="all">All</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="new">New</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="replied">Replied</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="signed">Signed</button>
+                    </div>
+                </div>
+
+                <div id="leads-loading" class="text-center py-20 text-slate-500 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-purple-500"></i>
+                    <p class="text-lg">Loading leads...</p>
+                </div>
+
+                <div id="leads-list" class="space-y-4">
+                    <!-- Leads injected via JS -->
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Fullscreen Preview Modal -->
@@ -484,17 +561,16 @@
 
             // Nav styling
             if (viewName !== 'login') {
-                const navGallery = document.getElementById('nav-gallery');
-                const navUpload = document.getElementById('nav-upload');
+                const navBtns = { gallery: document.getElementById('nav-gallery'), leads: document.getElementById('nav-leads'), upload: document.getElementById('nav-upload') };
+                const activeClass = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
+                const inactiveClass = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
 
-                if (viewName === 'gallery') {
-                    navGallery.className = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
-                    navUpload.className = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
-                    fetchGallery();
-                } else {
-                    navUpload.className = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
-                    navGallery.className = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
-                }
+                Object.keys(navBtns).forEach(key => {
+                    navBtns[key].className = (key === viewName) ? activeClass : inactiveClass;
+                });
+
+                if (viewName === 'gallery') fetchGallery();
+                if (viewName === 'leads') fetchLeads();
             }
         }
 
@@ -733,6 +809,128 @@
             if (e.key === 'Escape' && previewModal.classList.contains('show')) {
                 closePreview();
             }
+        });
+        // --- Leads CRM Logic ---
+        let allLeads = [];
+
+        async function fetchLeads() {
+            document.getElementById('leads-loading').classList.remove('hidden');
+            document.getElementById('leads-list').innerHTML = '';
+            try {
+                const res = await fetch('/api/contact', {
+                    headers: { 'Authorization': `Bearer ${adminPassword}` }
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    allLeads = data.items;
+                    const activeBtn = document.querySelector('#leads-filters .bg-white');
+                    const currentFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+                    renderLeads(currentFilter);
+                } else {
+                    alert('Error loading leads: ' + data.error);
+                    if (data.error?.includes('Unauthorized')) logout();
+                }
+            } catch (err) {
+                console.error('Failed to fetch leads:', err);
+            } finally {
+                document.getElementById('leads-loading').classList.add('hidden');
+            }
+        }
+
+        function renderLeads(filter) {
+            const list = document.getElementById('leads-list');
+            list.innerHTML = '';
+
+            const filtered = filter === 'all' ? allLeads : allLeads.filter(l => l.status === filter);
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="text-center py-20 px-6 border-2 border-dashed border-slate-200 rounded-3xl"><i class="fas fa-inbox text-4xl text-slate-300 mb-3 block"></i><p class="text-slate-500 font-medium text-lg">No leads found.</p></div>';
+                return;
+            }
+
+            filtered.forEach(lead => {
+                const date = new Date(lead.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const statusClass = `status-${lead.status}`;
+                const statusIcon = lead.status === 'new' ? 'fa-circle' : lead.status === 'replied' ? 'fa-reply' : 'fa-check-circle';
+
+                const card = document.createElement('div');
+                card.className = 'lead-card';
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-lg font-semibold text-slate-900">${escapeHtml(lead.name)}</h3>
+                                <span class="status-badge ${statusClass}"><i class="fas ${statusIcon} text-[9px]"></i>${lead.status}</span>
+                            </div>
+                            <a href="mailto:${escapeHtml(lead.email)}" class="text-purple-600 hover:text-purple-800 text-sm font-medium transition"><i class="fas fa-envelope mr-1"></i>${escapeHtml(lead.email)}</a>
+                            <p class="text-slate-600 mt-3 leading-relaxed">${escapeHtml(lead.message)}</p>
+                            <p class="text-slate-400 text-xs mt-3"><i class="fas fa-clock mr-1"></i>${date}</p>
+                        </div>
+                        <div class="flex md:flex-col gap-2 items-start md:items-end shrink-0">
+                            <select onchange="updateLeadStatus('${lead.id}', this.value)" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 cursor-pointer">
+                                <option value="new" ${lead.status === 'new' ? 'selected' : ''}>🔵 New</option>
+                                <option value="replied" ${lead.status === 'replied' ? 'selected' : ''}>🟠 Replied</option>
+                                <option value="signed" ${lead.status === 'signed' ? 'selected' : ''}>🟢 Signed</option>
+                            </select>
+                            <button onclick="deleteLead('${lead.id}')" class="text-xs text-red-400 hover:text-red-600 transition px-3 py-2 rounded-lg hover:bg-red-50"><i class="fas fa-trash-alt mr-1"></i>Delete</button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function updateLeadStatus(id, newStatus) {
+            try {
+                const res = await fetch(`/api/contact/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${adminPassword}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (res.ok) {
+                    fetchLeads();
+                } else {
+                    const data = await res.json();
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Network error updating lead.');
+            }
+        }
+
+        async function deleteLead(id) {
+            if (!confirm('Permanently delete this lead?')) return;
+            try {
+                const res = await fetch(`/api/contact/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminPassword}` }
+                });
+                if (res.ok) {
+                    fetchLeads();
+                } else {
+                    const data = await res.json();
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Network error deleting lead.');
+            }
+        }
+
+        // Leads filter tabs
+        document.querySelectorAll('#leads-filters button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#leads-filters button').forEach(b => {
+                    b.className = "px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800 transition";
+                });
+                e.target.className = "px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700 transition";
+                renderLeads(e.target.getAttribute('data-filter'));
+            });
         });
 
     </script>
