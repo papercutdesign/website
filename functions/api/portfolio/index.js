@@ -5,7 +5,7 @@ export async function onRequestGet(context) {
 
     try {
         const { results } = await env.DB.prepare(
-            "SELECT * FROM portfolio_items ORDER BY created_at DESC"
+            "SELECT * FROM portfolio_items ORDER BY sort_order ASC, created_at DESC"
         ).all();
 
         return Response.json({ success: true, items: results });
