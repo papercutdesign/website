@@ -1,190 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Papercut Admin Console</title>
+    <title>Papercut Advanced Admin console</title>
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <script>
-      tailwind.config = {
-        theme: {
-          fontFamily: {
-            sans: ['"Rubik"', 'system-ui', 'sans-serif'],
-            heading: ['"Rubik"', 'system-ui', 'sans-serif'],
-          }
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['"Rubik"', 'system-ui', 'sans-serif'],
+                    heading: ['"Rubik"', 'system-ui', 'sans-serif'],
+                }
+            }
         }
-      }
     </script>
 
     <style>
-        body { font-family: 'Rubik', sans-serif; background-color: #F8FAFC; color: #0F172A; }
-        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+        }
+
         .aurora-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; overflow: hidden; background: #F8FAFC; pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: #F8FAFC;
+            pointer-events: none;
         }
+
         .aurora-blob {
-            position: absolute; filter: blur(90px); opacity: 0.5; border-radius: 50%;
-            mix-blend-mode: multiply; animation: floatBlob 20s infinite alternate ease-in-out;
+            position: absolute;
+            filter: blur(90px);
+            opacity: 0.5;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            animation: floatBlob 20s infinite alternate ease-in-out;
         }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #E9D5FF; }
-        .blob-2 { top: 40%; right: -10%; width: 60vw; height: 60vw; background: #DBEAFE; animation-delay: -5s;}
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: #E9D5FF;
+        }
+
+        .blob-2 {
+            top: 40%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: #DBEAFE;
+            animation-delay: -5s;
+        }
 
         @keyframes floatBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-3%, -2%) scale(0.95); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(-3%, -2%) scale(0.95);
+            }
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 28px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 28px;
             box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
         .btn-premium {
-            background: linear-gradient(135deg, #7C3AED, #D946EF); color: white;
-            border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, #7C3AED, #D946EF);
+            color: white;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
         }
+
         .btn-premium:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.5);
         }
-        .btn-premium:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-premium:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
         .form-input {
-            width: 100%; padding: 0.875rem 1.25rem; background: rgba(255,255,255,0.8);
-            border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; transition: all 0.3s;
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s;
         }
+
         .form-input:focus {
-            outline: none; border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+            outline: none;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
-        
-        /* Modern generic file input styling */
+
         input[type=file]::file-selector-button {
-          margin-right: 15px; border: none; background: #F3E8FF; padding: 8px 16px;
-          border-radius: 50px; color: #7C3AED; cursor: pointer; transition: background 0.2s;
-          font-family: 'Rubik', sans-serif; font-weight: 500; font-size: 14px;
+            margin-right: 15px;
+            border: none;
+            background: #F3E8FF;
+            padding: 8px 16px;
+            border-radius: 50px;
+            color: #7C3AED;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
         }
-        input[type=file]::file-selector-button:hover { background: #E9D5FF; }
+
+        input[type=file]::file-selector-button:hover {
+            background: #E9D5FF;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: scale(1.05);
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+
+<body class="min-h-screen p-6">
 
     <div class="aurora-bg">
         <div class="aurora-blob blob-1"></div>
         <div class="aurora-blob blob-2"></div>
     </div>
 
-    <!-- Go back home link -->
-    <a href="index.html" class="absolute top-6 left-6 text-slate-500 hover:text-purple-600 font-medium transition flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back to Site
-    </a>
+    <!-- Top Navigation -->
+    <nav class="max-w-6xl mx-auto flex justify-between items-center bg-white/60 backdrop-blur-md rounded-full px-8 py-4 shadow-sm mb-10 hidden"
+        id="admin-nav">
+        <div class="flex items-center gap-4">
+            <img src="logopng.png" alt="Papercut" class="h-6">
+            <span class="font-bold text-slate-800 border-l border-slate-300 pl-4">Dashboard</span>
+        </div>
+        <div class="flex gap-6 items-center">
+            <button onclick="switchView('upload')"
+                class="text-sm font-medium text-slate-600 hover:text-purple-600 transition">Upload New</button>
+            <button onclick="switchView('gallery')"
+                class="text-sm font-medium text-slate-600 hover:text-purple-600 transition">Manage Gallery</button>
+            <button onclick="logout()" class="text-sm font-medium text-red-500 hover:text-red-700 transition"><i
+                    class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </nav>
 
-    <div class="glass-card w-full max-w-md p-10 relative">
-        <div class="text-center mb-8">
-            <img src="logopng.png" alt="Papercut" class="h-8 mx-auto mb-6">
-            <h1 class="text-3xl font-bold font-heading">Content Admin</h1>
-            <p class="text-slate-500 mt-2 text-sm">Upload new assets directly to your live portfolio.</p>
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Login View -->
+        <div id="view-login" class="view-section active max-w-md mx-auto mt-20">
+            <div class="glass-card p-10 text-center">
+                <img src="logopng.png" alt="Papercut" class="h-8 mx-auto mb-6">
+                <h1 class="text-2xl font-bold mb-2">Admin Login</h1>
+                <p class="text-slate-500 mb-6 text-sm">Enter your master password</p>
+                <form id="loginForm" class="space-y-4">
+                    <input type="password" id="loginPassword" placeholder="Admin Password" class="form-input" required>
+                    <button type="submit" class="btn-premium w-full py-3.5 mt-2">Access Dashboard</button>
+                </form>
+            </div>
         </div>
 
-        <form id="uploadForm" class="space-y-5">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Asset Category</label>
-                <select id="category" name="category" class="form-input" required>
-                    <option value="ad">Ad Design</option>
-                    <option value="logo">Logo Design</option>
-                </select>
+        <!-- Upload View -->
+        <div id="view-upload" class="view-section max-w-lg mx-auto">
+            <div class="glass-card p-10 relative">
+                <h2 class="text-2xl font-bold mb-6">Upload Asset</h2>
+                <form id="uploadForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Asset Category</label>
+                        <select id="category" name="category" class="form-input" required>
+                            <option value="ad">Ad Design</option>
+                            <option value="logo">Logo Design</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">High Quality Image (.jpg,
+                            .png)</label>
+                        <input type="file" id="file" name="file" accept="image/*" class="form-input" required>
+                        <p class="text-xs text-slate-500 mt-2">Image will be securely stored in Cloudflare R2 and served
+                            globally via CDN.</p>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-premium w-full py-3.5 mt-6">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload to Cloud
+                    </button>
+
+                    <div id="statusMessage" class="text-center text-sm font-medium mt-4 hidden p-3 rounded-lg border">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Gallery Management View -->
+        <div id="view-gallery" class="view-section glass-card p-10">
+            <div class="flex justify-between items-end mb-8 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Live Gallery</h2>
+                    <p class="text-slate-500 text-sm mt-1">Manage all portfolio images dynamically fetched from the
+                        database.</p>
+                </div>
+                <!-- Filters -->
+                <div class="flex bg-slate-100 rounded-full p-1" id="gallery-filters">
+                    <button class="px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
+                        data-filter="all">All</button>
+                    <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900"
+                        data-filter="ad">Ads</button>
+                    <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900"
+                        data-filter="logo">Logos</button>
+                </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Portfolio Slot (1-20)</label>
-                <select id="slot" name="slot" class="form-input" required>
-                    <!-- Generated via JS -->
-                </select>
+            <div id="gallery-loading" class="text-center py-12 text-slate-500 hidden">
+                <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-purple-500"></i>
+                <p>Loading database...</p>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Image File (.jpg)</label>
-                <input type="file" id="file" name="file" accept=".jpg,.jpeg" class="form-input" required>
-                <p class="text-xs text-slate-400 mt-2">Upload your high-quality JPG. It will be resized by CSS automatically.</p>
+            <div id="gallery-grid" class="gallery-grid">
+                <!-- Items injected via JS -->
             </div>
+        </div>
 
-            <div class="pt-2">
-                <label class="block text-sm font-medium text-slate-700 mb-1">Admin Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your secret text" class="form-input" required>
-            </div>
-
-            <button type="submit" id="submitBtn" class="btn-premium w-full py-3.5 font-medium mt-6">
-                Upload to Website
-            </button>
-
-            <div id="statusMessage" class="text-center text-sm font-medium mt-4 hidden p-3 rounded-lg border"></div>
-        </form>
     </div>
 
     <script>
-        // Populate slot 1-20 dynamically
-        const slotSelect = document.getElementById('slot');
-        for (let i = 1; i <= 20; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `Slot ${i}`;
-            slotSelect.appendChild(option);
+        let adminPassword = sessionStorage.getItem('papercut_admin_pwd') || '';
+        let galleryItems = [];
+
+        // Auth & Navigation
+        if (adminPassword) {
+            initDashboard();
         }
 
-        const form = document.getElementById('uploadForm');
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            adminPassword = document.getElementById('loginPassword').value;
+            sessionStorage.setItem('papercut_admin_pwd', adminPassword);
+            initDashboard();
+        });
+
+        function logout() {
+            sessionStorage.removeItem('papercut_admin_pwd');
+            adminPassword = '';
+            document.getElementById('admin-nav').classList.add('hidden');
+            switchView('login');
+        }
+
+        function initDashboard() {
+            document.getElementById('admin-nav').classList.remove('hidden');
+            switchView('gallery');
+            fetchGallery();
+        }
+
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewName}`).classList.add('active');
+            if (viewName === 'gallery') fetchGallery();
+        }
+
+        // Upload Logic
+        const uploadForm = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
         const statusMsg = document.getElementById('statusMessage');
 
-        form.addEventListener('submit', async (e) => {
+        uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Uploading & Committing...";
-            
-            statusMsg.classList.add('hidden');
-            // Reset status classes
+            submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
             statusMsg.className = "text-center text-sm font-medium mt-4 p-3 rounded-lg border";
 
-            const formData = new FormData(form);
-
             try {
-                // Adjust route if necessary for your build setup
-                const response = await fetch('/api/upload', {
+                const formData = new FormData(uploadForm);
+                const response = await fetch('/api/portfolio', {
                     method: 'POST',
+                    headers: { 'Authorization': `Bearer ${adminPassword}` },
                     body: formData
                 });
-                
-                const data = await response.json();
 
-                if (response.ok) {
+                const data = await response.json();
+                if (response.ok && data.success) {
                     statusMsg.textContent = "✅ " + data.message;
                     statusMsg.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
-                    form.reset();
+                    uploadForm.reset();
                 } else {
-                    statusMsg.textContent = "❌ Error: " + (data.error || "Unknown error occurred.");
-                    if (data.details) console.error("GitHub Details:", data.details);
-                    statusMsg.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                    throw new Error(data.error || "Unknown error");
                 }
             } catch (err) {
-                statusMsg.textContent = "❌ Network error. Are you running this via a local server?";
+                statusMsg.textContent = "❌ " + (err.message || "Network error");
                 statusMsg.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                if (err.message.includes("Unauthorized")) logout();
             } finally {
                 statusMsg.classList.remove('hidden');
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Upload to Website";
+                submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Upload to Cloud';
             }
+        });
+
+        // Gallery Logic
+        async function fetchGallery() {
+            document.getElementById('gallery-loading').classList.remove('hidden');
+            document.getElementById('gallery-grid').innerHTML = '';
+            try {
+                const response = await fetch('/api/portfolio');
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    galleryItems = data.items;
+                    renderGallery('all');
+                } else {
+                    alert("Error loading gallery: " + data.error);
+                }
+            } catch (err) {
+                console.error("Failed to fetch gallery:", err);
+            } finally {
+                document.getElementById('gallery-loading').classList.add('hidden');
+            }
+        }
+
+        function renderGallery(filterTheme) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            const filteredItems = filterTheme === 'all'
+                ? galleryItems
+                : galleryItems.filter(item => item.category === filterTheme);
+
+            if (filteredItems.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8">No images found in this category.</p>';
+                return;
+            }
+
+            filteredItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deleteItem('${item.id}')"><i class="fas fa-trash-alt mr-1"></i> Delete</button>
+                    <img src="/assets/${item.r2_key}" alt="Portfolio Request" loading="lazy">
+                    <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-white bg-purple-600/80 px-2 py-1 rounded">
+                            ${item.category}
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Delete Logic
+        async function deleteItem(id) {
+            if (!confirm('Are you sure you want to permanently delete this image from your portfolio?')) return;
+
+            try {
+                const response = await fetch(`/api/portfolio/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminPassword}` }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    fetchGallery(); // Refresh after delete
+                } else {
+                    alert('Error deleting item: ' + data.error);
+                    if (data.error.includes("Unauthorized")) logout();
+                }
+            } catch (err) {
+                alert('Network error deleting item.');
+            }
+        }
+
+        // Filters UI
+        document.querySelectorAll('#gallery-filters button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // reset styling
+                document.querySelectorAll('#gallery-filters button').forEach(b => {
+                    b.className = "px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900";
+                });
+                // active styling
+                e.target.className = "px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700";
+                renderGallery(e.target.getAttribute('data-filter'));
+            });
         });
     </script>
 </body>
+
 </html>
