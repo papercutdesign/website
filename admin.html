@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Papercut Advanced Admin console</title>
+    <title>Papercut Admin</title>
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,10 +82,10 @@
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
             box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
@@ -111,7 +111,7 @@
         .form-input {
             width: 100%;
             padding: 0.875rem 1.25rem;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             transition: all 0.3s;
@@ -123,27 +123,37 @@
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
-        input[type=file]::file-selector-button {
-            margin-right: 15px;
-            border: none;
-            background: #F3E8FF;
-            padding: 8px 16px;
-            border-radius: 50px;
-            color: #7C3AED;
+        /* Drag and Drop Styling */
+        .drop-zone {
+            border: 2px dashed #CBD5E1;
+            border-radius: 16px;
+            padding: 3rem 1rem;
+            text-align: center;
+            background: rgba(248, 250, 252, 0.5);
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: background 0.2s;
-            font-family: 'Rubik', sans-serif;
-            font-weight: 500;
-            font-size: 14px;
+            position: relative;
         }
 
-        input[type=file]::file-selector-button:hover {
-            background: #E9D5FF;
+        .drop-zone.dragover {
+            border-color: #7C3AED;
+            background: rgba(124, 58, 237, 0.05);
+            transform: scale(1.02);
+        }
+
+        .drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            w-full: 100%;
+            h-full: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
         }
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
         }
 
@@ -151,40 +161,79 @@
             position: relative;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             background: white;
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+            cursor: pointer;
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
 
         .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
         }
 
         .gallery-item img {
             width: 100%;
-            height: 200px;
+            height: 100%;
             object-fit: cover;
         }
 
-        .delete-btn {
+        /* Interactive actions on card */
+        .card-actions {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border-radius: 50px;
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover .card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(4px);
+            color: #334155;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: all 0.2s;
         }
 
-        .delete-btn:hover {
-            background: rgba(220, 38, 38, 1);
-            transform: scale(1.05);
+        .action-btn:hover {
+            background: white;
+            transform: scale(1.1);
+            color: #7C3AED;
+        }
+
+        .action-btn.delete:hover {
+            color: #EF4444;
         }
 
         .view-section {
@@ -193,11 +242,78 @@
 
         .view-section.active {
             display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fullscreen Modal */
+        .preview-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .preview-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .preview-modal img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .preview-modal.show img {
+            transform: scale(1);
+        }
+
+        .preview-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .preview-close:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 
-<body class="min-h-screen p-6">
+<body class="min-h-screen">
 
     <div class="aurora-bg">
         <div class="aurora-blob blob-1"></div>
@@ -205,104 +321,133 @@
     </div>
 
     <!-- Top Navigation -->
-    <nav class="max-w-6xl mx-auto flex justify-between items-center bg-white/60 backdrop-blur-md rounded-full px-8 py-4 shadow-sm mb-10 hidden"
+    <nav class="sticky top-4 z-40 max-w-6xl mx-auto flex justify-between items-center bg-white/70 backdrop-blur-md rounded-full px-8 py-3 shadow-sm mb-10 hidden"
         id="admin-nav">
         <div class="flex items-center gap-4">
             <img src="logopng.png" alt="Papercut" class="h-6">
             <span class="font-bold text-slate-800 border-l border-slate-300 pl-4">Dashboard</span>
         </div>
-        <div class="flex gap-6 items-center">
-            <button onclick="switchView('upload')"
-                class="text-sm font-medium text-slate-600 hover:text-purple-600 transition">Upload New</button>
-            <button onclick="switchView('gallery')"
-                class="text-sm font-medium text-slate-600 hover:text-purple-600 transition">Manage Gallery</button>
-            <button onclick="logout()" class="text-sm font-medium text-red-500 hover:text-red-700 transition"><i
-                    class="fas fa-sign-out-alt"></i></button>
+        <div class="flex gap-2 p-1 bg-slate-100 rounded-full">
+            <button onclick="switchView('gallery')" id="nav-gallery"
+                class="px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition">Gallery</button>
+            <button onclick="switchView('upload')" id="nav-upload"
+                class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
+                    class="fas fa-plus mr-1"></i> Upload</button>
+        </div>
+        <div>
+            <button onclick="logout()"
+                class="text-sm font-medium text-slate-500 hover:text-red-500 transition px-4 py-2 rounded-full hover:bg-red-50"><i
+                    class="fas fa-sign-out-alt mr-2"></i> Logout</button>
         </div>
     </nav>
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto px-6 pb-20">
 
         <!-- Login View -->
         <div id="view-login" class="view-section active max-w-md mx-auto mt-20">
             <div class="glass-card p-10 text-center">
-                <img src="logopng.png" alt="Papercut" class="h-8 mx-auto mb-6">
+                <img src="logopng.png" alt="Papercut" class="h-8 mx-auto mb-8">
                 <h1 class="text-2xl font-bold mb-2">Admin Login</h1>
-                <p class="text-slate-500 mb-6 text-sm">Enter your master password</p>
+                <p class="text-slate-500 mb-8 text-sm">Enter your master password</p>
                 <form id="loginForm" class="space-y-4">
                     <input type="password" id="loginPassword" placeholder="Admin Password" class="form-input" required>
-                    <button type="submit" class="btn-premium w-full py-3.5 mt-2">Access Dashboard</button>
+                    <button type="submit" class="btn-premium w-full py-3.5 mt-2 font-medium">Access Dashboard</button>
                 </form>
             </div>
         </div>
 
         <!-- Upload View -->
-        <div id="view-upload" class="view-section max-w-lg mx-auto">
-            <div class="glass-card p-10 relative">
-                <h2 class="text-2xl font-bold mb-6">Upload Asset</h2>
-                <form id="uploadForm" class="space-y-5">
+        <div id="view-upload" class="view-section max-w-xl mx-auto mt-10">
+            <div class="glass-card p-12">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold">New Asset</h2>
+                    <button onclick="switchView('gallery')" class="text-slate-400 hover:text-slate-600"><i
+                            class="fas fa-times text-xl"></i></button>
+                </div>
+
+                <form id="uploadForm" class="space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Asset Category</label>
-                        <select id="category" name="category" class="form-input" required>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                        <select id="category" name="category" class="form-input text-lg" required>
                             <option value="ad">Ad Design</option>
                             <option value="logo">Logo Design</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">High Quality Image (.jpg,
-                            .png)</label>
-                        <input type="file" id="file" name="file" accept="image/*" class="form-input" required>
-                        <p class="text-xs text-slate-500 mt-2">Image will be securely stored in Cloudflare R2 and served
-                            globally via CDN.</p>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">High Quality Image</label>
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" id="file" name="file" accept="image/*" required>
+                            <div id="dropText">
+                                <i class="fas fa-image text-4xl text-purple-300 mb-3 block"></i>
+                                <span class="font-medium text-slate-700 text-lg">Click or drag image here</span>
+                                <p class="text-sm text-slate-400 mt-1">Accepts ultra-high res .JPG and .PNG</p>
+                            </div>
+                            <div id="filePreview" class="hidden">
+                                <span
+                                    class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium text-sm flex items-center justify-center gap-2">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span id="fileName">File selected</span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="btn-premium w-full py-3.5 mt-6">
-                        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload to Cloud
+                    <button type="submit" id="submitBtn"
+                        class="btn-premium w-full py-4 text-lg font-medium mt-8 shadow-lg">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload & Publish
                     </button>
 
-                    <div id="statusMessage" class="text-center text-sm font-medium mt-4 hidden p-3 rounded-lg border">
+                    <div id="statusMessage" class="text-center text-sm font-medium mt-4 hidden p-4 rounded-xl border">
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Gallery Management View -->
-        <div id="view-gallery" class="view-section glass-card p-10">
-            <div class="flex justify-between items-end mb-8 border-b border-slate-200 pb-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Live Gallery</h2>
-                    <p class="text-slate-500 text-sm mt-1">Manage all portfolio images dynamically fetched from the
-                        database.</p>
-                </div>
-                <!-- Filters -->
-                <div class="flex bg-slate-100 rounded-full p-1" id="gallery-filters">
-                    <button class="px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
-                        data-filter="all">All</button>
-                    <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900"
-                        data-filter="ad">Ads</button>
-                    <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900"
-                        data-filter="logo">Logos</button>
-                </div>
-            </div>
+        <div id="view-gallery" class="view-section">
+            <div class="glass-card p-10">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-slate-200 pb-6 gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900">Live Gallery</h2>
+                        <p class="text-slate-500 mt-1 text-lg">Manage your portfolio. Changes are instant.</p>
+                    </div>
 
-            <div id="gallery-loading" class="text-center py-12 text-slate-500 hidden">
-                <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-purple-500"></i>
-                <p>Loading database...</p>
-            </div>
+                    <div class="flex bg-slate-100/80 p-1.5 rounded-full shadow-inner" id="gallery-filters">
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
+                            data-filter="all">All Items</button>
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="ad">Ads</button>
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="logo">Logos</button>
+                    </div>
+                </div>
 
-            <div id="gallery-grid" class="gallery-grid">
-                <!-- Items injected via JS -->
+                <div id="gallery-loading" class="text-center py-20 text-slate-500 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-purple-500"></i>
+                    <p class="text-lg">Syncing Database...</p>
+                </div>
+
+                <div id="gallery-grid" class="gallery-grid">
+                    <!-- Items injected via JS -->
+                </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- Fullscreen Preview Modal -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-close" onclick="closePreview()"><i class="fas fa-times"></i></div>
+        <img id="previewImg" src="" alt="Preview">
     </div>
 
     <script>
         let adminPassword = sessionStorage.getItem('papercut_admin_pwd') || '';
         let galleryItems = [];
 
-        // Auth & Navigation
+        // Auth
         if (adminPassword) {
             initDashboard();
         }
@@ -323,25 +468,87 @@
 
         function initDashboard() {
             document.getElementById('admin-nav').classList.remove('hidden');
+            document.getElementById('admin-nav').classList.add('flex');
             switchView('gallery');
-            fetchGallery();
         }
 
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewName}`).classList.add('active');
-            if (viewName === 'gallery') fetchGallery();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Nav styling
+            if (viewName !== 'login') {
+                const navGallery = document.getElementById('nav-gallery');
+                const navUpload = document.getElementById('nav-upload');
+
+                if (viewName === 'gallery') {
+                    navGallery.className = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
+                    navUpload.className = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
+                    fetchGallery();
+                } else {
+                    navUpload.className = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
+                    navGallery.className = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
+                }
+            }
         }
 
-        // Upload Logic
+        // --- Drag and Drop Logic ---
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('file');
+        const dropText = document.getElementById('dropText');
+        const filePreview = document.getElementById('filePreview');
+        const fileNameDisplay = document.getElementById('fileName');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault(); e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            if (files.length) {
+                fileInput.files = files;
+                updateFileDisplay();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileDisplay);
+
+        function updateFileDisplay() {
+            if (fileInput.files.length > 0) {
+                dropText.classList.add('hidden');
+                filePreview.classList.remove('hidden');
+                fileNameDisplay.textContent = fileInput.files[0].name;
+                dropZone.style.borderColor = "#7C3AED";
+            } else {
+                dropText.classList.remove('hidden');
+                filePreview.classList.add('hidden');
+                dropZone.style.borderColor = "#CBD5E1";
+            }
+        }
+
+        // --- Upload Logic ---
         const uploadForm = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
         const statusMsg = document.getElementById('statusMessage');
 
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
-            statusMsg.className = "text-center text-sm font-medium mt-4 p-3 rounded-lg border";
+            submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Unpacking to CDN...';
+            statusMsg.className = "text-center text-sm font-medium mt-4 p-4 rounded-xl border";
 
             try {
                 const formData = new FormData(uploadForm);
@@ -353,23 +560,27 @@
 
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    statusMsg.textContent = "✅ " + data.message;
+                    statusMsg.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ' + data.message;
                     statusMsg.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
                     uploadForm.reset();
+                    updateFileDisplay();
+
+                    // Auto-switch back to gallery after a moment
+                    setTimeout(() => switchView('gallery'), 1500);
                 } else {
                     throw new Error(data.error || "Unknown error");
                 }
             } catch (err) {
-                statusMsg.textContent = "❌ " + (err.message || "Network error");
+                statusMsg.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> ' + (err.message || "Network error");
                 statusMsg.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
-                if (err.message.includes("Unauthorized")) logout();
+                if (err.message.includes("Unauthorized")) setTimeout(logout, 2000);
             } finally {
                 statusMsg.classList.remove('hidden');
-                submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Upload to Cloud';
+                submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Upload & Publish';
             }
         });
 
-        // Gallery Logic
+        // --- Gallery Management ---
         async function fetchGallery() {
             document.getElementById('gallery-loading').classList.remove('hidden');
             document.getElementById('gallery-grid').innerHTML = '';
@@ -378,7 +589,10 @@
                 const data = await response.json();
                 if (response.ok && data.success) {
                     galleryItems = data.items;
-                    renderGallery('all');
+                    // Persist active filter
+                    const activeFilterBtn = document.querySelector('#gallery-filters .bg-white');
+                    const currentFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
+                    renderGallery(currentFilter);
                 } else {
                     alert("Error loading gallery: " + data.error);
                 }
@@ -398,7 +612,7 @@
                 : galleryItems.filter(item => item.category === filterTheme);
 
             if (filteredItems.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8">No images found in this category.</p>';
+                grid.innerHTML = '<div class="col-span-full text-center py-20 px-6 border-2 border-dashed border-slate-200 rounded-3xl"><i class="fas fa-images text-4xl text-slate-300 mb-3 block"></i><p class="text-slate-500 font-medium text-lg">No images found.</p><p class="text-slate-400 text-sm mt-1">Upload an image to see it live.</p></div>';
                 return;
             }
 
@@ -406,10 +620,13 @@
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
                 div.innerHTML = `
-                    <button class="delete-btn" onclick="deleteItem('${item.id}')"><i class="fas fa-trash-alt mr-1"></i> Delete</button>
-                    <img src="/assets/${item.r2_key}" alt="Portfolio Request" loading="lazy">
-                    <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-white bg-purple-600/80 px-2 py-1 rounded">
+                    <div class="card-actions">
+                        <button class="action-btn" title="View Fullsize" onclick="openPreview(event, '/assets/${item.r2_key}')"><i class="fas fa-expand-arrows-alt"></i></button>
+                        <button class="action-btn delete" title="Delete Image" onclick="deleteItem(event, '${item.id}')"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                    <img src="/assets/${item.r2_key}" alt="Portfolio File" loading="lazy" onclick="openPreview(event, '/assets/${item.r2_key}')">
+                    <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end z-10">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-white bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg">
                             ${item.category}
                         </span>
                     </div>
@@ -418,9 +635,9 @@
             });
         }
 
-        // Delete Logic
-        async function deleteItem(id) {
-            if (!confirm('Are you sure you want to permanently delete this image from your portfolio?')) return;
+        async function deleteItem(e, id) {
+            e.stopPropagation(); // prevent opening preview
+            if (!confirm('Permanently delete this image from your live website?')) return;
 
             try {
                 const response = await fetch(`/api/portfolio/${id}`, {
@@ -430,9 +647,9 @@
 
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    fetchGallery(); // Refresh after delete
+                    fetchGallery(); // Refresh silently
                 } else {
-                    alert('Error deleting item: ' + data.error);
+                    alert('Error: ' + data.error);
                     if (data.error.includes("Unauthorized")) logout();
                 }
             } catch (err) {
@@ -443,15 +660,39 @@
         // Filters UI
         document.querySelectorAll('#gallery-filters button').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                // reset styling
                 document.querySelectorAll('#gallery-filters button').forEach(b => {
-                    b.className = "px-5 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900";
+                    b.className = "px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800 transition";
                 });
-                // active styling
-                e.target.className = "px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700";
+                e.target.className = "px-6 py-2.5 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700 transition";
                 renderGallery(e.target.getAttribute('data-filter'));
             });
         });
+
+        // --- Preview Modal Logic ---
+        const previewModal = document.getElementById('previewModal');
+        const previewImg = document.getElementById('previewImg');
+
+        function openPreview(e, src) {
+            e.stopPropagation();
+            previewImg.src = src;
+            previewModal.classList.add('show');
+        }
+
+        function closePreview() {
+            previewModal.classList.remove('show');
+            setTimeout(() => { previewImg.src = ''; }, 300); // clear after animation
+        }
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) closePreview();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && previewModal.classList.contains('show')) {
+                closePreview();
+            }
+        });
+
     </script>
 </body>
 
