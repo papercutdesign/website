@@ -998,6 +998,15 @@
             }
         });
     </script>
+
+    <!-- Papercut Analytics Tracker (self-hosted, no third-party) -->
+    <script>
+        fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page: location.pathname, referrer: document.referrer })
+        }).catch(() => { });
+    </script>
 </body>
 
 </html>
