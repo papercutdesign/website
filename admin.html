@@ -6,213 +6,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Papercut Admin</title>
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="32x32">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['"Rubik"', 'system-ui', 'sans-serif'],
+                    heading: ['"Rubik"', 'system-ui', 'sans-serif'],
+                }
+            }
+        }
+    </script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0F0F12;
-            color: #E4E4E7;
-            min-height: 100vh;
-            display: flex;
+            font-family: 'Rubik', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
         }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 72px;
-            background: #18181B;
-            border-right: 1px solid #27272A;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
+        .aurora-bg {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
             height: 100vh;
-            z-index: 100;
-            transition: width 0.3s;
-        }
-
-        .sidebar-logo {
-            width: 36px;
-            height: 36px;
-            margin-bottom: 32px;
-            border-radius: 10px;
+            z-index: -1;
             overflow: hidden;
-        }
-
-        .sidebar-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .nav-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #71717A;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 8px;
-            position: relative;
-            border: none;
-            background: transparent;
-            font-size: 18px;
-        }
-
-        .nav-btn:hover {
-            color: #E4E4E7;
-            background: #27272A;
-        }
-
-        .nav-btn.active {
-            color: #A78BFA;
-            background: rgba(167, 139, 250, 0.1);
-        }
-
-        .nav-btn .badge {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 10px;
-            height: 10px;
-            background: #EF4444;
-            border-radius: 50%;
-            border: 2px solid #18181B;
-        }
-
-        .nav-spacer {
-            flex: 1;
-        }
-
-        .nav-btn.logout {
-            color: #EF4444;
-            opacity: 0.6;
-        }
-
-        .nav-btn.logout:hover {
-            opacity: 1;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .tooltip {
-            display: none;
-            position: absolute;
-            left: 60px;
-            background: #27272A;
-            color: #E4E4E7;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            white-space: nowrap;
-            z-index: 200;
+            background: #F8FAFC;
             pointer-events: none;
         }
 
-        .nav-btn:hover .tooltip {
-            display: block;
-        }
-
-        /* --- Main Content --- */
-        .main {
-            margin-left: 72px;
-            flex: 1;
-            min-height: 100vh;
-        }
-
-        .topbar {
-            height: 64px;
-            border-bottom: 1px solid #27272A;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            background: rgba(15, 15, 18, 0.85);
-            backdrop-filter: blur(16px);
-            z-index: 50;
-        }
-
-        .topbar-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #FAFAFA;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .notif-btn {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #71717A;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #27272A;
-            background: transparent;
-            font-size: 16px;
-        }
-
-        .notif-btn:hover {
-            color: #E4E4E7;
-            background: #27272A;
-        }
-
-        .notif-btn .notif-dot {
+        .aurora-blob {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
-            background: #EF4444;
             border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.5;
+            animation: auroraFloat 15s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            top: -200px;
+            right: -150px;
+            background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            left: -100px;
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+        }
+
+        @keyframes auroraFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(60px, -40px) scale(1.15);
+            }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .view-section {
             display: none;
         }
 
-        .notif-btn .notif-dot.show {
+        .view-section.active {
             display: block;
-        }
-
-        .content-area {
-            padding: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* --- Page Sections --- */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeUp 0.3s ease;
+            animation: fadeUp 0.35s ease;
         }
 
         @keyframes fadeUp {
@@ -227,48 +110,80 @@
             }
         }
 
-        /* --- Cards --- */
-        .card {
-            background: #18181B;
-            border: 1px solid #27272A;
+        .btn-premium {
+            background: linear-gradient(135deg, #7C3AED, #a78bfa);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-premium:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-premium:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-input {
+            width: 100%;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-input:focus {
+            border-color: #a78bfa;
+        }
+
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
             border-radius: 16px;
-            padding: 24px;
-            transition: border-color 0.2s;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
         }
 
-        .card:hover {
-            border-color: #3F3F46;
+        .drop-zone.dragover {
+            border-color: #a78bfa;
+            background: rgba(167, 139, 250, 0.05);
         }
 
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
 
-        .stat-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: #71717A;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 4px;
-        }
-
-        /* --- Gallery --- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
+            gap: 20px;
         }
 
         .gallery-item {
             position: relative;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             aspect-ratio: 4/3;
             cursor: grab;
-            background: #27272A;
+            background: #e2e8f0;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
@@ -277,8 +192,8 @@
         }
 
         .gallery-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
             z-index: 10;
         }
 
@@ -291,12 +206,12 @@
         .gallery-item .overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.2s;
             display: flex;
             align-items: flex-end;
             padding: 12px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
         .gallery-item:hover .overlay {
@@ -316,11 +231,11 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(4px);
             color: white;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .icon-btn {
@@ -337,310 +252,169 @@
         }
 
         .icon-btn.view {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
         }
 
         .icon-btn.view:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.35);
         }
 
         .icon-btn.del {
-            background: rgba(239, 68, 68, 0.15);
-            color: #FCA5A5;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fecaca;
         }
 
         .icon-btn.del:hover {
-            background: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.4);
         }
 
-        /* --- Leads --- */
-        .lead-card {
-            background: #18181B;
-            border: 1px solid #27272A;
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.2s;
-        }
-
-        .lead-card:hover {
-            border-color: #3F3F46;
-        }
-
-        .lead-card.is-new {
-            border-left: 3px solid #A78BFA;
-        }
-
-        .lead-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #FAFAFA;
-        }
-
-        .lead-email {
-            font-size: 13px;
-            color: #A78BFA;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .lead-email:hover {
-            color: #C4B5FD;
-        }
-
-        .lead-msg {
-            font-size: 14px;
-            color: #A1A1AA;
-            line-height: 1.6;
-            margin-top: 8px;
-        }
-
-        .lead-time {
-            font-size: 11px;
-            color: #52525B;
-            margin-top: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
-
-        .status-dot.new {
-            background: #A78BFA;
-        }
-
-        .status-dot.replied {
-            background: #FBBF24;
-        }
-
-        .status-dot.signed {
-            background: #34D399;
-        }
-
-        select.status-select {
-            background: #27272A;
-            color: #E4E4E7;
-            border: 1px solid #3F3F46;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        select.status-select:focus {
-            outline: none;
-            border-color: #A78BFA;
-        }
-
-        /* --- Upload --- */
-        .drop-area {
-            border: 2px dashed #3F3F46;
-            border-radius: 16px;
-            padding: 48px 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .drop-area.dragover {
-            border-color: #A78BFA;
-            background: rgba(167, 139, 250, 0.05);
-        }
-
-        .drop-area input[type="file"] {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .form-select,
-        .form-input {
-            width: 100%;
-            background: #27272A;
-            color: #E4E4E7;
-            border: 1px solid #3F3F46;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-family: inherit;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        .form-select:focus,
-        .form-input:focus {
-            outline: none;
-            border-color: #A78BFA;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #7C3AED, #A78BFA);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 14px 24px;
-            font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* --- Filter Pills --- */
-        .filter-group {
-            display: flex;
-            gap: 6px;
-            background: #18181B;
-            border: 1px solid #27272A;
-            border-radius: 10px;
-            padding: 4px;
-        }
-
-        .filter-pill {
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #71717A;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            background: transparent;
-            font-family: inherit;
-        }
-
-        .filter-pill.active {
-            background: #27272A;
-            color: #E4E4E7;
-        }
-
-        .filter-pill:hover:not(.active) {
-            color: #A1A1AA;
-        }
-
-        /* --- Preview Modal --- */
-        .modal-overlay {
+        .preview-modal {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s;
         }
 
-        .modal-overlay.show {
+        .preview-modal.show {
             opacity: 1;
             visibility: visible;
         }
 
-        .modal-overlay img {
+        .preview-modal img {
             max-width: 90vw;
             max-height: 90vh;
-            border-radius: 8px;
+            border-radius: 12px;
             transform: scale(0.95);
             transition: transform 0.3s;
         }
 
-        .modal-overlay.show img {
+        .preview-modal.show img {
             transform: scale(1);
         }
 
-        .modal-close {
+        .preview-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            font-size: 20px;
             border: none;
-            font-size: 18px;
             transition: background 0.2s;
         }
 
-        .modal-close:hover {
+        .preview-close:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* --- Notification Panel --- */
+        /* Lead Cards */
+        .lead-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .lead-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .lead-card.is-new {
+            border-left: 3px solid #7C3AED;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-new {
+            background: #EFF6FF;
+            color: #2563EB;
+        }
+
+        .status-replied {
+            background: #FFF7ED;
+            color: #EA580C;
+        }
+
+        .status-signed {
+            background: #F0FDF4;
+            color: #16A34A;
+        }
+
+        /* Notification Panel */
         .notif-panel {
             position: fixed;
-            top: 64px;
-            right: 0;
+            top: 72px;
+            right: 24px;
             width: 360px;
-            max-height: calc(100vh - 64px);
-            background: #18181B;
-            border-left: 1px solid #27272A;
+            max-height: 60vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             z-index: 200;
-            transform: translateX(100%);
-            transition: transform 0.3s;
+            transform: translateY(-10px) scale(0.98);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
             overflow-y: auto;
             padding: 20px;
         }
 
         .notif-panel.open {
-            transform: translateX(0);
-        }
-
-        .notif-panel h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #FAFAFA;
-            margin-bottom: 16px;
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
         }
 
         .notif-item {
             padding: 12px;
-            border-radius: 10px;
-            background: #27272A;
+            border-radius: 12px;
             margin-bottom: 8px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .notif-item:hover {
-            background: #3F3F46;
+            background: #F1F5F9;
         }
 
         .notif-item .ni-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            color: #FAFAFA;
+            color: #0F172A;
         }
 
         .notif-item .ni-msg {
             font-size: 12px;
-            color: #A1A1AA;
+            color: #64748b;
             margin-top: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -649,80 +423,21 @@
 
         .notif-item .ni-time {
             font-size: 10px;
-            color: #52525B;
+            color: #94a3b8;
             margin-top: 4px;
         }
 
-        /* --- Login --- */
-        .login-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            width: 100vw;
-        }
-
-        .login-card {
-            background: #18181B;
-            border: 1px solid #27272A;
-            border-radius: 20px;
-            padding: 48px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-        }
-
-        .login-card img {
-            height: 32px;
-            margin-bottom: 32px;
-        }
-
-        .login-card h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #FAFAFA;
-            margin-bottom: 8px;
-        }
-
-        .login-card p {
-            font-size: 13px;
-            color: #71717A;
-            margin-bottom: 24px;
-        }
-
-        /* --- Section Headers --- */
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #FAFAFA;
-        }
-
-        .section-sub {
-            font-size: 13px;
-            color: #52525B;
-            margin-top: 2px;
-        }
-
-        /* --- Status message --- */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: #18181B;
-            border: 1px solid #27272A;
-            border-radius: 12px;
+            background: white;
+            border-radius: 14px;
             padding: 14px 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
             z-index: 9000;
             transform: translateY(100px);
             opacity: 0;
@@ -730,6 +445,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
         }
 
         .toast.show {
@@ -737,281 +453,259 @@
             opacity: 1;
         }
 
-        .toast.success {
-            border-color: #34D399;
-            color: #34D399;
+        .toast.success i {
+            color: #16a34a;
         }
 
-        .toast.error {
-            border-color: #EF4444;
-            color: #EF4444;
+        .toast.error i {
+            color: #dc2626;
         }
 
-        /* --- Responsive --- */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: 60px;
-                flex-direction: row;
-                padding: 0 12px;
-                position: fixed;
-                bottom: 0;
-                top: auto;
-                border-right: none;
-                border-top: 1px solid #27272A;
-                justify-content: space-around;
-            }
-
-            .sidebar-logo {
-                display: none;
-            }
-
-            .nav-spacer {
-                display: none;
-            }
-
-            .nav-btn {
-                margin-bottom: 0;
-            }
-
-            .nav-btn .tooltip {
-                display: none !important;
-            }
-
-            .main {
-                margin-left: 0;
-                margin-bottom: 60px;
-            }
-
-            .topbar {
-                padding: 0 16px;
-            }
-
-            .content-area {
-                padding: 16px;
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
-
-            .notif-panel {
-                width: 100%;
-            }
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 
-<body>
+<body class="min-h-screen">
 
-    <!-- Login Screen (no sidebar) -->
-    <div id="login-screen" class="login-wrap">
-        <div class="login-card">
-            <img src="logopng.png" alt="Papercut">
-            <h1>Admin</h1>
-            <p>Enter your master password to continue</p>
-            <form id="loginForm" style="display:flex;flex-direction:column;gap:12px;">
-                <input type="password" id="loginPassword" placeholder="Password" class="form-input" required>
-                <button type="submit" class="btn-primary">Sign In</button>
-            </form>
-        </div>
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
     </div>
 
-    <!-- Dashboard Shell (hidden until login) -->
-    <div id="dashboard" style="display:none; width:100%; display:none;">
+    <!-- Top Navigation -->
+    <nav class="sticky top-4 z-40 max-w-6xl mx-auto flex justify-between items-center bg-white/70 backdrop-blur-md rounded-full px-8 py-3 shadow-sm mb-10 hidden"
+        id="admin-nav">
+        <div class="flex items-center gap-4">
+            <img src="logopng.png" alt="Papercut" class="h-6">
+            <span class="font-bold text-slate-800 border-l border-slate-300 pl-4">Dashboard</span>
+        </div>
+        <div class="flex gap-2 p-1 bg-slate-100 rounded-full">
+            <button onclick="switchView('gallery')" id="nav-gallery"
+                class="px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition">Gallery</button>
+            <button onclick="switchView('leads')" id="nav-leads"
+                class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
+                    class="fas fa-inbox mr-1"></i> Leads</button>
+            <button onclick="switchView('analytics')" id="nav-analytics"
+                class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
+                    class="fas fa-chart-line mr-1"></i> Analytics</button>
+            <button onclick="switchView('upload')" id="nav-upload"
+                class="px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition"><i
+                    class="fas fa-plus mr-1"></i> Upload</button>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Notification Bell -->
+            <button id="notif-toggle"
+                class="relative w-10 h-10 rounded-full bg-white/60 hover:bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-purple-600 transition">
+                <i class="fas fa-bell"></i>
+                <span id="notif-dot"
+                    class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white hidden"></span>
+            </button>
+            <button onclick="logout()"
+                class="text-sm font-medium text-slate-500 hover:text-red-500 transition px-4 py-2 rounded-full hover:bg-red-50"><i
+                    class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+        </div>
+    </nav>
 
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-logo"><img src="s-icon-01.png" alt="P"></div>
-            <button class="nav-btn active" data-page="gallery"><i class="fas fa-images"></i><span
-                    class="tooltip">Gallery</span></button>
-            <button class="nav-btn" data-page="leads"><i class="fas fa-inbox"></i><span
-                    class="tooltip">Leads</span><span class="badge" id="leads-badge"
-                    style="display:none;"></span></button>
-            <button class="nav-btn" data-page="analytics"><i class="fas fa-chart-line"></i><span
-                    class="tooltip">Analytics</span></button>
-            <button class="nav-btn" data-page="upload"><i class="fas fa-cloud-arrow-up"></i><span
-                    class="tooltip">Upload</span></button>
-            <div class="nav-spacer"></div>
-            <button class="nav-btn logout" onclick="logout()"><i class="fas fa-arrow-right-from-bracket"></i><span
-                    class="tooltip">Logout</span></button>
-        </nav>
+    <!-- Notification Panel -->
+    <div class="notif-panel" id="notif-panel">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-900"><i class="fas fa-bell mr-2 text-purple-500"></i>New Leads</h3>
+            <span id="notif-count"
+                class="bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+        </div>
+        <div id="notif-list"></div>
+    </div>
 
-        <!-- Main -->
-        <div class="main">
-            <div class="topbar">
-                <span class="topbar-title" id="page-title">Gallery</span>
-                <div class="topbar-right">
-                    <button class="notif-btn" id="notif-toggle"><i class="fas fa-bell"></i><span class="notif-dot"
-                            id="notif-dot"></span></button>
-                </div>
+    <div class="max-w-6xl mx-auto px-6 pb-20">
+
+        <!-- Login View -->
+        <div id="view-login" class="view-section active max-w-md mx-auto mt-20">
+            <div class="glass-card p-10 text-center">
+                <img src="logopng.png" alt="Papercut" class="h-8 mx-auto mb-8">
+                <h1 class="text-2xl font-bold mb-2">Admin Login</h1>
+                <p class="text-slate-500 mb-8 text-sm">Enter your master password</p>
+                <form id="loginForm" class="space-y-4">
+                    <input type="password" id="loginPassword" placeholder="Admin Password" class="form-input" required>
+                    <button type="submit" class="btn-premium w-full py-3.5 mt-2 font-medium">Access Dashboard</button>
+                </form>
             </div>
+        </div>
 
-            <!-- Notification Panel -->
-            <div class="notif-panel" id="notif-panel">
-                <h3><i class="fas fa-bell" style="margin-right:8px;color:#A78BFA;"></i>New Leads</h3>
-                <div id="notif-list"></div>
+        <!-- Upload View -->
+        <div id="view-upload" class="view-section max-w-xl mx-auto mt-10">
+            <div class="glass-card p-12">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold">New Asset</h2>
+                    <button onclick="switchView('gallery')" class="text-slate-400 hover:text-slate-600"><i
+                            class="fas fa-times text-xl"></i></button>
+                </div>
+
+                <form id="uploadForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                        <select id="category" name="category" class="form-input text-lg" required>
+                            <option value="ad">Ad Design</option>
+                            <option value="logo">Logo Design</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">High Quality Image</label>
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" id="file" name="file" accept="image/*" required>
+                            <div id="dropText">
+                                <i class="fas fa-image text-4xl text-purple-300 mb-3 block"></i>
+                                <span class="font-medium text-slate-700 text-lg">Click or drag image here</span>
+                                <p class="text-sm text-slate-400 mt-1">Accepts ultra-high res .JPG and .PNG</p>
+                            </div>
+                            <div id="filePreview" class="hidden">
+                                <span
+                                    class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium text-sm flex items-center justify-center gap-2">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span id="fileName">File selected</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn"
+                        class="btn-premium w-full py-4 text-lg font-medium mt-8 shadow-lg">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload & Publish
+                    </button>
+                </form>
             </div>
+        </div>
 
-            <div class="content-area">
-
-                <!-- ===== GALLERY PAGE ===== -->
-                <div class="page active" id="page-gallery">
-                    <div class="section-head">
-                        <div>
-                            <div class="section-title">Portfolio Gallery</div>
-                            <div class="section-sub">Drag to reorder. Changes are instant.</div>
-                        </div>
-                        <div class="filter-group" id="gallery-filters">
-                            <button class="filter-pill active" data-filter="all">All</button>
-                            <button class="filter-pill" data-filter="ad">Ads</button>
-                            <button class="filter-pill" data-filter="logo">Logos</button>
-                        </div>
+        <!-- Gallery Management View -->
+        <div id="view-gallery" class="view-section">
+            <div class="glass-card p-10">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-slate-200 pb-6 gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900">Live Gallery</h2>
+                        <p class="text-slate-500 mt-1 text-lg">Drag to reorder. Changes are instant.</p>
                     </div>
-                    <div id="gallery-loading" class="hidden" style="text-align:center;padding:60px 0;color:#52525B;"><i
-                            class="fas fa-circle-notch fa-spin"
-                            style="font-size:24px;margin-bottom:12px;display:block;color:#A78BFA;"></i>Loading…</div>
-                    <div id="gallery-grid" class="gallery-grid"></div>
-                </div>
-
-                <!-- ===== LEADS PAGE ===== -->
-                <div class="page" id="page-leads">
-                    <div class="section-head">
-                        <div>
-                            <div class="section-title">Leads</div>
-                            <div class="section-sub">Contact form submissions from your website.</div>
-                        </div>
-                        <div class="filter-group" id="leads-filters">
-                            <button class="filter-pill active" data-filter="all">All</button>
-                            <button class="filter-pill" data-filter="new">New</button>
-                            <button class="filter-pill" data-filter="replied">Replied</button>
-                            <button class="filter-pill" data-filter="signed">Signed</button>
-                        </div>
-                    </div>
-                    <div id="leads-loading" class="hidden" style="text-align:center;padding:60px 0;color:#52525B;"><i
-                            class="fas fa-circle-notch fa-spin"
-                            style="font-size:24px;margin-bottom:12px;display:block;color:#A78BFA;"></i>Loading…</div>
-                    <div id="leads-list" style="display:flex;flex-direction:column;gap:12px;"></div>
-                </div>
-
-                <!-- ===== ANALYTICS PAGE ===== -->
-                <div class="page" id="page-analytics">
-                    <div class="section-head">
-                        <div>
-                            <div class="section-title">Analytics</div>
-                            <div class="section-sub">Your website performance at a glance.</div>
-                        </div>
-                    </div>
-                    <div id="analytics-loading" class="hidden" style="text-align:center;padding:60px 0;color:#52525B;">
-                        <i class="fas fa-circle-notch fa-spin"
-                            style="font-size:24px;margin-bottom:12px;display:block;color:#A78BFA;"></i>Crunching
-                        numbers…</div>
-
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px;"
-                        id="stat-cards">
-                        <div class="card" style="text-align:center;">
-                            <p class="stat-value" style="color:#A78BFA;" id="stat-total">—</p>
-                            <p class="stat-label">Total Views</p>
-                        </div>
-                        <div class="card" style="text-align:center;">
-                            <p class="stat-value" style="color:#60A5FA;" id="stat-today">—</p>
-                            <p class="stat-label">Today</p>
-                        </div>
-                        <div class="card" style="text-align:center;">
-                            <p class="stat-value" style="color:#F472B6;" id="stat-leads">—</p>
-                            <p class="stat-label">Total Leads</p>
-                        </div>
-                        <div class="card" style="text-align:center;">
-                            <p class="stat-value" style="color:#34D399;" id="stat-new-leads">—</p>
-                            <p class="stat-label">New Leads</p>
-                        </div>
-                    </div>
-
-                    <div class="card" style="margin-bottom:24px;">
-                        <h3 style="font-size:14px;font-weight:600;color:#A1A1AA;margin-bottom:16px;">Daily Traffic <span
-                                style="color:#52525B;">(14 days)</span></h3>
-                        <div style="height:260px;position:relative;"><canvas id="trafficChart"></canvas></div>
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-                        <div class="card">
-                            <h3
-                                style="font-size:12px;font-weight:600;color:#71717A;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">
-                                <i class="fas fa-file-alt" style="margin-right:6px;color:#A78BFA;"></i>Top Pages</h3>
-                            <div id="top-pages"></div>
-                        </div>
-                        <div class="card">
-                            <h3
-                                style="font-size:12px;font-weight:600;color:#71717A;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">
-                                <i class="fas fa-link" style="margin-right:6px;color:#60A5FA;"></i>Top Referrers</h3>
-                            <div id="top-referrers"></div>
-                        </div>
-                        <div class="card">
-                            <h3
-                                style="font-size:12px;font-weight:600;color:#71717A;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">
-                                <i class="fas fa-globe" style="margin-right:6px;color:#34D399;"></i>Top Countries</h3>
-                            <div id="top-countries"></div>
-                        </div>
+                    <div class="flex bg-slate-100/80 p-1.5 rounded-full shadow-inner" id="gallery-filters">
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
+                            data-filter="all">All Items</button>
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="ad">Ads</button>
+                        <button class="px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="logo">Logos</button>
                     </div>
                 </div>
+                <div id="gallery-loading" class="text-center py-20 text-slate-500 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-purple-500"></i>
+                    <p class="text-lg">Syncing Database...</p>
+                </div>
+                <div id="gallery-grid" class="gallery-grid"></div>
+            </div>
+        </div>
 
-                <!-- ===== UPLOAD PAGE ===== -->
-                <div class="page" id="page-upload">
-                    <div class="section-head">
-                        <div>
-                            <div class="section-title">Upload New Asset</div>
-                            <div class="section-sub">Drag an image or click to browse.</div>
-                        </div>
+        <!-- Leads CRM View -->
+        <div id="view-leads" class="view-section">
+            <div class="glass-card p-10">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-slate-200 pb-6 gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900"><i
+                                class="fas fa-inbox mr-2 text-purple-500"></i>Leads</h2>
+                        <p class="text-slate-500 mt-1 text-lg">All contact form submissions from your website.</p>
                     </div>
-                    <div class="card" style="max-width:560px;">
-                        <form id="uploadForm" style="display:flex;flex-direction:column;gap:20px;">
-                            <div>
-                                <label
-                                    style="font-size:12px;font-weight:600;color:#71717A;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:8px;">Category</label>
-                                <select id="category" name="category" class="form-select" required>
-                                    <option value="ad">Ad Design</option>
-                                    <option value="logo">Logo Design</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label
-                                    style="font-size:12px;font-weight:600;color:#71717A;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:8px;">Image</label>
-                                <div class="drop-area" id="dropZone">
-                                    <input type="file" id="file" name="file" accept="image/*" required>
-                                    <div id="dropText"><i class="fas fa-cloud-arrow-up"
-                                            style="font-size:28px;color:#3F3F46;margin-bottom:12px;display:block;"></i><span
-                                            style="font-size:14px;font-weight:500;color:#A1A1AA;">Drop image here or
-                                            click to browse</span></div>
-                                    <div id="filePreview" class="hidden"><span
-                                            style="display:inline-flex;align-items:center;gap:8px;background:#27272A;color:#A78BFA;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;"><i
-                                                class="fas fa-check-circle"></i><span id="fileName"></span></span></div>
-                                </div>
-                            </div>
-                            <button type="submit" id="submitBtn" class="btn-primary"><i class="fas fa-cloud-arrow-up"
-                                    style="margin-right:8px;"></i>Upload & Publish</button>
-                        </form>
+                    <div class="flex bg-slate-100/80 p-1.5 rounded-full shadow-inner" id="leads-filters">
+                        <button class="px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700"
+                            data-filter="all">All</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="new">New</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="replied">Replied</button>
+                        <button class="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"
+                            data-filter="signed">Signed</button>
+                    </div>
+                </div>
+                <div id="leads-loading" class="text-center py-20 text-slate-500 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-purple-500"></i>
+                    <p class="text-lg">Loading leads...</p>
+                </div>
+                <div id="leads-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="view-analytics" class="view-section">
+            <div class="glass-card p-10">
+                <div class="mb-8 border-b border-slate-200 pb-6">
+                    <h2 class="text-3xl font-bold text-slate-900"><i
+                            class="fas fa-chart-line mr-2 text-purple-500"></i>Analytics</h2>
+                    <p class="text-slate-500 mt-1 text-lg">Your website performance at a glance.</p>
+                </div>
+                <div id="analytics-loading" class="text-center py-20 text-slate-500 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-purple-500"></i>
+                    <p class="text-lg">Crunching numbers...</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-purple-600" id="stat-total">—</p>
+                        <p class="text-slate-400 text-xs mt-1 uppercase tracking-wider font-medium">Total Views</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-blue-600" id="stat-today">—</p>
+                        <p class="text-slate-400 text-xs mt-1 uppercase tracking-wider font-medium">Today</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-pink-600" id="stat-leads">—</p>
+                        <p class="text-slate-400 text-xs mt-1 uppercase tracking-wider font-medium">Total Leads</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-green-600" id="stat-new-leads">—</p>
+                        <p class="text-slate-400 text-xs mt-1 uppercase tracking-wider font-medium">New Leads</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm mb-8">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Daily Traffic <span
+                            class="text-slate-400 text-sm font-normal">(Last 14 Days)</span></h3>
+                    <div style="height: 280px; position: relative;"><canvas id="trafficChart"></canvas></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                        <h3 class="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wider"><i
+                                class="fas fa-file-alt mr-2 text-purple-400"></i>Top Pages</h3>
+                        <div id="top-pages" class="space-y-3 text-sm"></div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                        <h3 class="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wider"><i
+                                class="fas fa-link mr-2 text-blue-400"></i>Top Referrers</h3>
+                        <div id="top-referrers" class="space-y-3 text-sm"></div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                        <h3 class="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wider"><i
+                                class="fas fa-globe mr-2 text-green-400"></i>Top Countries</h3>
+                        <div id="top-countries" class="space-y-3 text-sm"></div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Preview Modal -->
-    <div id="previewModal" class="modal-overlay">
-        <button class="modal-close" onclick="closePreview()"><i class="fas fa-xmark"></i></button>
+    <!-- Fullscreen Preview Modal -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-close" onclick="closePreview()"><i class="fas fa-times"></i></div>
         <img id="previewImg" src="" alt="Preview">
     </div>
 
-    <!-- Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
     <script>
         let adminPassword = sessionStorage.getItem('papercut_admin_pwd') || '';
         let galleryItems = [], allLeads = [], trafficChartInstance = null;
 
-        // ──────── AUTH ────────
+        // ──── AUTH ────
         if (adminPassword) initDashboard();
+
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             adminPassword = document.getElementById('loginPassword').value;
@@ -1022,75 +716,34 @@
         function logout() {
             sessionStorage.removeItem('papercut_admin_pwd');
             adminPassword = '';
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('admin-nav').classList.add('hidden');
+            switchView('login');
         }
 
         function initDashboard() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-            switchPage('gallery');
-            loadNewLeadsCount();
+            document.getElementById('admin-nav').classList.remove('hidden');
+            document.getElementById('admin-nav').classList.add('flex');
+            switchView('gallery');
+            loadNotifications();
         }
 
-        // ──────── NAV ────────
-        const pageTitles = { gallery: 'Gallery', leads: 'Leads', analytics: 'Analytics', upload: 'Upload' };
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewName}`).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
-            btn.addEventListener('click', () => switchPage(btn.dataset.page));
-        });
-
-        function switchPage(name) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${name}`).classList.add('active');
-            document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.nav-btn[data-page="${name}"]`)?.classList.add('active');
-            document.getElementById('page-title').textContent = pageTitles[name] || name;
-            if (name === 'gallery') fetchGallery();
-            if (name === 'leads') fetchLeads();
-            if (name === 'analytics') fetchAnalytics();
-        }
-
-        // ──────── NOTIFICATION PANEL ────────
-        const notifPanel = document.getElementById('notif-panel');
-        document.getElementById('notif-toggle').addEventListener('click', () => {
-            notifPanel.classList.toggle('open');
-        });
-        document.addEventListener('click', (e) => {
-            if (!notifPanel.contains(e.target) && !document.getElementById('notif-toggle').contains(e.target)) {
-                notifPanel.classList.remove('open');
+            if (viewName !== 'login') {
+                const navBtns = { gallery: document.getElementById('nav-gallery'), leads: document.getElementById('nav-leads'), analytics: document.getElementById('nav-analytics'), upload: document.getElementById('nav-upload') };
+                const activeClass = "px-6 py-2 text-sm font-medium rounded-full bg-white shadow-sm text-purple-700 transition";
+                const inactiveClass = "px-6 py-2 text-sm font-medium rounded-full text-slate-600 hover:text-slate-900 transition";
+                Object.keys(navBtns).forEach(key => { navBtns[key].className = (key === viewName) ? activeClass : inactiveClass; });
+                if (viewName === 'gallery') fetchGallery();
+                if (viewName === 'leads') fetchLeads();
+                if (viewName === 'analytics') fetchAnalytics();
             }
-        });
-
-        async function loadNewLeadsCount() {
-            try {
-                const res = await fetch('/api/contact', { headers: { 'Authorization': `Bearer ${adminPassword}` } });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    const newOnes = data.items.filter(l => l.status === 'new');
-                    const badge = document.getElementById('leads-badge');
-                    const dot = document.getElementById('notif-dot');
-                    if (newOnes.length > 0) {
-                        badge.style.display = 'block';
-                        dot.classList.add('show');
-                        renderNotifList(newOnes);
-                    } else {
-                        badge.style.display = 'none';
-                        dot.classList.remove('show');
-                        document.getElementById('notif-list').innerHTML = '<p style="color:#52525B;font-size:13px;">No new leads.</p>';
-                    }
-                }
-            } catch (e) { }
         }
 
-        function renderNotifList(items) {
-            document.getElementById('notif-list').innerHTML = items.slice(0, 10).map(l => {
-                const t = new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                return `<div class="notif-item" onclick="switchPage('leads');notifPanel.classList.remove('open');"><div class="ni-name">${esc(l.name)}</div><div class="ni-msg">${esc(l.message)}</div><div class="ni-time">${t}</div></div>`;
-            }).join('');
-        }
-
-        // ──────── TOAST ────────
+        // ──── TOAST ────
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.className = `toast ${type}`;
@@ -1099,7 +752,86 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        // ──────── GALLERY ────────
+        // ──── NOTIFICATIONS ────
+        const notifPanel = document.getElementById('notif-panel');
+        document.getElementById('notif-toggle').addEventListener('click', (e) => {
+            e.stopPropagation();
+            notifPanel.classList.toggle('open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!notifPanel.contains(e.target)) notifPanel.classList.remove('open');
+        });
+
+        async function loadNotifications() {
+            try {
+                const res = await fetch('/api/contact', { headers: { 'Authorization': `Bearer ${adminPassword}` } });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    const newOnes = data.items.filter(l => l.status === 'new');
+                    const dot = document.getElementById('notif-dot');
+                    const countEl = document.getElementById('notif-count');
+                    if (newOnes.length > 0) {
+                        dot.classList.remove('hidden');
+                        countEl.textContent = newOnes.length;
+                        renderNotifList(newOnes);
+                    } else {
+                        dot.classList.add('hidden');
+                        countEl.textContent = '0';
+                        document.getElementById('notif-list').innerHTML = '<p class="text-slate-400 text-sm text-center py-4">No new leads.</p>';
+                    }
+                }
+            } catch (e) { }
+        }
+
+        function renderNotifList(items) {
+            document.getElementById('notif-list').innerHTML = items.slice(0, 8).map(l => {
+                const t = new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `<div class="notif-item" onclick="switchView('leads');notifPanel.classList.remove('open');"><div class="ni-name">${esc(l.name)}</div><div class="ni-msg">${esc(l.message)}</div><div class="ni-time">${t}</div></div>`;
+            }).join('');
+        }
+
+        // ──── DRAG & DROP UPLOAD ────
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('file');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+        ['dragenter', 'dragover'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.add('dragover')));
+        ['dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover')));
+        dropZone.addEventListener('drop', e => { if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; handleFileSelect(); } });
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            if (fileInput.files.length) {
+                document.getElementById('dropText').classList.add('hidden');
+                document.getElementById('filePreview').classList.remove('hidden');
+                document.getElementById('fileName').textContent = fileInput.files[0].name;
+            } else {
+                document.getElementById('dropText').classList.remove('hidden');
+                document.getElementById('filePreview').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+            try {
+                const fd = new FormData(document.getElementById('uploadForm'));
+                const res = await fetch('/api/portfolio', { method: 'POST', headers: { 'Authorization': `Bearer ${adminPassword}` }, body: fd });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('Image uploaded!');
+                    document.getElementById('uploadForm').reset();
+                    handleFileSelect();
+                    setTimeout(() => switchView('gallery'), 800);
+                } else {
+                    showToast(data.error || 'Upload failed', 'error');
+                }
+            } catch (err) { showToast('Network error', 'error'); }
+            finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Upload & Publish'; }
+        });
+
+        // ──── GALLERY ────
         async function fetchGallery() {
             document.getElementById('gallery-loading').classList.remove('hidden');
             document.getElementById('gallery-grid').innerHTML = '';
@@ -1108,8 +840,8 @@
                 const data = await res.json();
                 if (res.ok && data.success) {
                     galleryItems = data.items;
-                    const aBtn = document.querySelector('#gallery-filters .active');
-                    renderGallery(aBtn ? aBtn.dataset.filter : 'all');
+                    const activeBtn = document.querySelector('#gallery-filters .bg-white');
+                    renderGallery(activeBtn ? activeBtn.dataset.filter : 'all');
                 }
             } catch (e) { console.error(e); }
             finally { document.getElementById('gallery-loading').classList.add('hidden'); }
@@ -1119,7 +851,10 @@
             const grid = document.getElementById('gallery-grid');
             grid.innerHTML = '';
             const items = filter === 'all' ? galleryItems : galleryItems.filter(i => i.category === filter);
-            if (!items.length) { grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px;color:#52525B;">No items. Upload something!</p>'; return; }
+            if (!items.length) {
+                grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fas fa-images text-4xl text-slate-300 mb-4 block"></i><p class="text-slate-500 text-lg">Nothing here yet. Upload your first piece!</p></div>';
+                return;
+            }
             items.forEach(item => {
                 const d = document.createElement('div');
                 d.className = 'gallery-item'; d.dataset.id = item.id;
@@ -1134,11 +869,15 @@
             const g = document.getElementById('gallery-grid');
             if (sortableInst) sortableInst.destroy();
             sortableInst = new Sortable(g, {
-                animation: 150, ghostClass: 'opacity-50', onEnd: async () => {
-                    const ids = sortableInst.toArray();
+                animation: 200,
+                ghostClass: 'opacity-40',
+                onEnd: async () => {
+                    const ids = [...g.children].map(el => el.dataset.id);
                     const updates = ids.map((id, i) => ({ id, sort_order: i }));
-                    try { await fetch('/api/portfolio/reorder', { method: 'PUT', headers: { 'Authorization': `Bearer ${adminPassword}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ updates }) }); }
-                    catch (e) { showToast('Failed to save order', 'error'); fetchGallery(); }
+                    try {
+                        await fetch('/api/portfolio/reorder', { method: 'PUT', headers: { 'Authorization': `Bearer ${adminPassword}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ updates }) });
+                        showToast('Order saved');
+                    } catch (e) { showToast('Failed to save order', 'error'); }
                 }
             });
         }
@@ -1148,51 +887,33 @@
             if (!confirm('Delete this image permanently?')) return;
             try {
                 const res = await fetch(`/api/portfolio/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminPassword}` } });
-                if (res.ok) { showToast('Deleted'); fetchGallery(); } else { showToast('Failed to delete', 'error'); }
+                if (res.ok) { showToast('Deleted'); fetchGallery(); } else { showToast('Delete failed', 'error'); }
             } catch (e) { showToast('Network error', 'error'); }
         }
 
-        document.querySelectorAll('#gallery-filters .filter-pill').forEach(b => b.addEventListener('click', (e) => {
-            document.querySelectorAll('#gallery-filters .filter-pill').forEach(x => x.classList.remove('active'));
-            e.target.classList.add('active');
-            renderGallery(e.target.dataset.filter);
-        }));
-
-        // ──────── UPLOAD ────────
-        const dropZone = document.getElementById('dropZone'), fileInput = document.getElementById('file');
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
-        ['dragenter', 'dragover'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.add('dragover')));
-        ['dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover')));
-        dropZone.addEventListener('drop', e => { if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; updateFile(); } });
-        fileInput.addEventListener('change', updateFile);
-        function updateFile() {
-            if (fileInput.files.length) { document.getElementById('dropText').classList.add('hidden'); document.getElementById('filePreview').classList.remove('hidden'); document.getElementById('fileName').textContent = fileInput.files[0].name; dropZone.style.borderColor = '#A78BFA'; }
-            else { document.getElementById('dropText').classList.remove('hidden'); document.getElementById('filePreview').classList.add('hidden'); dropZone.style.borderColor = '#3F3F46'; }
-        }
-
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Uploading…';
-            try {
-                const fd = new FormData(document.getElementById('uploadForm'));
-                const res = await fetch('/api/portfolio', { method: 'POST', headers: { 'Authorization': `Bearer ${adminPassword}` }, body: fd });
-                const data = await res.json();
-                if (res.ok && data.success) { showToast('Uploaded!'); document.getElementById('uploadForm').reset(); updateFile(); setTimeout(() => switchPage('gallery'), 800); }
-                else { showToast(data.error || 'Upload failed', 'error'); }
-            } catch (err) { showToast('Network error', 'error'); }
-            finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-arrow-up" style="margin-right:8px;"></i>Upload & Publish'; }
+        document.querySelectorAll('#gallery-filters button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#gallery-filters button').forEach(b => { b.className = "px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800"; });
+                e.target.className = "px-6 py-2.5 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700";
+                renderGallery(e.target.dataset.filter);
+            });
         });
 
-        // ──────── LEADS ────────
+        // ──── LEADS ────
         async function fetchLeads() {
             document.getElementById('leads-loading').classList.remove('hidden');
             document.getElementById('leads-list').innerHTML = '';
             try {
                 const res = await fetch('/api/contact', { headers: { 'Authorization': `Bearer ${adminPassword}` } });
                 const data = await res.json();
-                if (res.ok && data.success) { allLeads = data.items; const a = document.querySelector('#leads-filters .active'); renderLeads(a ? a.dataset.filter : 'all'); }
-                else { showToast('Error: ' + data.error, 'error'); if (data.error?.includes('Unauthorized')) logout(); }
+                if (res.ok && data.success) {
+                    allLeads = data.items;
+                    const activeBtn = document.querySelector('#leads-filters .bg-white');
+                    renderLeads(activeBtn ? activeBtn.dataset.filter : 'all');
+                } else {
+                    showToast('Error: ' + data.error, 'error');
+                    if (data.error?.includes('Unauthorized')) logout();
+                }
             } catch (e) { console.error(e); }
             finally { document.getElementById('leads-loading').classList.add('hidden'); }
         }
@@ -1200,37 +921,66 @@
         function renderLeads(filter) {
             const list = document.getElementById('leads-list');
             list.innerHTML = '';
-            const items = filter === 'all' ? allLeads : allLeads.filter(l => l.status === filter);
-            if (!items.length) { list.innerHTML = '<p style="text-align:center;padding:48px;color:#52525B;">No leads found.</p>'; return; }
-            items.forEach(l => {
-                const t = new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const filtered = filter === 'all' ? allLeads : allLeads.filter(l => l.status === filter);
+            if (!filtered.length) {
+                list.innerHTML = '<div class="text-center py-20 px-6 border-2 border-dashed border-slate-200 rounded-3xl"><i class="fas fa-inbox text-4xl text-slate-300 mb-3 block"></i><p class="text-slate-500 font-medium text-lg">No leads found.</p></div>';
+                return;
+            }
+            filtered.forEach(lead => {
+                const date = new Date(lead.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const statusIcon = lead.status === 'new' ? 'fa-circle' : lead.status === 'replied' ? 'fa-reply' : 'fa-check-circle';
                 const card = document.createElement('div');
-                card.className = `lead-card ${l.status === 'new' ? 'is-new' : ''}`;
-                card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:start;gap:16px;flex-wrap:wrap;"><div style="flex:1;min-width:200px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span class="lead-name">${esc(l.name)}</span><span class="status-dot ${l.status}"></span></div><a href="mailto:${esc(l.email)}" class="lead-email"><i class="fas fa-envelope" style="margin-right:4px;"></i>${esc(l.email)}</a><p class="lead-msg">${esc(l.message)}</p><p class="lead-time"><i class="fas fa-clock" style="margin-right:4px;"></i>${t}</p></div><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;"><select class="status-select" onchange="updateLeadStatus('${l.id}',this.value)"><option value="new" ${l.status === 'new' ? 'selected' : ''}>🔵 New</option><option value="replied" ${l.status === 'replied' ? 'selected' : ''}>🟠 Replied</option><option value="signed" ${l.status === 'signed' ? 'selected' : ''}>🟢 Signed</option></select><button onclick="deleteLead('${l.id}')" style="background:none;border:none;color:#52525B;font-size:12px;cursor:pointer;font-family:inherit;padding:4px 8px;border-radius:6px;transition:all 0.2s;" onmouseenter="this.style.color='#EF4444';this.style.background='rgba(239,68,68,0.1)'" onmouseleave="this.style.color='#52525B';this.style.background='none'"><i class="fas fa-trash" style="margin-right:4px;"></i>Delete</button></div></div>`;
+                card.className = `lead-card ${lead.status === 'new' ? 'is-new' : ''}`;
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-lg font-semibold text-slate-900">${esc(lead.name)}</h3>
+                                <span class="status-badge status-${lead.status}"><i class="fas ${statusIcon} text-[9px]"></i>${lead.status}</span>
+                            </div>
+                            <a href="mailto:${esc(lead.email)}" class="text-purple-600 hover:text-purple-800 text-sm font-medium transition"><i class="fas fa-envelope mr-1"></i>${esc(lead.email)}</a>
+                            <p class="text-slate-600 mt-3 leading-relaxed">${esc(lead.message)}</p>
+                            <p class="text-slate-400 text-xs mt-3"><i class="fas fa-clock mr-1"></i>${date}</p>
+                        </div>
+                        <div class="flex md:flex-col gap-2 items-start md:items-end shrink-0">
+                            <select onchange="updateLeadStatus('${lead.id}', this.value)" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 cursor-pointer">
+                                <option value="new" ${lead.status === 'new' ? 'selected' : ''}>🔵 New</option>
+                                <option value="replied" ${lead.status === 'replied' ? 'selected' : ''}>🟠 Replied</option>
+                                <option value="signed" ${lead.status === 'signed' ? 'selected' : ''}>🟢 Signed</option>
+                            </select>
+                            <button onclick="deleteLead('${lead.id}')" class="text-xs text-red-400 hover:text-red-600 transition px-3 py-2 rounded-lg hover:bg-red-50"><i class="fas fa-trash-alt mr-1"></i>Delete</button>
+                        </div>
+                    </div>`;
                 list.appendChild(card);
             });
         }
 
-        async function updateLeadStatus(id, status) {
+        async function updateLeadStatus(id, newStatus) {
             try {
-                const res = await fetch(`/api/contact/${id}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${adminPassword}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
-                if (res.ok) { showToast(`Marked as ${status}`); fetchLeads(); loadNewLeadsCount(); }
-            } catch (e) { showToast('Error', 'error'); }
+                const res = await fetch(`/api/contact/${id}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${adminPassword}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) });
+                if (res.ok) { showToast(`Marked as ${newStatus}`); fetchLeads(); loadNotifications(); }
+                else { showToast('Error updating status', 'error'); }
+            } catch (e) { showToast('Network error', 'error'); }
         }
 
         async function deleteLead(id) {
-            if (!confirm('Delete this lead?')) return;
-            try { const res = await fetch(`/api/contact/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminPassword}` } }); if (res.ok) { showToast('Deleted'); fetchLeads(); loadNewLeadsCount(); } }
-            catch (e) { showToast('Error', 'error'); }
+            if (!confirm('Permanently delete this lead?')) return;
+            try {
+                const res = await fetch(`/api/contact/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminPassword}` } });
+                if (res.ok) { showToast('Deleted'); fetchLeads(); loadNotifications(); }
+                else { showToast('Error deleting lead', 'error'); }
+            } catch (e) { showToast('Network error', 'error'); }
         }
 
-        document.querySelectorAll('#leads-filters .filter-pill').forEach(b => b.addEventListener('click', (e) => {
-            document.querySelectorAll('#leads-filters .filter-pill').forEach(x => x.classList.remove('active'));
-            e.target.classList.add('active');
-            renderLeads(e.target.dataset.filter);
-        }));
+        document.querySelectorAll('#leads-filters button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#leads-filters button').forEach(b => { b.className = "px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-800 transition"; });
+                e.target.className = "px-5 py-2 rounded-full text-sm font-medium bg-white shadow-sm text-purple-700 transition";
+                renderLeads(e.target.dataset.filter);
+            });
+        });
 
-        // ──────── ANALYTICS ────────
+        // ──── ANALYTICS ────
         async function fetchAnalytics() {
             document.getElementById('analytics-loading').classList.remove('hidden');
             try {
@@ -1248,32 +998,40 @@
             document.getElementById('stat-new-leads').textContent = s.newLeads.toLocaleString();
 
             const labels = s.dailyViews.map(d => new Date(d.day + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-            const vals = s.dailyViews.map(d => d.views);
+            const values = s.dailyViews.map(d => d.views);
             if (trafficChartInstance) trafficChartInstance.destroy();
             const ctx = document.getElementById('trafficChart').getContext('2d');
-            const grad = ctx.createLinearGradient(0, 0, 0, 260);
-            grad.addColorStop(0, 'rgba(167,139,250,0.3)'); grad.addColorStop(1, 'rgba(167,139,250,0)');
-            trafficChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Views', data: vals, borderColor: '#A78BFA', backgroundColor: grad, fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#A78BFA', pointBorderColor: '#18181B', pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#52525B', font: { size: 11, family: 'Inter' } } }, y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#52525B', font: { size: 11, family: 'Inter' }, precision: 0 } } }, interaction: { intersect: false, mode: 'index' } } });
+            const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(124, 58, 237, 0.25)');
+            gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+            trafficChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [{ label: 'Page Views', data: values, borderColor: '#7C3AED', backgroundColor: gradient, fill: true, tension: 0.4, borderWidth: 2.5, pointBackgroundColor: '#7C3AED', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 7 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11, family: 'Rubik' } } }, y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#94a3b8', font: { size: 11, family: 'Rubik' }, precision: 0 } } }, interaction: { intersect: false, mode: 'index' } }
+            });
 
-            renderTopList('top-pages', s.topPages, 'page', 'views');
-            renderTopList('top-referrers', s.topReferrers, 'referrer', 'views');
-            renderTopList('top-countries', s.topCountries, 'country', 'views');
+            renderTopList('top-pages', s.topPages, 'page', 'views', 'purple');
+            renderTopList('top-referrers', s.topReferrers, 'referrer', 'views', 'blue');
+            renderTopList('top-countries', s.topCountries, 'country', 'views', 'green');
         }
 
-        function renderTopList(id, items, lk, vk) {
-            const c = document.getElementById(id);
-            if (!items?.length) { c.innerHTML = '<p style="color:#52525B;font-size:13px;">No data yet.</p>'; return; }
-            const mx = items[0][vk];
-            c.innerHTML = items.map(i => { const p = Math.round((i[vk] / mx) * 100); const l = i[lk] || '(direct)'; return `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:#A1A1AA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${esc(l)}</span><span style="color:#71717A;font-weight:500;">${i[vk]}</span></div><div style="width:100%;background:#27272A;border-radius:4px;height:4px;"><div style="width:${p}%;background:#A78BFA;border-radius:4px;height:4px;"></div></div></div>`; }).join('');
+        function renderTopList(containerId, items, labelKey, valueKey, color) {
+            const container = document.getElementById(containerId);
+            if (!items || items.length === 0) { container.innerHTML = '<p class="text-slate-400 text-sm">No data yet.</p>'; return; }
+            const max = items[0][valueKey];
+            container.innerHTML = items.map(item => {
+                const pct = Math.round((item[valueKey] / max) * 100);
+                const label = item[labelKey] || '(direct)';
+                return `<div class="flex items-center gap-3"><div class="flex-1"><div class="flex justify-between mb-1"><span class="text-slate-700 font-medium truncate max-w-[180px]">${esc(label)}</span><span class="text-slate-500 font-medium">${item[valueKey]}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-${color}-400 h-1.5 rounded-full" style="width: ${pct}%"></div></div></div></div>`;
+            }).join('');
         }
 
-        // ──────── PREVIEW ────────
+        // ──── PREVIEW MODAL ────
         function openPreview(e, src) { e.stopPropagation(); document.getElementById('previewImg').src = src; document.getElementById('previewModal').classList.add('show'); }
         function closePreview() { document.getElementById('previewModal').classList.remove('show'); setTimeout(() => document.getElementById('previewImg').src = '', 300); }
-        document.getElementById('previewModal').addEventListener('click', e => { if (e.target === document.getElementById('previewModal')) closePreview(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePreview(); notifPanel.classList.remove('open'); } });
+        document.getElementById('previewModal').addEventListener('click', (e) => { if (e.target === document.getElementById('previewModal')) closePreview(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePreview(); notifPanel.classList.remove('open'); } });
 
-        // ──────── UTIL ────────
+        // ──── UTIL ────
         function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
     </script>
 </body>
