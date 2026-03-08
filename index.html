@@ -678,8 +678,7 @@
             </div>
 
             <div class="reveal delay-200 glass-card p-10 md:p-14">
-                <form id="contact-form" action="https://formsubmit.co/yossi@papercutdesign.co" method="POST"
-                    class="space-y-6">
+                <form id="contact-form" action="/api/contact" method="POST" class="space-y-6">
                     <input type="hidden" name="_subject" value="New Contact from Papercut Site">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_template" value="table">
@@ -960,7 +959,7 @@
                     const object = Object.fromEntries(formData);
                     const json = JSON.stringify(object);
 
-                    fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
+                    fetch("/api/contact", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
