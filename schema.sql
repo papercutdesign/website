@@ -14,3 +14,11 @@ CREATE TABLE IF NOT EXISTS contacts (
     status TEXT DEFAULT 'new',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS page_views (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    page TEXT NOT NULL,
+    referrer TEXT,
+    country TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
