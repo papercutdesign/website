@@ -33,41 +33,16 @@ export async function onRequestPost(context) {
 
         const id = crypto.randomUUID();
 
-        // 1. Save to D1 Database
         await env.DB.prepare(
             "INSERT INTO contacts (id, name, email, message) VALUES (?, ?, ?, ?)"
         ).bind(id, name, email, message).run();
 
-        // 2. Forward the email via FormSubmit (awaited so we can report errors)
-        try {
-            const emailRes = await fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    message: message,
-                    _subject: `New Lead from papercutdesign.co: ${name}`,
-                    _template: 'table'
-                })
-            });
-
-            const emailData = await emailRes.json();
-
-            if (!emailRes.ok || emailData.success === "false") {
-                console.error("FormSubmit error:", JSON.stringify(emailData));
-            }
-        } catch (emailErr) {
-            // Email failure should not break the form submission
-            console.error("Email forwarding failed:", emailErr.message);
-        }
+        // Email is now sent directly from the browser via FormSubmit
+        // This endpoint only handles database storage
 
         return Response.json({
             success: true,
-            message: "Message sent successfully!"
+            message: "Message saved successfully!"
         });
 
     } catch (err) {

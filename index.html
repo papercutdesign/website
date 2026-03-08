@@ -1019,26 +1019,39 @@
                     const object = Object.fromEntries(formData);
                     const json = JSON.stringify(object);
 
-                    fetch("/api/contact", {
+                    // 1. Save to our database (CRM)
+                    const saveToDb = fetch("/api/contact", {
                         method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                         body: json
-                    })
-                        .then(response => {
-                            if (!response.ok) throw new Error('Network response was not ok');
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.success === "false") throw new Error(data.message || "Form submission failed");
+                    });
 
-                            formStatus.innerText = "Message sent successfully!";
-                            formStatus.classList.remove('hidden', 'text-red-600');
-                            formStatus.classList.add('text-green-600', 'block');
-                            contactForm.reset();
-                            submitBtn.innerText = "Sent!";
+                    // 2. Send email via FormSubmit directly from the browser (this is the only way it works reliably)
+                    const sendEmail = fetch("https://formsubmit.co/ajax/yossi@papercutdesign.co", {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({
+                            name: object.name,
+                            email: object.email,
+                            message: object.message,
+                            _subject: 'New Lead from papercutdesign.co: ' + object.name,
+                            _template: 'table'
+                        })
+                    });
+
+                    // Wait for BOTH, but report success based on our API
+                    Promise.allSettled([saveToDb, sendEmail])
+                        .then(async ([dbResult]) => {
+                            const dbOk = dbResult.status === 'fulfilled' && dbResult.value.ok;
+                            if (dbOk) {
+                                formStatus.innerText = "Message sent successfully!";
+                                formStatus.classList.remove('hidden', 'text-red-600');
+                                formStatus.classList.add('text-green-600', 'block');
+                                contactForm.reset();
+                                submitBtn.innerText = "Sent!";
+                            } else {
+                                throw new Error('Save failed');
+                            }
 
                             setTimeout(() => {
                                 submitBtn.innerText = originalBtnText;
