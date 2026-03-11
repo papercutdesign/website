@@ -21,6 +21,7 @@ export async function onRequestPost(context) {
         const formData = await request.formData();
         const file = formData.get('file');
         const category = formData.get('category'); // 'ad' or 'logo'
+        const alt_text = formData.get('alt_text') || '';
         const password = request.headers.get('Authorization')?.replace('Bearer ', '');
 
         // 1. Authenticate
@@ -44,9 +45,9 @@ export async function onRequestPost(context) {
 
         // 4. Save metadata to D1 Database
         const stmt = env.DB.prepare(
-            "INSERT INTO portfolio_items (id, category, r2_key) VALUES (?, ?, ?)"
+            "INSERT INTO portfolio_items (id, category, r2_key, alt_text) VALUES (?, ?, ?, ?)"
         );
-        await stmt.bind(id, category, r2_key).run();
+        await stmt.bind(id, category, r2_key, alt_text).run();
 
         return Response.json({
             success: true,

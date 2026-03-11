@@ -9,7 +9,7 @@ export async function onRequestGet(context) {
     try {
         // Fetch all portfolio items for image sitemap entries
         const { results } = await env.DB.prepare(
-            "SELECT r2_key, category, created_at FROM portfolio_items ORDER BY sort_order ASC, created_at DESC"
+            "SELECT r2_key, category, alt_text, created_at FROM portfolio_items ORDER BY sort_order ASC, created_at DESC"
         ).all();
 
         const today = new Date().toISOString().split('T')[0];
@@ -28,10 +28,16 @@ export async function onRequestGet(context) {
         // Embed all portfolio images inside the homepage URL entry
         if (results && results.length > 0) {
             results.forEach(item => {
+                const defaultCaption = item.category === 'ad' ? 'Advertisement Design' : 'Logo Design';
+                const caption = item.alt_text ? item.alt_text : defaultCaption;
+                
+                // Escape special XML characters for safety
+                const safeCaption = caption.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
                 xml += `
     <image:image>
       <image:loc>${SITE_URL}/assets/${item.r2_key}</image:loc>
-      <image:caption>Papercut Design - ${item.category === 'ad' ? 'Advertisement Design' : 'Logo Design'}</image:caption>
+      <image:caption>Papercut Design - ${safeCaption}</image:caption>
     </image:image>`;
             });
         }

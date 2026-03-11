@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
 
 <head>
     <meta charset="UTF-8">
@@ -9,9 +9,14 @@
     <link rel="icon" href="s-icon-01.png" type="image/png" sizes="48x48">
     <link rel="apple-touch-icon" href="m-icon-01.png" sizes="512x512">
     <meta name="description"
-        content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, and captivating digital graphics that truly stand out and cut through the noise. Get professional design services for your business.">
+        content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, logo design, and captivating digital ads that cut through the noise. Get professional graphic design services for your business.">
     <meta name="keywords"
-        content="graphic design, branding, logo design, print design, digital marketing, creative agency, design studio, Papercut, custom design, visual communication, advertising design, NYC designer">
+        content="graphic design, branding, logo design, print design, digital ads, digital art, creative agency, design studio, Papercut, custom design, visual communication, advertising design, NYC designer">
+
+    <!-- Schema.org tags (specifically for Google+, Google Chat, and other Google services) -->
+    <meta itemprop="name" content="Papercut Design – Graphic Design & Brand Identity Studio">
+    <meta itemprop="description" content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, logo design, and captivating digital ads.">
+    <meta itemprop="image" content="https://papercutdesign.co/logopng.png">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://papercutdesign.co/">
@@ -19,18 +24,18 @@
     <!-- Open Graph (Facebook, LinkedIn, iMessage, etc.) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://papercutdesign.co/">
-    <meta property="og:title" content="Papercut Design – Design That Cuts Through">
+    <meta property="og:title" content="Papercut Design – Graphic Design & Brand Identity Studio">
     <meta property="og:description"
-        content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, and captivating digital graphics that truly stand out.">
+        content="Papercut Design specializes in crafting impactful brand identities, stunning print designs, logo design, and captivating digital ads.">
     <meta property="og:image" content="https://papercutdesign.co/logopng.png">
     <meta property="og:site_name" content="Papercut Design">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Papercut Design – Design That Cuts Through">
+    <meta name="twitter:title" content="Papercut Design – Graphic Design & Brand Identity Studio">
     <meta name="twitter:description"
-        content="Impactful brand identities, stunning print designs, and captivating digital graphics.">
+        content="Impactful brand identities, stunning print designs, logo design, and captivating digital ads.">
     <meta name="twitter:image" content="https://papercutdesign.co/logopng.png">
 
     <!-- JSON-LD Structured Data -->
@@ -42,7 +47,7 @@
                 "@type": "WebSite",
                 "name": "Papercut Design",
                 "url": "https://papercutdesign.co/",
-                "description": "Professional graphic design, branding, and print design services."
+                "description": "Professional graphic design, branding, digital art, digital ads, and print design services."
             },
             {
                 "@type": "LocalBusiness",
@@ -54,14 +59,16 @@
                     "@type": "Person",
                     "name": "Yossi Breuer"
                 },
-                "description": "Papercut Design specializes in crafting impactful brand identities, stunning print designs, and captivating digital graphics.",
+                "description": "Papercut Design specializes in crafting impactful brand identities, stunning print designs, logo design, digital art, and captivating digital ads.",
                 "priceRange": "$$",
                 "image": "https://papercutdesign.co/logopng.png",
                 "sameAs": [],
                 "makesOffer": [
                     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand Identity Design" } },
+                    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Logo Design" } },
                     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Print Design" } },
-                    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Digital Graphics" } }
+                    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Digital Ads" } },
+                    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Digital Art" } }
                 ]
             }
         ]
@@ -929,13 +936,14 @@
                         const imageEl = document.createElement('img');
                         imageEl.src = src;
                         imageEl.className = 'portfolio-item-img';
-                        imageEl.alt = `Portfolio ${folder}`;
+                        imageEl.alt = item.alt_text ? esc(item.alt_text) : `Portfolio ${folder}`;
                         imageEl.loading = 'lazy';
 
                         div.appendChild(imageEl);
 
                         div.addEventListener('click', () => {
                             modalImage.src = src;
+                            modalImage.alt = item.alt_text ? esc(item.alt_text) : `Portfolio ${folder}`;
                             modalOverlay.classList.add('show');
                         });
 
