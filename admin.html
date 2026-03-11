@@ -561,6 +561,14 @@
             text-overflow: ellipsis;
         }
 
+        /* Preview Modal */
+        .preview-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .preview-modal.show { opacity: 1; visibility: visible; }
+        .preview-modal img { max-width: 90vw; max-height: 90vh; border-radius: 16px; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 60px rgba(0,0,0,0.5); object-fit: contain; }
+        .preview-modal.show img { transform: scale(1); }
+        .preview-close { position: absolute; top: 24px; right: 24px; width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; border: none; transition: all 0.2s; z-index: 10000; }
+        .preview-close:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+
         .toast {
             position: fixed;
             bottom: 32px;
