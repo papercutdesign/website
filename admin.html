@@ -1396,7 +1396,9 @@
                     }
                     q.status = 'ready';
                 } else {
+                    q.status = 'preparing'; q.message = 'Checking…'; renderQueue();
                     const info = await imageInfo(file);
+                    q.status = 'ready';
                     if (!info.width && type !== 'image/svg+xml') {
                         q.status = 'error';
                         q.message = "This file isn't a readable image";

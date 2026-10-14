@@ -2,7 +2,10 @@
 // Upgrades the D1 tables in place the first time the new code runs,
 // so no manual SQL is needed after deploying. Safe to call on every request.
 
+// Every column that isn't in the very first version of the table. alt_text is
+// here because the live database was created before alt_text existed.
 const PORTFOLIO_COLUMNS = {
+    alt_text: 'TEXT',
     title: 'TEXT',
     mime_type: 'TEXT',
     file_size: 'INTEGER',
