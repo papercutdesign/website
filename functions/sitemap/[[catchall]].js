@@ -9,7 +9,7 @@ export async function onRequestGet(context) {
     try {
         // Fetch all portfolio items for image sitemap entries
         const { results } = await env.DB.prepare(
-            "SELECT r2_key, category, alt_text, created_at FROM portfolio_items ORDER BY sort_order ASC, created_at DESC"
+            "SELECT r2_key, category, alt_text, created_at FROM portfolio_items WHERE r2_key NOT LIKE '%.pdf' ORDER BY sort_order ASC, created_at DESC"
         ).all();
 
         const today = new Date().toISOString().split('T')[0];

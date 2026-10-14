@@ -1,52 +1,38 @@
 // functions/api/contact/[id].js
+// PUT    (admin) { status } -> update lead status
+// DELETE (admin)            -> remove lead
 
-export async function onRequestPut(context) {
-    const { request, env, params } = context;
+import { json, fail, requireAdmin } from '../../_lib/auth.js';
+
+const STATUSES = ['new', 'replied', 'signed'];
+
+export async function onRequestPut({ request, env, params }) {
+    const denied = await requireAdmin(request, env);
+    if (denied) return denied;
 
     try {
-        const password = request.headers.get('Authorization')?.replace('Bearer ', '');
+        let body;
+        try { body = await request.json(); } catch { return fail('Invalid request.'); }
+        if (!STATUSES.includes(body?.status)) return fail('Invalid status.');
 
-        if (password !== env.ADMIN_PASSWORD) {
-            return Response.json({ success: false, error: "Unauthorized: Incorrect Password" }, { status: 401 });
-        }
+        const res = await env.DB.prepare('UPDATE contacts SET status = ? WHERE id = ?')
+            .bind(body.status, params.id).run();
+        if (!res.meta?.changes) return fail('That lead no longer exists.', 404);
 
-        const id = params.id;
-        const body = await request.json();
-        const newStatus = body.status;
-
-        if (!id || !newStatus) {
-            return Response.json({ success: false, error: "Missing ID or status" }, { status: 400 });
-        }
-
-        await env.DB.prepare("UPDATE contacts SET status = ? WHERE id = ?").bind(newStatus, id).run();
-
-        return Response.json({ success: true, message: "Contact updated successfully" });
-
+        return json({ success: true, message: 'Lead updated' });
     } catch (err) {
-        return Response.json({ success: false, error: err.message }, { status: 500 });
+        return fail(`Could not update the lead: ${err.message}`, 500);
     }
 }
 
-export async function onRequestDelete(context) {
-    const { request, env, params } = context;
+export async function onRequestDelete({ request, env, params }) {
+    const denied = await requireAdmin(request, env);
+    if (denied) return denied;
 
     try {
-        const password = request.headers.get('Authorization')?.replace('Bearer ', '');
-
-        if (password !== env.ADMIN_PASSWORD) {
-            return Response.json({ success: false, error: "Unauthorized: Incorrect Password" }, { status: 401 });
-        }
-
-        const id = params.id;
-        if (!id) {
-            return Response.json({ success: false, error: "Missing item ID" }, { status: 400 });
-        }
-
-        await env.DB.prepare("DELETE FROM contacts WHERE id = ?").bind(id).run();
-
-        return Response.json({ success: true, message: "Contact deleted successfully" });
-
+        await env.DB.prepare('DELETE FROM contacts WHERE id = ?').bind(params.id).run();
+        return json({ success: true, message: 'Lead deleted' });
     } catch (err) {
-        return Response.json({ success: false, error: err.message }, { status: 500 });
+        return fail(`Could not delete the lead: ${err.message}`, 500);
     }
 }
