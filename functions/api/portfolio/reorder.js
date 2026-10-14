@@ -1,33 +1,38 @@
 // functions/api/portfolio/reorder.js
+// PUT (admin) { ids: [...] } -> full display order, first = shown first.
+// (Also accepts the older { updates: [{ id, sort_order }] } format.)
 
-export async function onRequestPut(context) {
-    const { request, env } = context;
+import { json, fail, requireAdmin } from '../../_lib/auth.js';
+import { ensureSchema } from '../../_lib/schema.js';
+
+export async function onRequestPut({ request, env }) {
+    const denied = await requireAdmin(request, env);
+    if (denied) return denied;
 
     try {
-        const password = request.headers.get('Authorization')?.replace('Bearer ', '');
+        await ensureSchema(env);
+        let body;
+        try { body = await request.json(); } catch { return fail('Invalid request.'); }
 
-        // 1. Authenticate
-        if (password !== env.ADMIN_PASSWORD) {
-            return Response.json({ success: false, error: "Unauthorized: Incorrect Password" }, { status: 401 });
+        let updates = [];
+        if (Array.isArray(body?.ids)) {
+            updates = body.ids.map((id, i) => ({ id, sort_order: i }));
+        } else if (Array.isArray(body?.updates)) {
+            updates = body.updates;
         }
 
-        const body = await request.json(); // Expected format: { updates: [{ id: '123', sort_order: 1 }, { id: '456', sort_order: 2 }] }
+        updates = updates.filter(u =>
+            typeof u?.id === 'string' && u.id.length <= 64 && Number.isInteger(u.sort_order)
+        );
+        if (!updates.length) return fail('Nothing to reorder.');
+        if (updates.length > 1000) return fail('Too many items.');
 
-        if (!body.updates || !Array.isArray(body.updates)) {
-            return Response.json({ success: false, error: "Invalid payload format" }, { status: 400 });
-        }
+        await env.DB.batch(updates.map(u =>
+            env.DB.prepare('UPDATE portfolio_items SET sort_order = ? WHERE id = ?').bind(u.sort_order, u.id)
+        ));
 
-        // Prepare batch statements
-        const stmts = body.updates.map(item => {
-            return env.DB.prepare("UPDATE portfolio_items SET sort_order = ? WHERE id = ?").bind(item.sort_order, item.id);
-        });
-
-        // Run as a single transaction batch inside Cloudflare D1
-        await env.DB.batch(stmts);
-
-        return Response.json({ success: true, message: "Gallery reordered successfully" });
-
+        return json({ success: true, message: 'Order saved' });
     } catch (err) {
-        return Response.json({ success: false, error: err.message }, { status: 500 });
+        return fail(`Could not save the order: ${err.message}`, 500);
     }
 }

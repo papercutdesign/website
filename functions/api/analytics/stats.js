@@ -1,14 +1,15 @@
 // functions/api/analytics/stats.js
 // Returns aggregated analytics data for the admin dashboard.
 
+import { json, fail, requireAdmin } from '../../_lib/auth.js';
+
 export async function onRequestGet(context) {
     const { request, env } = context;
 
+    const denied = await requireAdmin(request, env);
+    if (denied) return denied;
+
     try {
-        const password = request.headers.get('Authorization')?.replace('Bearer ', '');
-        if (password !== env.ADMIN_PASSWORD) {
-            return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
-        }
 
         // --- Total Views ---
         const totalResult = await env.DB.prepare("SELECT COUNT(*) as total FROM page_views").first();
@@ -60,7 +61,7 @@ export async function onRequestGet(context) {
         const leadsTotal = await env.DB.prepare("SELECT COUNT(*) as total FROM contacts").first();
         const leadsNew = await env.DB.prepare("SELECT COUNT(*) as total FROM contacts WHERE status = 'new'").first();
 
-        return Response.json({
+        return json({
             success: true,
             stats: {
                 totalViews: totalResult?.total || 0,
@@ -75,6 +76,6 @@ export async function onRequestGet(context) {
         });
 
     } catch (err) {
-        return Response.json({ success: false, error: err.message }, { status: 500 });
+        return fail(`Could not load analytics: ${err.message}`, 500);
     }
 }
