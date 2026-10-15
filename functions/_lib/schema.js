@@ -14,6 +14,9 @@ const PORTFOLIO_COLUMNS = {
     width: 'INTEGER',
     height: 'INTEGER',
     updated_at: 'TIMESTAMP',
+    original_key: 'TEXT',   // untouched upload when a "look" adjustment is applied
+    original_meta: 'TEXT',  // JSON: mime/size/width/height of that original
+    display_opts: 'TEXT',   // JSON: the adjustment settings (space, shape, background)
 };
 
 let ready = null;

@@ -57,7 +57,7 @@ export async function onRequestDelete({ request, env, params }) {
 
         // Remove from the site first, then clean up storage.
         await env.DB.prepare('DELETE FROM portfolio_items WHERE id = ?').bind(item.id).run();
-        await env.BUCKET.delete([item.r2_key, item.thumb_key].filter(Boolean));
+        await env.BUCKET.delete([item.r2_key, item.thumb_key, item.original_key].filter(Boolean));
 
         return json({ success: true, message: 'Deleted' });
     } catch (err) {

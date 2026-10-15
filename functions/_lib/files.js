@@ -80,6 +80,11 @@ export function contentDisposition(name) {
     return `inline; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(name)}`;
 }
 
+function parseJson(v) {
+    if (!v) return null;
+    try { return JSON.parse(v); } catch { return null; }
+}
+
 /** Shape a portfolio_items row for API responses. */
 export function formatItem(row) {
     const mime = row.mime_type || mimeFromKey(row.r2_key);
@@ -89,6 +94,9 @@ export function formatItem(row) {
         kind: isPdf(mime) ? 'pdf' : 'image',
         url: `/assets/${row.r2_key}`,
         thumb_url: row.thumb_key ? `/assets/${row.thumb_key}` : null,
+        original_url: row.original_key ? `/assets/${row.original_key}` : null,
+        display_opts: parseJson(row.display_opts),
+        original_meta: parseJson(row.original_meta),
         created_at: toIsoUtc(row.created_at),
         updated_at: toIsoUtc(row.updated_at),
     };

@@ -336,6 +336,43 @@
         .meta-list dd { margin: 0; overflow-wrap: anywhere; }
         .order-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 
+        /* Adjust look */
+        .checker {
+            background-color: #fff;
+            background-image: conic-gradient(#E6E5EE 25%, transparent 0 50%, #E6E5EE 0 75%, transparent 0);
+            background-size: 18px 18px;
+        }
+        .look-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr); gap: 24px; align-items: start; }
+        .look-stage {
+            position: relative; display: grid; place-items: center; min-height: 340px; padding: 20px;
+            border-radius: var(--radius); overflow: hidden;
+        }
+        .look-stage canvas {
+            display: block; max-width: 100%; max-height: min(56vh, 520px); width: auto; height: auto;
+            outline: 1.5px dashed color-mix(in srgb, var(--violet) 70%, transparent); outline-offset: 0;
+        }
+        .look-stage .look-busy { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255, 255, 255, .7); color: #4B4863; font-size: 14px; }
+        .look-controls { display: grid; gap: 18px; align-content: start; }
+        .look-controls .segmented { display: flex; flex-wrap: wrap; }
+        .look-controls .segmented button { flex: 1; }
+        .range-row { display: flex; align-items: center; gap: 12px; }
+        .range-row input[type=range] { flex: 1; accent-color: var(--violet); height: 28px; }
+        .range-row output { min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 14px; }
+        .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+        .swatch {
+            position: relative; width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); padding: 0;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04);
+        }
+        .swatch[aria-pressed="true"] { outline: 2px solid var(--violet); outline-offset: 2px; }
+        .swatch.custom { display: grid; place-items: center; overflow: hidden; background: conic-gradient(#f43f5e, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #f43f5e); }
+        .swatch.custom input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0; }
+        .swatch.custom i { color: #fff; font-size: 14px; text-shadow: 0 1px 3px rgba(0, 0, 0, .4); pointer-events: none; }
+        .look-note { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+        .look-size { font-size: 13px; color: var(--ink-3); }
+        .q-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .q-look-tag { font-size: 12px; color: var(--violet); font-weight: 500; }
+        .edit-look-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+
         /* ---------- Leads ---------- */
         .leads { display: grid; gap: 12px; }
         .lead {
@@ -427,6 +464,9 @@
             .lead-actions > * { flex: 1; }
             .edit-grid { grid-template-columns: 1fr; }
             .edit-preview { min-height: 180px; max-height: 40vh; }
+            .look-grid { grid-template-columns: 1fr; }
+            .look-stage { min-height: 220px; padding: 12px; }
+            .look-stage canvas { max-height: 38vh; }
             .edit-preview img { max-height: 40vh; }
             .selection-bar { bottom: calc(80px + env(safe-area-inset-bottom)); }
             .toasts { left: 16px; right: 16px; bottom: calc(80px + env(safe-area-inset-bottom)); }
@@ -616,7 +656,13 @@
             </div>
             <div class="dlg-body">
                 <div class="edit-grid">
-                    <div class="edit-preview" id="edit-preview"></div>
+                    <div>
+                        <div class="edit-preview checker" id="edit-preview"></div>
+                        <div class="edit-look-row" id="edit-look-row" hidden>
+                            <button type="button" class="btn btn-sm" id="edit-look"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Adjust look</button>
+                            <span class="look-note" id="edit-look-note"></span>
+                        </div>
+                    </div>
                     <div class="edit-fields">
                         <label class="field">
                             <span>Title</span>
@@ -651,6 +697,67 @@
                 <button type="submit" class="btn btn-primary" id="edit-save">Save changes</button>
             </div>
         </form>
+    </dialog>
+
+    <!-- Adjust look dialog -->
+    <dialog id="look-dialog" class="wide" aria-labelledby="look-title">
+        <div class="dlg">
+            <div class="dlg-head">
+                <h2 id="look-title">Adjust look</h2>
+                <button type="button" class="btn btn-ghost btn-icon" data-close aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dlg-body">
+                <div class="look-grid">
+                    <div class="look-stage checker" id="look-stage">
+                        <canvas id="look-canvas" role="img" aria-label="Preview"></canvas>
+                        <div class="look-busy" id="look-busy" hidden>Loading…</div>
+                    </div>
+                    <div class="look-controls">
+                        <div class="field">
+                            <span id="look-shape-label">Shape</span>
+                            <div class="segmented" role="group" aria-labelledby="look-shape-label" id="look-shape">
+                                <button type="button" data-shape="original" aria-pressed="true">Original</button>
+                                <button type="button" data-shape="square" aria-pressed="false">Square</button>
+                                <button type="button" data-shape="landscape" aria-pressed="false">4:3</button>
+                                <button type="button" data-shape="portrait" aria-pressed="false">4:5</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="look-pad"><span style="font-size:13px;font-weight:500;color:var(--ink-2)">Space around</span></label>
+                            <div class="range-row">
+                                <input type="range" id="look-pad" min="0" max="60" step="1" value="12">
+                                <output id="look-pad-val" for="look-pad">12%</output>
+                            </div>
+                            <label class="check" id="look-trim-wrap">
+                                <input type="checkbox" id="look-trim"> Remove the empty space already in the file first
+                            </label>
+                            <p class="look-note" id="look-trim-note"></p>
+                        </div>
+                        <div class="field">
+                            <span id="look-bg-label">Background</span>
+                            <div class="swatches" role="group" aria-labelledby="look-bg-label" id="look-bg">
+                                <button type="button" class="swatch checker" data-bg="transparent" aria-label="Transparent" title="Transparent"></button>
+                                <button type="button" class="swatch" data-bg="#ffffff" style="background:#ffffff" aria-label="White" title="White"></button>
+                                <button type="button" class="swatch" data-bg="#f5f5f8" style="background:#f5f5f8" aria-label="Light gray" title="Light gray"></button>
+                                <button type="button" class="swatch" data-bg="#17152b" style="background:#17152b" aria-label="Ink" title="Ink"></button>
+                                <button type="button" class="swatch" data-bg="#000000" style="background:#000000" aria-label="Black" title="Black"></button>
+                                <button type="button" class="swatch" data-bg="#6d28d9" style="background:#6d28d9" aria-label="Papercut violet" title="Papercut violet"></button>
+                                <label class="swatch custom" title="Pick any color" id="look-custom">
+                                    <input type="color" id="look-color" value="#e0f2fe" aria-label="Pick any background color">
+                                    <i class="fa-solid fa-eye-dropper" aria-hidden="true"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <p class="look-size" id="look-size"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="dlg-foot">
+                <button type="button" class="btn btn-ghost grow" id="look-reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i>Reset to original</button>
+                <button type="button" class="btn" data-close>Cancel</button>
+                <button type="button" class="btn btn-primary" id="look-apply">Apply</button>
+            </div>
+        </div>
     </dialog>
 
     <!-- Confirm dialog -->
@@ -1227,8 +1334,28 @@
             ].filter(([, v]) => v);
             $('#edit-meta').innerHTML = rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
             $('#edit-open').href = i.url;
-            $('#edit-dialog').showModal();
+            const adjustable = i.kind === 'image' && canAdjust(i.original_url ? (i.original_meta?.mime || i.mime_type) : i.mime_type);
+            $('#edit-look-row').hidden = !adjustable;
+            $('#edit-look-note').textContent = i.original_url ? 'Adjusted. Your original file is kept.' : '';
+            if (!$('#edit-dialog').open) $('#edit-dialog').showModal();
         }
+
+        $('#edit-look').addEventListener('click', () => {
+            const id = state.editing;
+            const i = state.items.find(x => x.id === id);
+            if (!i) return;
+            openLook({
+                source: i.original_url || i.url,
+                opts: i.display_opts,
+                canReset: !!i.original_url,
+                onApply: async result => {
+                    await saveLookForItem(id, result);
+                    renderGallery();
+                    openEdit(id);
+                    toast(result.reset ? 'Back to the original' : 'New look saved. It is live on your website.');
+                },
+            });
+        });
 
         $('#edit-form').addEventListener('submit', async e => {
             e.preventDefault();
@@ -1257,6 +1384,217 @@
 
         $('#edit-delete').addEventListener('click', () => deleteItems([state.editing]));
         $$('#edit-dialog [data-move]').forEach(b => b.addEventListener('click', () => moveItem(state.editing, b.dataset.move)));
+
+        // ======================================================================
+        // Adjust look: space around, shape and background (non-destructive)
+        // ======================================================================
+        const LOOK_DEFAULT = { trim: true, pad: 12, shape: 'original', bg: 'transparent' };
+        const SHAPE_RATIO = { square: 1, landscape: 4 / 3, portrait: 4 / 5 };
+        const LOOK_MAX_SIDE = 3000;
+        const look = { src: null, w: 0, h: 0, box: null, hasEdges: false, sourceType: '', opts: { ...LOOK_DEFAULT }, onApply: null, raf: 0, busy: false };
+
+        function isNeutralLook(o) {
+            return !o || (!o.trim && !o.pad && o.shape === 'original' && o.bg === 'transparent');
+        }
+        function canAdjust(mime) {
+            return ['image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/svg+xml'].includes(mime);
+        }
+
+        async function loadDrawable(source) {
+            const blob = source instanceof Blob ? source : await (await fetch(source, { cache: 'no-store' })).blob();
+            const type = blob.type || '';
+            if (type.includes('svg')) {
+                const url = URL.createObjectURL(blob);
+                try {
+                    const img = await new Promise((resolve, reject) => {
+                        const i = new Image(); i.onload = () => resolve(i); i.onerror = () => reject(new Error("This image can't be adjusted.")); i.src = url;
+                    });
+                    // Vector art: rasterize sharply at a large size.
+                    let w = img.naturalWidth || 1000, h = img.naturalHeight || 1000;
+                    const k = 2000 / Math.max(w, h); w = Math.round(w * k); h = Math.round(h * k);
+                    const c = document.createElement('canvas'); c.width = w; c.height = h;
+                    c.getContext('2d').drawImage(img, 0, 0, w, h);
+                    return { draw: c, w, h, type };
+                } finally { URL.revokeObjectURL(url); }
+            }
+            try {
+                const bmp = await createImageBitmap(blob);
+                return { draw: bmp, w: bmp.width, h: bmp.height, type };
+            } catch {
+                throw new Error("This image can't be adjusted.");
+            }
+        }
+
+        /** Find the visible part of the image (ignores fully transparent edges). */
+        function findContentBox(draw, w, h) {
+            const k = Math.min(1, 1600 / Math.max(w, h));
+            const cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+            const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+            const ctx = c.getContext('2d', { willReadFrequently: true });
+            ctx.drawImage(draw, 0, 0, cw, ch);
+            const data = ctx.getImageData(0, 0, cw, ch).data;
+            let minX = cw, minY = ch, maxX = -1, maxY = -1, transparent = false;
+            for (let y = 0; y < ch; y++) {
+                for (let x = 0; x < cw; x++) {
+                    const a = data[(y * cw + x) * 4 + 3];
+                    if (a < 250) transparent = true;
+                    if (a > 8) { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+                }
+            }
+            if (maxX < 0) return { box: { x: 0, y: 0, w, h }, hasEdges: false };
+            const box = {
+                x: Math.max(0, Math.floor((minX - 1) / k)), y: Math.max(0, Math.floor((minY - 1) / k)),
+            };
+            box.w = Math.min(w, Math.ceil((maxX + 2) / k)) - box.x;
+            box.h = Math.min(h, Math.ceil((maxY + 2) / k)) - box.y;
+            const hasEdges = transparent && (box.w < w * 0.985 || box.h < h * 0.985);
+            return { box, hasEdges };
+        }
+
+        function lookLayout(o) {
+            const b = o.trim && look.hasEdges ? look.box : { x: 0, y: 0, w: look.w, h: look.h };
+            const pad = Math.round((o.pad / 100) * Math.max(b.w, b.h));
+            let W = b.w + pad * 2, H = b.h + pad * 2;
+            const r = SHAPE_RATIO[o.shape];
+            if (r) { if (W / H < r) W = Math.round(H * r); else H = Math.round(W / r); }
+            return { b, W, H, scale: Math.min(1, LOOK_MAX_SIDE / Math.max(W, H)) };
+        }
+
+        function paintLook(canvas, o, maxSide = Infinity) {
+            const L = lookLayout(o);
+            const k = Math.min(L.scale, maxSide / Math.max(L.W, L.H));
+            canvas.width = Math.max(1, Math.round(L.W * k));
+            canvas.height = Math.max(1, Math.round(L.H * k));
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (o.bg !== 'transparent') { ctx.fillStyle = o.bg; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(look.src, L.b.x, L.b.y, L.b.w, L.b.h,
+                ((L.W - L.b.w) / 2) * k, ((L.H - L.b.h) / 2) * k, L.b.w * k, L.b.h * k);
+            return { width: Math.round(L.W * L.scale), height: Math.round(L.H * L.scale) };
+        }
+
+        function syncLookControls() {
+            const o = look.opts;
+            $$('#look-shape button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.shape === o.shape)));
+            $('#look-pad').value = o.pad;
+            $('#look-pad-val').textContent = `${o.pad}%`;
+            const trim = $('#look-trim');
+            trim.checked = o.trim && look.hasEdges;
+            trim.disabled = !look.hasEdges;
+            $('#look-trim-wrap').style.opacity = look.hasEdges ? '' : '.55';
+            $('#look-trim-note').textContent = look.hasEdges
+                ? `The file has ${Math.round(100 - (look.box.w * look.box.h) / (look.w * look.h) * 100)}% empty space built in.`
+                : "This file has no empty transparent edges to remove.";
+            const preset = $$('#look-bg [data-bg]').some(b => b.dataset.bg === o.bg);
+            $$('#look-bg [data-bg]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.bg === o.bg)));
+            const custom = $('#look-custom');
+            custom.setAttribute('aria-pressed', String(!preset));
+            if (!preset) { custom.style.background = o.bg; $('#look-color').value = o.bg; }
+            else custom.style.background = '';
+        }
+
+        function drawLookPreview() {
+            cancelAnimationFrame(look.raf);
+            look.raf = requestAnimationFrame(() => {
+                if (!look.src) return;
+                const size = paintLook($('#look-canvas'), look.opts, 1100);
+                $('#look-size').textContent = `Final size: ${size.width} × ${size.height} px`;
+            });
+        }
+
+        function setLook(patch) {
+            look.opts = { ...look.opts, ...patch };
+            syncLookControls();
+            drawLookPreview();
+        }
+
+        /**
+         * Open the editor. source: Blob or URL of the ORIGINAL image.
+         * onApply({ blob, width, height, opts }) or onApply({ reset: true }); may return a promise.
+         */
+        async function openLook({ source, opts, canReset, onApply }) {
+            const dlg = $('#look-dialog');
+            look.onApply = onApply;
+            look.src = null;
+            $('#look-reset').hidden = !canReset;
+            $('#look-apply').disabled = true;
+            $('#look-busy').hidden = false;
+            $('#look-busy').textContent = 'Loading…';
+            $('#look-size').textContent = '';
+            if (!dlg.open) dlg.showModal();
+            try {
+                const d = await loadDrawable(source);
+                look.src = d.draw; look.w = d.w; look.h = d.h; look.sourceType = d.type;
+                const found = findContentBox(d.draw, d.w, d.h);
+                look.box = found.box; look.hasEdges = found.hasEdges;
+                look.opts = { ...LOOK_DEFAULT, trim: found.hasEdges, ...(opts || {}) };
+                syncLookControls();
+                drawLookPreview();
+                $('#look-busy').hidden = true;
+                $('#look-apply').disabled = false;
+            } catch (err) {
+                $('#look-busy').textContent = err.message;
+            }
+        }
+
+        $('#look-shape').addEventListener('click', e => {
+            const b = e.target.closest('[data-shape]'); if (b) setLook({ shape: b.dataset.shape });
+        });
+        $('#look-pad').addEventListener('input', e => setLook({ pad: +e.target.value }));
+        $('#look-trim').addEventListener('change', e => setLook({ trim: e.target.checked }));
+        $('#look-bg').addEventListener('click', e => {
+            const b = e.target.closest('[data-bg]'); if (b) setLook({ bg: b.dataset.bg });
+        });
+        $('#look-color').addEventListener('input', e => setLook({ bg: e.target.value.toLowerCase() }));
+
+        async function finishLook(result) {
+            const btns = [$('#look-apply'), $('#look-reset')];
+            btns.forEach(b => (b.disabled = true));
+            const apply = $('#look-apply');
+            apply.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>Saving…';
+            try {
+                await look.onApply?.(result);
+                $('#look-dialog').close();
+            } catch (err) {
+                report(err);
+            } finally {
+                btns.forEach(b => (b.disabled = false));
+                apply.textContent = 'Apply';
+            }
+        }
+
+        $('#look-apply').addEventListener('click', async () => {
+            if (!look.src) return;
+            const o = { ...look.opts, trim: look.opts.trim && look.hasEdges };
+            if (isNeutralLook(o)) { finishLook({ reset: true }); return; }
+            const c = document.createElement('canvas');
+            const size = paintLook(c, o);
+            // Keep transparency as PNG; photos on a solid color can be JPG (much smaller).
+            const asJpeg = o.bg !== 'transparent' && /jpeg/.test(look.sourceType);
+            const blob = await new Promise(r => c.toBlob(r, asJpeg ? 'image/jpeg' : 'image/png', 0.92));
+            if (!blob) { toast('Could not create the image. Try a smaller size.', 'err'); return; }
+            finishLook({ blob, width: size.width, height: size.height, opts: o });
+        });
+        $('#look-reset').addEventListener('click', () => finishLook({ reset: true }));
+        $('#look-dialog').addEventListener('close', () => { look.src?.close?.(); look.src = null; });
+
+        async function saveLookForItem(id, result) {
+            let data;
+            if (result.reset) {
+                data = await api(`/api/portfolio/${id}/display`, { method: 'POST', json: { reset: true } });
+            } else {
+                const fd = new FormData();
+                fd.append('file', result.blob, result.blob.type === 'image/jpeg' ? 'look.jpg' : 'look.png');
+                fd.append('opts', JSON.stringify(result.opts));
+                fd.append('width', result.width);
+                fd.append('height', result.height);
+                data = await api(`/api/portfolio/${id}/display`, { method: 'POST', body: fd });
+            }
+            const idx = state.items.findIndex(i => i.id === id);
+            if (idx >= 0) state.items[idx] = data.item;
+            return data.item;
+        }
 
         // ======================================================================
         // Upload
@@ -1433,14 +1771,18 @@
                     error: q.message,
                 }[q.status];
                 return `<li class="q-item">
-                    <div class="q-thumb">${q.preview ? `<img src="${q.preview}" alt="">` : `<i class="fa-regular ${q.isPdf ? 'fa-file-pdf' : 'fa-image'}" aria-hidden="true"></i>`}</div>
+                    <div class="q-thumb${q.look ? ' checker' : ''}">${(q.lookPreview || q.preview) ? `<img src="${q.lookPreview || q.preview}" alt="">` : `<i class="fa-regular ${q.isPdf ? 'fa-file-pdf' : 'fa-image'}" aria-hidden="true"></i>`}</div>
                     <div class="q-main">
                         <div class="q-name">${esc(q.file.name)}, ${formatBytes(q.file.size)}</div>
                         ${q.status === 'error' && !q.uploadFailed ? '' : `
                         <input class="input" data-q="${q.id}" data-qfield="title" value="${esc(q.title)}" placeholder="Title" aria-label="Title for ${esc(q.file.name)}" ${locked ? 'disabled' : ''} maxlength="150">
                         <input class="input" data-q="${q.id}" data-qfield="alt" value="${esc(q.alt)}" placeholder="Alt text: describe the image for Google and screen readers" aria-label="Alt text for ${esc(q.file.name)}" ${locked ? 'disabled' : ''} maxlength="300">`}
                         ${q.status === 'uploading' ? `<div class="progress" aria-hidden="true"><span style="width:${q.progress}%"></span></div>` : ''}
-                        <div class="q-status ${statusClass}">${q.status === 'done' ? '<i class="fa-solid fa-check" aria-hidden="true"></i> ' : ''}${esc(statusText)}</div>
+                        <div class="q-actions">
+                            <div class="q-status ${statusClass}">${q.status === 'done' ? '<i class="fa-solid fa-check" aria-hidden="true"></i> ' : ''}${esc(statusText)}</div>
+                            ${q.status === 'ready' && !q.isPdf && canAdjust(q.type) ? `<button type="button" class="btn btn-sm" data-qlook="${q.id}"><i class="fa-solid fa-sliders" aria-hidden="true"></i>${q.look ? 'Change look' : 'Adjust look'}</button>` : ''}
+                            ${q.look && q.status !== 'error' ? '<span class="q-look-tag">Look adjusted</span>' : ''}
+                        </div>
                     </div>
                     <button class="btn btn-ghost btn-sm btn-icon" data-qremove="${q.id}" aria-label="Remove ${esc(q.file.name)} from the list" ${q.status === 'uploading' ? 'disabled' : ''}><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
                 </li>`;
@@ -1473,12 +1815,30 @@
             if (q) q[input.dataset.qfield] = input.value;
         });
         $('#queue').addEventListener('click', e => {
+            const lk = e.target.closest('[data-qlook]');
+            if (lk) {
+                const q = state.queue.find(x => x.id === +lk.dataset.qlook);
+                if (!q) return;
+                openLook({
+                    source: q.file,
+                    opts: q.look?.opts,
+                    canReset: !!q.look,
+                    onApply: result => {
+                        if (q.lookPreview) URL.revokeObjectURL(q.lookPreview);
+                        if (result.reset) { q.look = null; q.lookPreview = null; }
+                        else { q.look = result; q.lookPreview = URL.createObjectURL(result.blob); }
+                        renderQueue();
+                    },
+                });
+                return;
+            }
             const b = e.target.closest('[data-qremove]');
             if (!b) return;
             const idx = state.queue.findIndex(q => q.id === +b.dataset.qremove);
             if (idx >= 0) {
                 const [q] = state.queue.splice(idx, 1);
                 if (q.preview) URL.revokeObjectURL(q.preview);
+                if (q.lookPreview) URL.revokeObjectURL(q.lookPreview);
                 q.bmp?.close?.();
             }
             renderQueue();
@@ -1547,7 +1907,16 @@
                     q.status = 'uploading'; q.progress = 0; renderQueue();
                     try {
                         const file = q.isPdf ? q.file : await maybeOptimize(q);
-                        const item = await uploadOne(q, file, category);
+                        let item = await uploadOne(q, file, category);
+                        if (q.look) {
+                            q.message = 'Applying look…'; q.status = 'preparing'; renderQueue();
+                            const fd = new FormData();
+                            fd.append('file', q.look.blob, q.look.blob.type === 'image/jpeg' ? 'look.jpg' : 'look.png');
+                            fd.append('opts', JSON.stringify(q.look.opts));
+                            fd.append('width', q.look.width);
+                            fd.append('height', q.look.height);
+                            item = (await api(`/api/portfolio/${item.id}/display`, { method: 'POST', body: fd })).item;
+                        }
                         q.status = 'done'; ok++;
                         state.items.unshift(item);
                     } catch (err) {
