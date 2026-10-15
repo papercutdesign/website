@@ -408,57 +408,13 @@
             }
         }
 
-        a.portfolio-item {
-            display: block;
-            color: inherit;
-            text-decoration: none;
-        }
-
         .portfolio-item:focus-visible {
             outline: 3px solid #7C3AED;
             outline-offset: 4px;
         }
 
-        .portfolio-pdf-placeholder {
-            height: 420px;
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 24px;
-            text-align: center;
+        canvas.portfolio-item-img {
             background: #fff;
-            color: #475569;
-        }
-
-        .portfolio-pdf-placeholder i {
-            font-size: 56px;
-            color: #7C3AED;
-        }
-
-        .portfolio-pdf-badge {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            z-index: 2;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.78);
-            color: #fff;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        @media(max-width: 768px) {
-            .portfolio-pdf-placeholder {
-                height: 320px;
-                width: 230px;
-            }
         }
 
         /* --- Header Scrolled State --- */
@@ -537,6 +493,85 @@
             max-height: 85vh;
             border-radius: 16px;
             display: block;
+        }
+
+        .image-modal-overlay [hidden] {
+            display: none !important;
+        }
+
+        /* Multi-page work (rendered from PDF) shown like a scrollable image */
+        .modal-doc {
+            max-height: 85vh;
+            width: min(90vw, 980px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scrollbar-width: thin;
+        }
+
+        .modal-doc.single {
+            width: auto;
+            overflow: visible;
+        }
+
+        .modal-page {
+            position: relative;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .modal-doc.single .modal-page {
+            border-radius: 16px;
+        }
+
+        .modal-page canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-page-count {
+            position: absolute;
+            left: 50%;
+            bottom: -44px;
+            transform: translateX(-50%);
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.7);
+            color: #fff;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+            pointer-events: none;
+        }
+
+        .modal-loading {
+            position: absolute;
+            inset: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .modal-loading span {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-top-color: #7C3AED;
+            animation: modalSpin 0.8s linear infinite;
+        }
+
+        @keyframes modalSpin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -873,6 +908,9 @@
             <button id="close-modal-btn"
                 class="absolute -top-12 right-0 text-white hover:text-purple-300 text-5xl focus:outline-none transition-transform hover:scale-110 duration-300 drop-shadow-md">&times;</button>
             <img id="modal-image" src="" alt="Portfolio Preview">
+            <div id="modal-doc" class="modal-doc" hidden tabindex="0"></div>
+            <div id="modal-loading" class="modal-loading" hidden><span></span></div>
+            <div id="modal-page-count" class="modal-page-count" hidden aria-live="polite"></div>
         </div>
     </div>
 
@@ -944,6 +982,164 @@
             const modalOverlay = document.getElementById('image-modal-overlay');
             const modalImage = document.getElementById('modal-image');
             const closeBtn = document.getElementById('close-modal-btn');
+            const modalDoc = document.getElementById('modal-doc');
+            const modalLoading = document.getElementById('modal-loading');
+            const modalCount = document.getElementById('modal-page-count');
+
+            // ---- Document viewer: multi-page work (stored as PDF) shown like images ----
+            const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            let pdfjsReady = null;
+            function loadPdfJs() {
+                if (!pdfjsReady) {
+                    pdfjsReady = new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = PDFJS;
+                        s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; resolve(window.pdfjsLib); };
+                        s.onerror = () => { pdfjsReady = null; reject(new Error('viewer failed to load')); };
+                        document.head.appendChild(s);
+                    });
+                }
+                return pdfjsReady;
+            }
+
+            async function drawPage(page, canvas, cssWidth) {
+                const base = page.getViewport({ scale: 1 });
+                const dpr = Math.min(window.devicePixelRatio || 1, 3);
+                const viewport = page.getViewport({ scale: (cssWidth / base.width) * dpr });
+                canvas.width = Math.round(viewport.width);
+                canvas.height = Math.round(viewport.height);
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                await page.render({ canvasContext: ctx, viewport }).promise;
+            }
+
+            // Card covers for documents uploaded without one
+            const coverObserver = new IntersectionObserver(entries => {
+                entries.forEach(async entry => {
+                    if (!entry.isIntersecting) return;
+                    const canvas = entry.target;
+                    coverObserver.unobserve(canvas);
+                    try {
+                        const lib = await loadPdfJs();
+                        const doc = await lib.getDocument({ url: canvas.dataset.src }).promise;
+                        const page = await doc.getPage(1);
+                        const base = page.getViewport({ scale: 1 });
+                        await drawPage(page, canvas, 420 * (base.width / base.height));
+                        doc.destroy();
+                    } catch (e) { /* card stays blank white */ }
+                });
+            }, { rootMargin: '300px' });
+
+            let viewer = { id: 0, doc: null, observer: null };
+
+            function resetViewer() {
+                viewer.id++;
+                viewer.observer?.disconnect();
+                viewer.doc?.destroy();
+                viewer.doc = null;
+                viewer.observer = null;
+                modalDoc.innerHTML = '';
+                modalDoc.hidden = true;
+                modalDoc.classList.remove('single');
+                modalLoading.hidden = true;
+                modalCount.hidden = true;
+            }
+
+            function closeViewer() {
+                modalOverlay.classList.remove('show');
+                setTimeout(() => { if (!modalOverlay.classList.contains('show')) { resetViewer(); modalImage.src = ''; } }, 500);
+            }
+
+            async function openViewer({ isDoc, fileUrl, previewSrc, label }) {
+                resetViewer();
+                const myId = viewer.id;
+                modalImage.alt = label;
+
+                if (!isDoc) {
+                    modalImage.hidden = false;
+                    modalImage.src = fileUrl;
+                    modalOverlay.classList.add('show');
+                    return;
+                }
+
+                // Show the cover instantly, then swap in sharp, scrollable pages.
+                modalImage.hidden = !previewSrc;
+                if (previewSrc) modalImage.src = previewSrc;
+                modalLoading.hidden = false;
+                modalOverlay.classList.add('show');
+
+                try {
+                    const lib = await loadPdfJs();
+                    const doc = await lib.getDocument({ url: fileUrl }).promise;
+                    if (myId !== viewer.id) { doc.destroy(); return; }
+                    viewer.doc = doc;
+
+                    const total = doc.numPages;
+                    const first = await doc.getPage(1);
+                    const base = first.getViewport({ scale: 1 });
+                    const vw = window.innerWidth * 0.9, vh = window.innerHeight * 0.85;
+                    const single = total === 1;
+                    // One page: fit the whole page on screen like a picture. Several: fit width and scroll.
+                    // Either way, a whole page fits on screen.
+                    const cssWidth = Math.min(vw, single ? Infinity : 980, vh * (base.width / base.height));
+
+                    modalDoc.classList.toggle('single', single);
+                    modalDoc.style.width = single ? '' : `${Math.round(cssWidth)}px`;
+                    const pages = [];
+                    for (let n = 1; n <= total; n++) {
+                        const page = n === 1 ? first : await doc.getPage(n);
+                        if (myId !== viewer.id) return;
+                        const v = page.getViewport({ scale: 1 });
+                        const wrap = document.createElement('div');
+                        wrap.className = 'modal-page';
+                        wrap.style.width = single ? `${cssWidth}px` : '100%';
+                        wrap.style.aspectRatio = `${v.width} / ${v.height}`;
+                        const canvas = document.createElement('canvas');
+                        canvas.setAttribute('role', 'img');
+                        canvas.setAttribute('aria-label', total > 1 ? `${label}, page ${n} of ${total}` : label);
+                        wrap.appendChild(canvas);
+                        wrap.dataset.page = n;
+                        modalDoc.appendChild(wrap);
+                        pages.push({ page, canvas, wrap, drawn: false });
+                    }
+
+                    await drawPage(first, pages[0].canvas, cssWidth);
+                    pages[0].drawn = true;
+                    if (myId !== viewer.id) return;
+                    modalImage.hidden = true;
+                    modalDoc.hidden = false;
+                    modalLoading.hidden = true;
+                    modalDoc.scrollTop = 0;
+
+                    if (total > 1) {
+                        modalCount.hidden = false;
+                        modalCount.textContent = `1 / ${total}`;
+                        viewer.observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                const p = pages[entry.target.dataset.page - 1];
+                                if (entry.isIntersecting && !p.drawn) {
+                                    p.drawn = true;
+                                    drawPage(p.page, p.canvas, modalDoc.clientWidth || cssWidth).catch(() => { p.drawn = false; });
+                                }
+                            });
+                        }, { root: modalDoc, rootMargin: '800px 0px' });
+                        pages.forEach(p => viewer.observer.observe(p.wrap));
+                        modalDoc.addEventListener('scroll', () => {
+                            const mid = modalDoc.scrollTop + modalDoc.clientHeight / 2;
+                            const cur = pages.find(p => p.wrap.offsetTop + p.wrap.offsetHeight > mid) || pages[pages.length - 1];
+                            modalCount.textContent = `${cur.wrap.dataset.page} / ${total}`;
+                        }, { passive: true });
+                        modalDoc.focus({ preventScroll: true });
+                    }
+                } catch (err) {
+                    // Fall back to the cover picture if the pages can't be drawn.
+                    if (myId !== viewer.id) return;
+                    modalLoading.hidden = true;
+                    if (!previewSrc) { window.open(fileUrl, '_blank', 'noopener'); closeViewer(); }
+                }
+            }
 
             adTab.setAttribute('data-active', 'true');
 
@@ -981,47 +1177,9 @@
                     const filteredItems = allPortfolioItems.filter(item => item.category === folder);
 
                     filteredItems.forEach(item => {
-                        const isPdf = item.kind === 'pdf' || /\.pdf$/i.test(item.r2_key || '');
+                        const isDoc = item.kind === 'pdf' || /\.pdf$/i.test(item.r2_key || '');
                         const fileUrl = item.url || `/assets/${item.r2_key}`;
                         const label = item.alt_text || item.title || `Portfolio ${folder === 'ad' ? 'ad design' : 'logo design'}`;
-
-                        if (isPdf) {
-                            // PDFs open in a new tab; the card shows their cover image.
-                            const link = document.createElement('a');
-                            link.className = 'portfolio-item';
-                            link.href = fileUrl;
-                            link.target = '_blank';
-                            link.rel = 'noopener';
-                            link.draggable = false;
-                            link.setAttribute('aria-label', `${item.title || label} (PDF, opens in a new tab)`);
-
-                            const badge = document.createElement('span');
-                            badge.className = 'portfolio-pdf-badge';
-                            badge.innerHTML = '<i class="fas fa-file-pdf" aria-hidden="true"></i> PDF';
-                            link.appendChild(badge);
-
-                            if (item.thumb_url) {
-                                const cover = document.createElement('img');
-                                cover.src = item.thumb_url;
-                                cover.className = 'portfolio-item-img';
-                                cover.alt = label;
-                                cover.loading = 'lazy';
-                                link.appendChild(cover);
-                            } else {
-                                const ph = document.createElement('div');
-                                ph.className = 'portfolio-pdf-placeholder';
-                                ph.innerHTML = '<i class="fas fa-file-pdf" aria-hidden="true"></i>';
-                                const name = document.createElement('span');
-                                name.textContent = item.title || 'View PDF';
-                                ph.appendChild(name);
-                                link.appendChild(ph);
-                            }
-
-                            // Keep drag-to-scroll from opening the PDF by accident.
-                            link.addEventListener('click', e => { if (portfolioContainer.dataset.dragged === '1') e.preventDefault(); });
-                            portfolioContainer.appendChild(link);
-                            return;
-                        }
 
                         const div = document.createElement('div');
                         div.className = 'portfolio-item';
@@ -1029,23 +1187,34 @@
                         div.setAttribute('role', 'button');
                         div.setAttribute('aria-label', `View larger: ${label}`);
 
-                        const imageEl = document.createElement('img');
-                        imageEl.src = fileUrl;
-                        imageEl.className = 'portfolio-item-img';
-                        imageEl.alt = label;
-                        imageEl.loading = 'lazy';
-                        if (item.width && item.height) {
-                            imageEl.width = item.width;
-                            imageEl.height = item.height;
+                        const previewSrc = isDoc ? item.thumb_url : fileUrl;
+                        if (previewSrc) {
+                            const imageEl = document.createElement('img');
+                            imageEl.src = previewSrc;
+                            imageEl.className = 'portfolio-item-img';
+                            imageEl.alt = label;
+                            imageEl.loading = 'lazy';
+                            imageEl.draggable = false;
+                            if (item.width && item.height) {
+                                imageEl.width = item.width;
+                                imageEl.height = item.height;
+                            }
+                            div.appendChild(imageEl);
+                        } else {
+                            // No cover saved: draw the first page when the card scrolls into view.
+                            const canvas = document.createElement('canvas');
+                            canvas.className = 'portfolio-item-img';
+                            canvas.width = 300; canvas.height = 420;
+                            canvas.setAttribute('role', 'img');
+                            canvas.setAttribute('aria-label', label);
+                            div.appendChild(canvas);
+                            coverObserver.observe(canvas);
+                            canvas.dataset.src = fileUrl;
                         }
-
-                        div.appendChild(imageEl);
 
                         const openModal = () => {
                             if (portfolioContainer.dataset.dragged === '1') return;
-                            modalImage.src = fileUrl;
-                            modalImage.alt = label;
-                            modalOverlay.classList.add('show');
+                            openViewer({ isDoc, fileUrl, previewSrc, label });
                         };
                         div.addEventListener('click', openModal);
                         div.addEventListener('keydown', e => {
@@ -1075,9 +1244,12 @@
             logoTab.addEventListener('click', () => loadItems('logo'));
             adTab.addEventListener('click', () => loadItems('ad'));
 
-            closeBtn.addEventListener('click', () => modalOverlay.classList.remove('show'));
+            closeBtn.addEventListener('click', closeViewer);
             modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) modalOverlay.classList.remove('show');
+                if (e.target === modalOverlay) closeViewer();
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('show')) closeViewer();
             });
 
             // Drag Scroll Logic
