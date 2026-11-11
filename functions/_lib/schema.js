@@ -58,3 +58,34 @@ export function toIsoUtc(value) {
     if (/[zZ]|[+-]\d\d:?\d\d$/.test(value)) return value;
     return value.replace(' ', 'T') + 'Z';
 }
+
+let contactsReady = null;
+
+async function migrateContacts(env) {
+    await env.DB.prepare(`CREATE TABLE IF NOT EXISTS contacts (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        message TEXT NOT NULL,
+        status TEXT DEFAULT 'new',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`).run();
+
+    const { results } = await env.DB.prepare('PRAGMA table_info(contacts)').all();
+    const existing = new Set((results || []).map(c => c.name));
+    // files: JSON list of attachments sent with a lead ({ key, name, size, type })
+    if (!existing.has('files')) {
+        await env.DB.prepare('ALTER TABLE contacts ADD COLUMN files TEXT').run();
+    }
+}
+
+/** Same idea as ensureSchema, for the contacts (leads) table. */
+export function ensureContactsSchema(env) {
+    if (!contactsReady) {
+        contactsReady = migrateContacts(env).catch(err => {
+            contactsReady = null;
+            throw err;
+        });
+    }
+    return contactsReady;
+}

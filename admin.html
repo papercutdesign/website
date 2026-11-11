@@ -386,6 +386,8 @@
         .lead-head a:hover { text-decoration: underline; }
         .lead-msg { margin-top: 8px; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 72ch; }
         .lead-time { margin-top: 10px; font-size: 12px; color: var(--ink-3); }
+        .lead-files { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .lead-files .btn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .lead-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; min-width: 150px; }
         .status {
             display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 11px;
@@ -2038,6 +2040,7 @@
                             <a href="mailto:${esc(l.email)}">${esc(l.email)}</a>
                         </div>
                         <p class="lead-msg">${esc(l.message)}</p>
+                        ${(l.files || []).length ? `<div class="lead-files">${l.files.map((f, i) => `<button class="btn btn-sm" data-lfile="${esc(l.id)}" data-lindex="${i}"><i class="fa-solid fa-paperclip" aria-hidden="true"></i>${esc(f.name)}</button>`).join('')}</div>` : ''}
                         <p class="lead-time" title="${esc(formatDate(l.created_at))}">Received ${esc(timeAgo(l.created_at))}</p>
                     </div>
                     <div class="lead-actions">
@@ -2052,6 +2055,35 @@
                     </div>
                 </article>`;
             }).join('');
+        }
+
+        // Files sent with a lead need the admin session, so fetch them and save locally.
+        async function downloadLeadFile(id, index) {
+            const lead = state.leads.find(l => l.id === id);
+            const file = lead?.files?.[index];
+            if (!file) return;
+            try {
+                const res = await fetch(`/api/contact/${encodeURIComponent(id)}/files/${index}`, {
+                    headers: state.token ? { Authorization: `Bearer ${state.token}` } : {},
+                    cache: 'no-store',
+                });
+                if (res.status === 401) { signOut('Your session has expired. Please sign in again.'); return; }
+                if (!res.ok) {
+                    let msg = '';
+                    try { msg = (await res.json()).error || ''; } catch { }
+                    throw new Error(msg || `Could not download the file (error ${res.status}).`);
+                }
+                const url = URL.createObjectURL(await res.blob());
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+            } catch (err) {
+                toast(err.message, 'err');
+            }
         }
 
         async function setLeadStatus(id, status, quiet = false) {
@@ -2079,6 +2111,8 @@
         $('#leads-list').addEventListener('click', async e => {
             const reply = e.target.closest('[data-reply]');
             if (reply) { setLeadStatus(reply.dataset.reply, 'replied', true); return; }
+            const fileBtn = e.target.closest('[data-lfile]');
+            if (fileBtn) { downloadLeadFile(fileBtn.dataset.lfile, Number(fileBtn.dataset.lindex)); return; }
             const del = e.target.closest('[data-ldelete]');
             if (!del) return;
             const lead = state.leads.find(l => l.id === del.dataset.ldelete);

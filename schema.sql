@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS contacts (
     email TEXT NOT NULL,
     message TEXT NOT NULL,
     status TEXT DEFAULT 'new',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    files TEXT                       -- JSON list of attached files (stored in R2 under leads/)
 );
 
 CREATE TABLE IF NOT EXISTS page_views (
