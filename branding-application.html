@@ -452,7 +452,7 @@
     <!-- Header (Frosted Glass Transition) -->
     <header id="main-header" class="fixed w-full top-0 z-50">
         <nav class="container mx-auto px-6 max-w-7xl flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2 z-50">
+            <a href="/" class="flex items-center space-x-2 z-50">
                 <img src="logopng.png" alt="Papercut Design"
                     class="h-7 md:h-9 transition-transform hover:scale-105 duration-700 ease-out">
             </a>
@@ -460,19 +460,19 @@
             <!-- Desktop Menu -->
             <div
                 class="hidden lg:flex space-x-10 items-center bg-white/40 backdrop-blur-md px-8 py-3 rounded-full border border-white/60 shadow-sm font-heading">
-                <a href="index.html#home"
+                <a href="/#home"
                     class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Home</a>
-                <a href="index.html#services"
+                <a href="/#services"
                     class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Services</a>
-                <a href="index.html#portfolio"
+                <a href="/#portfolio"
                     class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">Portfolio</a>
-                <a href="index.html#about"
+                <a href="/#about"
                     class="text-[15px] font-normal tracking-wide text-slate-700 hover:text-purple-700 transition duration-300">About
                     Me</a>
             </div>
 
             <div class="hidden lg:block">
-                <a href="index.html#contact"
+                <a href="/#contact"
                     class="btn-premium px-8 py-3 font-medium text-[15px] tracking-wide">Contact</a>
             </div>
 
@@ -490,13 +490,13 @@
         <div id="mobile-menu"
             class="hidden lg:hidden absolute top-full mt-2 left-4 right-4 bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-3xl origin-top transform scale-y-0 opacity-0 transition-all duration-500 var(--ease-lux)">
             <div class="flex flex-col p-6 space-y-4 text-center font-heading">
-                <a href="index.html#home" class="text-xl font-normal text-slate-800 hover:text-purple-600">Home</a>
-                <a href="index.html#services"
+                <a href="/#home" class="text-xl font-normal text-slate-800 hover:text-purple-600">Home</a>
+                <a href="/#services"
                     class="text-xl font-normal text-slate-800 hover:text-purple-600">Services</a>
-                <a href="index.html#portfolio"
+                <a href="/#portfolio"
                     class="text-xl font-normal text-slate-800 hover:text-purple-600">Portfolio</a>
-                <a href="index.html#about" class="text-xl font-normal text-slate-800 hover:text-purple-600">About Me</a>
-                <a href="index.html#contact" class="btn-premium py-4 mt-4 text-center text-lg font-medium">Contact
+                <a href="/#about" class="text-xl font-normal text-slate-800 hover:text-purple-600">About Me</a>
+                <a href="/#contact" class="btn-premium py-4 mt-4 text-center text-lg font-medium">Contact
                     Us</a>
             </div>
         </div>
@@ -512,8 +512,7 @@
             </p>
 
             <div id="form-container" class="glass-card p-6 sm:p-8 md:p-14 text-left reveal delay-200">
-                <form id="branding-application-form" action="https://getform.io/f/bmdmemqa" method="POST"
-                    enctype="multipart/form-data" class="space-y-10">
+                <form id="branding-application-form" action="/api/contact" method="POST" class="space-y-10">
 
                     <!-- Question 1: Company Name -->
                     <div class="pb-8 border-b border-white/50">
@@ -524,11 +523,20 @@
                             class="editorial-input" required>
                     </div>
 
-                    <!-- Question 2: Company Description -->
+                    <!-- Question 2: Contact Email -->
+                    <div class="pb-8 border-b border-white/50">
+                        <label for="contact_email" class="block text-slate-800 text-xl font-medium mb-4 font-heading">
+                            <i class="fas fa-envelope label-icon"></i>2. What's the best email to reach you?
+                        </label>
+                        <input type="email" id="contact_email" name="email" placeholder="you@company.com"
+                            class="editorial-input" required>
+                    </div>
+
+                    <!-- Question 3: Company Description -->
                     <div class="pb-8 border-b border-white/50">
                         <label for="company_description"
                             class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-lightbulb label-icon"></i>2. Briefly describe your company/brand. What do
+                            <i class="fas fa-lightbulb label-icon"></i>3. Briefly describe your company/brand. What do
                             you do, what are your core values?
                         </label>
                         <textarea id="company_description" name="Company Description" rows="4"
@@ -536,21 +544,21 @@
                             class="editorial-input resize-y" required></textarea>
                     </div>
 
-                    <!-- Question 3: Target Audience (General) -->
+                    <!-- Question 4: Target Audience (General) -->
                     <div class="pb-8 border-b border-white/50">
                         <label for="target_audience_general"
                             class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-users label-icon"></i>3. Who is your primary target audience?
+                            <i class="fas fa-users label-icon"></i>4. Who is your primary target audience?
                         </label>
                         <input type="text" id="target_audience_general" name="Target Audience (General)"
                             placeholder="e.g., Young professionals, senior citizens, tech enthusiasts"
                             class="editorial-input" required>
                     </div>
 
-                    <!-- Question 4: Target Audience Age Range (Custom Dropdown) -->
+                    <!-- Question 5: Target Audience Age Range (Custom Dropdown) -->
                     <div class="pb-8 border-b border-white/50">
                         <label class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-chart-line label-icon"></i>4. What is the typical age range of your target
+                            <i class="fas fa-chart-line label-icon"></i>5. What is the typical age range of your target
                             audience?
                         </label>
                         <div class="custom-select-container" id="custom_age_select_container">
@@ -586,10 +594,10 @@
                         </div>
                     </div>
 
-                    <!-- Question 5: Target Audience Gender -->
+                    <!-- Question 6: Target Audience Gender -->
                     <div class="pb-8 border-b border-white/50">
                         <label class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-user-friends label-icon"></i>5. What is the typical gender of your target
+                            <i class="fas fa-user-friends label-icon"></i>6. What is the typical gender of your target
                             audience?
                         </label>
                         <div class="flex flex-wrap gap-x-8 gap-y-4 mt-2">
@@ -617,10 +625,10 @@
                         </div>
                     </div>
 
-                    <!-- Question 6: Key Message/Feeling to Convey -->
+                    <!-- Question 7: Key Message/Feeling to Convey -->
                     <div class="pb-8 border-b border-white/50">
                         <label for="key_message" class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-comment-dots label-icon"></i>6. What key message or feeling should your
+                            <i class="fas fa-comment-dots label-icon"></i>7. What key message or feeling should your
                             branding convey?
                         </label>
                         <textarea id="key_message" name="Key Message/Feeling" rows="3"
@@ -628,10 +636,10 @@
                             class="editorial-input resize-y" required></textarea>
                     </div>
 
-                    <!-- Question 7: Specific Ideas/Preferences -->
+                    <!-- Question 8: Specific Ideas/Preferences -->
                     <div class="pb-8 border-b border-white/50">
                         <label for="specific_ideas" class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-pencil-ruler label-icon"></i>7. Do you have any specific ideas,
+                            <i class="fas fa-pencil-ruler label-icon"></i>8. Do you have any specific ideas,
                             preferences, or visuals you like/dislike?
                         </label>
                         <textarea id="specific_ideas" name="Specific Ideas/Preferences" rows="5"
@@ -639,29 +647,15 @@
                             class="editorial-input resize-y"></textarea>
                     </div>
 
-                    <!-- Question 8: Upload Existing Files -->
+                    <!-- Question 9: Existing Files -->
                     <div class="pb-6">
-                        <label for="branding_files" class="block text-slate-800 text-xl font-medium mb-4 font-heading">
-                            <i class="fas fa-cloud-upload-alt label-icon"></i>8. Upload any existing logos, branding
-                            files, or inspiration (optional):
-                        </label>
-                        <div class="relative w-full">
-                            <input type="file" id="branding_files" name="Branding Files[]" multiple
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                accept="image/*, .pdf, .zip, .rar, .7zip, .doc, .docx, .ppt, .pptx, .xls, .xlsx">
-                            <label for="branding_files" class="file-upload-label">
-                                <span id="file_input_text" class="text-slate-500 font-normal">Drop files here or click
-                                    to browse</span>
-                                <span class="file-upload-btn-mini">
-                                    Choose Files
-                                </span>
-                            </label>
-                        </div>
-                        <p class="text-sm text-slate-500 mt-3 font-light">Accepted formats: Images, PDFs, and ZIP
-                            archives. Max file size: 10MB.</p>
-                        <div id="file_list_display" class="mt-4 flex flex-col gap-2">
-                            <!-- Selected files will be displayed here -->
-                        </div>
+                        <p class="block text-slate-800 text-xl font-medium mb-4 font-heading">
+                            <i class="fas fa-cloud-upload-alt label-icon"></i>9. Have logos, branding files, or
+                            inspiration to share?
+                        </p>
+                        <p class="text-slate-600 font-light">After you submit, email them to
+                            <a href="mailto:info@papercutdesign.co" class="text-purple-600 hover:text-purple-800">info@papercutdesign.co</a>
+                            and we'll add them to your application.</p>
                     </div>
 
                     <!-- Submit Button -->
@@ -681,7 +675,7 @@
         <div class="container mx-auto px-6 max-w-7xl">
             <div class="flex flex-col lg:flex-row justify-between items-center gap-8">
 
-                <a href="index.html" class="flex items-center">
+                <a href="/" class="flex items-center">
                     <img src="logopng.png" alt="Papercut Design"
                         class="h-8 md:h-10 opacity-90 hover:opacity-100 transition-opacity">
                 </a>
@@ -695,9 +689,9 @@
                         class="whitespace-nowrap px-5 py-2.5 rounded-full bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors text-[15px] font-light shadow-sm border border-slate-100">
                         <i class="fas fa-envelope mr-2"></i> info@papercutdesign.co
                     </a>
-                    <a href="payment.html"
+                    <a href="/payment"
                         class="p-2 -m-2 text-slate-500 hover:text-purple-700 transition-colors text-[15px] font-light">Payments</a>
-                    <a href="privacy-policy.html"
+                    <a href="/privacy-policy"
                         class="p-2 -m-2 text-slate-500 hover:text-purple-700 transition-colors text-[15px] font-light">Privacy</a>
                 </div>
 
@@ -897,57 +891,8 @@
             toggleCustomAgeInput();
         });
 
-        // --- File Upload Logic ---
+        // --- Form Submission ---
         document.addEventListener('DOMContentLoaded', () => {
-            const brandingFilesInput = document.getElementById('branding_files');
-            const fileListDisplay = document.getElementById('file_list_display');
-            const fileInputText = document.getElementById('file_input_text');
-            let selectedFiles = [];
-
-            function renderFileList() {
-                fileListDisplay.innerHTML = '';
-                if (selectedFiles.length === 0) {
-                    fileInputText.textContent = 'Drop files here or click to browse';
-                    fileInputText.classList.remove('text-slate-900', 'font-medium');
-                    fileInputText.classList.add('text-slate-500', 'font-normal');
-                    return;
-                }
-
-                fileInputText.textContent = `${selectedFiles.length} file(s) selected`;
-                fileInputText.classList.remove('text-slate-500', 'font-normal');
-                fileInputText.classList.add('text-slate-900', 'font-medium');
-
-                selectedFiles.forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.classList.add('file-item');
-                    fileItem.innerHTML = `
-                        <span class="file-name"><i class="fas fa-file-alt text-purple-400 mr-2"></i> ${file.name}</span>
-                        <button type="button" class="remove-file-btn" data-index="${index}">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
-                    `;
-                    fileListDisplay.appendChild(fileItem);
-                });
-            }
-
-            brandingFilesInput.addEventListener('change', (event) => {
-                Array.from(event.target.files).forEach(file => {
-                    selectedFiles.push(file);
-                });
-                renderFileList();
-                brandingFilesInput.value = '';
-            });
-
-            fileListDisplay.addEventListener('click', (event) => {
-                if (event.target.closest('.remove-file-btn')) {
-                    const button = event.target.closest('.remove-file-btn');
-                    const indexToRemove = parseInt(button.dataset.index);
-                    selectedFiles.splice(indexToRemove, 1);
-                    renderFileList();
-                }
-            });
-
-            // Handle form submission with dynamic files
             const brandingApplicationForm = document.getElementById('branding-application-form');
             const submitBtn = document.getElementById('submit-btn');
 
@@ -960,56 +905,62 @@
                 submitBtn.disabled = true;
 
                 const formData = new FormData(brandingApplicationForm);
-                formData.delete('Branding Files[]');
+                const email = String(formData.get('email') || '').trim();
+                const company = String(formData.get('Company Name') || '').trim();
 
-                selectedFiles.forEach(file => {
-                    formData.append('Branding Files[]', file, file.name);
+                // Every answer becomes one line of the saved message.
+                const lines = ['Branding application'];
+                for (const [key, value] of formData.entries()) {
+                    if (key === 'email') continue;
+                    const text = String(value).trim();
+                    if (text) lines.push(key + ': ' + text);
+                }
+                const message = lines.join('\n');
+
+                // 1. Save to our database (shows under Leads in the admin console)
+                const saveToDb = fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ name: company, email, message })
                 });
 
-                fetch(brandingApplicationForm.action, {
-                    method: brandingApplicationForm.method,
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json().then(data => {
-                                if (data.success) {
-                                    showCustomMessage('Application submitted successfully! We will be in touch soon.', true);
-                                    brandingApplicationForm.reset();
-                                    selectedFiles = [];
-                                    renderFileList();
+                // 2. Email notification via FormSubmit, same as the homepage form
+                const sendEmail = fetch('https://formsubmit.co/ajax/yossi@papercutdesign.co', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        name: company,
+                        email,
+                        message,
+                        _subject: 'New Branding Application from papercutdesign.co: ' + company,
+                        _template: 'table'
+                    })
+                });
 
-                                    // Reset custom dropdown visual state
-                                    const nativeSelect = document.getElementById('target_audience_age');
-                                    nativeSelect.value = '';
-                                    document.getElementById('selected_age_range_display').textContent = 'Select an age range';
-                                    document.getElementById('selected_age_range_display').classList.add('text-slate-500');
-                                    const previouslySelected = document.querySelector('.custom-option.selected');
-                                    if (previouslySelected) previouslySelected.classList.remove('selected');
-                                    document.getElementById('custom_age_range_container').classList.add('hidden');
+                Promise.allSettled([saveToDb, sendEmail])
+                    .then(async ([dbResult]) => {
+                        const dbOk = dbResult.status === 'fulfilled' && dbResult.value.ok;
+                        if (dbOk) {
+                            showCustomMessage('Application submitted successfully! We will be in touch soon.', true);
+                            brandingApplicationForm.reset();
 
-                                } else {
-                                    showCustomMessage('There was an error submitting your application. Please try again. ' + (data.message || ''), false);
-                                }
-                            }).catch(e => {
-                                console.error('Response was OK but JSON parsing failed:', e);
-                                showCustomMessage('An unexpected response was received. Please try again.', false);
-                            });
+                            // Reset custom dropdown visual state
+                            const nativeSelect = document.getElementById('target_audience_age');
+                            nativeSelect.value = '';
+                            document.getElementById('selected_age_range_display').textContent = 'Select an age range';
+                            document.getElementById('selected_age_range_display').classList.add('text-slate-500');
+                            const previouslySelected = document.querySelector('.custom-option.selected');
+                            if (previouslySelected) previouslySelected.classList.remove('selected');
+                            document.getElementById('custom_age_range_container').classList.add('hidden');
                         } else {
-                            return response.text().then(text => {
-                                throw new Error(text || `Server error: ${response.status} ${response.statusText}`);
-                            });
+                            let detail = '';
+                            if (dbResult.status === 'fulfilled') {
+                                try { detail = (await dbResult.value.json()).message || ''; } catch { }
+                            }
+                            showCustomMessage('There was an error submitting your application. Please try again. ' + detail, false);
                         }
                     })
-                    .catch(error => {
-                        console.error('Error submitting form:', error);
-                        showCustomMessage('An unexpected error occurred. Please try again. System diagnostic: ' + error.message, false);
-                    })
                     .finally(() => {
-                        // Restore button state
                         submitBtn.innerText = originalBtnText;
                         submitBtn.style.opacity = '1';
                         submitBtn.disabled = false;

@@ -1,4 +1,4 @@
-// functions/robots/[[catchall]].js
+// functions/robots.txt.js
 // Serves a dynamic robots.txt that points to the dynamic sitemap.
 
 export async function onRequestGet() {
@@ -11,7 +11,7 @@ Allow: /
 Sitemap: ${SITE_URL}/sitemap.xml
 
 # Disallow admin
-Disallow: /admin.html
+Disallow: /admin
 `;
 
     return new Response(robotsTxt, {

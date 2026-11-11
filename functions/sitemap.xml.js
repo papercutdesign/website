@@ -1,6 +1,6 @@
-// functions/sitemap/[[catchall]].js
+// functions/sitemap.xml.js
 // Generates a dynamic XML sitemap that includes all portfolio images from the D1 database.
-// Accessible at /sitemap.xml (routed via Cloudflare Pages Functions)
+// Accessible at /sitemap.xml (the file name sets the route)
 
 export async function onRequestGet(context) {
     const { env } = context;
@@ -46,19 +46,19 @@ export async function onRequestGet(context) {
   </url>
 
   <url>
-    <loc>${SITE_URL}/payment.html</loc>
+    <loc>${SITE_URL}/payment</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>${SITE_URL}/privacy-policy.html</loc>
+    <loc>${SITE_URL}/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>${SITE_URL}/branding-application.html</loc>
+    <loc>${SITE_URL}/branding-application</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
